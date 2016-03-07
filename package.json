@@ -1,0 +1,29 @@
+{
+  "name": "substitution",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "browserify app.js -o bundle.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "browserify-shim": "^3.8.12"
+  },
+  "dependencies": {
+    "jquery": "^2.2.1"
+  },
+  "browser": {
+    "annotator": "annotator.js"
+  },
+  "browserify-shim": {
+    "annotator": {
+      "exports": "Annotator",
+      "depends": [
+        "jquery"
+      ]
+    }
+  }
+}
