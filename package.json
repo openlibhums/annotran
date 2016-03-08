@@ -4,19 +4,28 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "browserify app.js -o bundle.js"
+    "build": "browserify ./src/app.js -o bundle.js"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^13.0.0",
+    "browserify-ngannotate": "^2.0.0",
     "browserify-shim": "^3.8.12"
   },
   "dependencies": {
+    "annotator": "^1.2.2",
     "jquery": "^2.2.1"
   },
+  "browserify": {
+    "transform": [
+      "browserify-ngannotate",
+      "browserify-shim"
+    ]
+  },
   "browser": {
-    "annotator": "annotator.js"
+    "annotator": "./libs/annotator.js",
+    "jquery": "./node_modules/jquery/dist/jquery.js"
   },
   "browserify-shim": {
     "annotator": {
@@ -24,6 +33,7 @@
       "depends": [
         "jquery"
       ]
-    }
+    },
+    "jquery": "$"
   }
 }
