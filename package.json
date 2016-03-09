@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "annotator": "^1.2.2",
+    "findandreplacedomtext": "^0.4.4",
     "jquery": "^2.2.1"
   },
   "browserify": {
