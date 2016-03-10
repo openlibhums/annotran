@@ -4,7 +4,11 @@ $ = annotator.$
 var substitution = require('./substitution');
 
 
-substitution.Substitution();
+var jsonAnnotation = '{ "ranges" : [' +
+'{ "start":"//div/p" , "end":"//div/p" },' +
+'{ "startOffset":0 , "endOffset":5 }]}';
+
+substitution.Substitution(jsonAnnotation, "this is a substitution text");
 
 
 
