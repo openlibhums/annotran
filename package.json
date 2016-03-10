@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "browserify ./src/app.js -o bundle.js"
+    "build": "browserify ./src/app.js -o bundle.js --debug"
   },
   "author": "",
   "license": "MIT",
@@ -15,7 +15,10 @@
   },
   "dependencies": {
     "annotator": "^1.2.2",
-    "jquery": "^2.2.1"
+    "es6-promise": "^3.0.2",
+    "findandreplacedomtext": "^0.4.4",
+    "jquery": "^2.2.1",
+    "xpath-range": "0.0.5"
   },
   "browserify": {
     "transform": [
