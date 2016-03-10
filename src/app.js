@@ -1,14 +1,11 @@
 var $ = require('jquery')
 annotator = require('annotator');
 $ = annotator.$
+var substitution = require('./substitution');
 
-//todo: write annotator extension code here
 
-var findandreplacedomtext = require('findandreplacedomtext');
+substitution.Substitution();
 
-findandreplacedomtext(document.getElementsByClassName('test'), {
-  find: 'text',
-  replace: function(portion, match) {
-    return '[[' + portion.index + ']]';
-  }
-});
+
+
+
