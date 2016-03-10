@@ -5,6 +5,7 @@ var xpath = require('xpath-range').xpath;
 
 
 //function that does replacement based on xpath and offsets
+//TODO: finish replacement by using offsets...
 function Substitution(jsonAnnotation, substitutionText) {
     var obj = JSON.parse(jsonAnnotation);
     var xpathPositionStart = obj.ranges[0].start;
