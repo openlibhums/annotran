@@ -1,0 +1,416 @@
+[
+    {
+        "tags": [
+            "Tag_1",
+            "Tag_3"
+        ],
+        "updated": "2016-03-11T01:30:26.383149+00:00",
+        "id": "AVNjS9C8Q5Dyw7k-A2Ug",
+        "quote": "The seas wax'd calm",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[5]/p[2]",
+                "startOffset": 2409,
+                "end": "/div[5]/p[2]",
+                "endOffset": 2428
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_10",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjS9C8Q5Dyw7k-A2Ug",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:30:26.375201+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 49
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_3"
+        ],
+        "updated": "2016-03-11T01:29:46.392139+00:00",
+        "id": "AVNjSzSFQ5Dyw7k-A2Uf",
+        "quote": "piteous plainings",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[5]/p[2]",
+                "startOffset": 1609,
+                "end": "/div[5]/p[2]",
+                "endOffset": 1626
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_9",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSzSFQ5Dyw7k-A2Uf",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:29:46.380998+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 50
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_3"
+        ],
+        "updated": "2016-03-11T01:29:22.557715+00:00",
+        "id": "AVNjStdrQ5Dyw7k-A2Ue",
+        "quote": "league from Epidamnum",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[5]/p[2]",
+                "startOffset": 1211,
+                "end": "/div[5]/p[2]",
+                "endOffset": 1232
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_8",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjStdrQ5Dyw7k-A2Ue",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:29:22.548955+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 51
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_3"
+        ],
+        "updated": "2016-03-11T01:29:00.130476+00:00",
+        "id": "AVNjSn_QQ5Dyw7k-A2Ud",
+        "quote": "prosperous voyages",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[5]/p[2]",
+                "startOffset": 353,
+                "end": "/div[5]/p[2]",
+                "endOffset": 371
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_7",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSn_QQ5Dyw7k-A2Ud",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:29:00.122707+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 52
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_2"
+        ],
+        "updated": "2016-03-11T01:28:39.754206+00:00",
+        "id": "AVNjSjA4Q5Dyw7k-A2UY",
+        "quote": "AEGEON\n      A heavier task",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[5]/p[1]",
+                "startOffset": 0,
+                "end": "/div[5]/p[2]",
+                "endOffset": 14
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_6",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSjA4Q5Dyw7k-A2UY",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:28:39.744253+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 53
+            },
+            {
+                "jQuery11130046558775240555406": 54
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_2"
+        ],
+        "updated": "2016-03-11T01:27:53.753130+00:00",
+        "id": "AVNjSXyGQ5Dyw7k-A2UX",
+        "quote": "DUKE SOLINUS",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[4]/p[1]",
+                "startOffset": 0,
+                "end": "/div[4]/p[1]",
+                "endOffset": 12
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_5",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSXyGQ5Dyw7k-A2UX",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:27:53.743007+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 55
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_2"
+        ],
+        "updated": "2016-03-11T01:27:08.099991+00:00",
+        "id": "AVNjSMoyQ5Dyw7k-A2UW",
+        "quote": "bay of Ephesus",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[2]/p[2]",
+                "startOffset": 647,
+                "end": "/div[2]/p[2]",
+                "endOffset": 661
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_4",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSMoyQ5Dyw7k-A2UW",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:27:08.090082+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 56
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_1"
+        ],
+        "updated": "2016-03-11T01:26:29.832052+00:00",
+        "id": "AVNjSDS0Q5Dyw7k-A2UV",
+        "quote": "seditious countrymen",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[2]/p[2]",
+                "startOffset": 388,
+                "end": "/div[2]/p[2]",
+                "endOffset": 408
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_3",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjSDS0Q5Dyw7k-A2UV",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:26:29.823018+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 57
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_1"
+        ],
+        "updated": "2016-03-11T01:26:07.999344+00:00",
+        "id": "AVNjR99tQ5Dyw7k-A2UU",
+        "quote": "guilders to redeem",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[2]/p[2]",
+                "startOffset": 210,
+                "end": "/div[2]/p[2]",
+                "endOffset": 228
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_2",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjR99tQ5Dyw7k-A2UU",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:26:07.992119+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 58
+            }
+        ]
+    },
+    {
+        "tags": [
+            "Tag_1"
+        ],
+        "updated": "2016-03-11T01:25:48.817377+00:00",
+        "id": "AVNjR5R6Q5Dyw7k-A2UT",
+        "quote": "rancorous outrage",
+        "consumer": "annotateit",
+        "ranges": [
+            {
+                "start": "/div[2]/p[2]",
+                "startOffset": 126,
+                "end": "/div[2]/p[2]",
+                "endOffset": 143
+            }
+        ],
+        "user": "olh",
+        "uri": "http://localhost:63342/annotator-1.2.10/example/openshakespeare/index.html",
+        "text": "Substitution_1",
+        "links": [
+            {
+                "href": "http://annotateit.org/annotations/AVNjR5R6Q5Dyw7k-A2UT",
+                "rel": "alternate",
+                "type": "text/html"
+            }
+        ],
+        "created": "2016-03-11T01:25:48.798429+00:00",
+        "permissions": {
+            "delete": [],
+            "admin": [],
+            "update": [],
+            "read": [
+                "group:__world__"
+            ]
+        },
+        "highlights": [
+            {
+                "jQuery11130046558775240555406": 59
+            }
+        ]
+    }
+]
