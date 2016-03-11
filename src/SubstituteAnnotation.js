@@ -97,8 +97,9 @@
 
         Substitutions.prototype.events = {
             "annotationCreated": "updateAnnotationTags",
-            "annotationUpdated": "updateAnnotationTags"
+            "annotationUpdated": "updateAnnotationTags",
 //      "annotationDeleted": "_onAnnotationDeleted"
+            "annotationsLoaded": "annotationsLoadedDump"
         };
 
 
@@ -111,7 +112,9 @@
             if (!Annotator.supported()) {
                 return;
             }
-//        this.loadAnnotationsFromStore(); // get list of existing tags
+//            this.loadAnnotationsTags(); // get list of existing tags
+//            var testload = [];
+            testload = this.annotator.annotations;
             this.field = this.annotator.editor.addField({
                 label: Annotator._t('LanguageDropdown'),
                 load: this.updateField,
@@ -243,15 +246,22 @@
 
         // load all annotations from store
 
-        Substitutions.prototype.loadAnnotationsFromStore = function () {
-            var annotation, annotations, current, i, len;
-            current = [];
-            annotations = this.store.all();
-            for (i = 0, len = annotations.length; i < len; i++) {
-                annotation = annotations[i];
-                console.log(annotation.tags);
-            }
-            return this;
+        Substitutions.prototype.loadAnnotationsTags = function () {
+            //           var annotation, annotations, current, i, len;
+            //           current = [];
+            //           annotations = store.loadAnnotations();
+            //           for (i = 0, len = annotations.length; i < len; i++) {
+            //               annotation = annotations[i];
+            //               console.log(annotation.tags);
+            //           }
+            //           return this;
+            var annotations = [];
+            this.annotator.loadAnnotations(annotations);
+            //           for (i = 0, len = annotations.length; i < len; i++) {
+            //               annotation = annotations[i];
+            //               console.log(annotation.tags);
+            //           }
+
         };
 
         // maintain list of tags
@@ -265,6 +275,15 @@
                 }
             }
         };
+
+        Substitutions.prototype.annotationsLoadedDump = function (annotations) {
+            console.log("annotations loaded");
+            //       var annotations = [];
+            for (i = 0, len = annotations.length; i < len; i++) {
+                annotation = annotations[i];
+                console.log(JSON.stringify(annotations, null, "  "));
+            }
+        }
 
         return Substitutions;
 
