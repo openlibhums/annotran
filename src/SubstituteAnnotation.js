@@ -93,6 +93,9 @@
 
         Substitutions.prototype.input = null;
 
+        Substitutions.prototype.subButton = null;
+
+
         // register for annotator events to keep tag list up-to-date
 
         Substitutions.prototype.events = {
@@ -104,6 +107,8 @@
 
 
         tagstore = [];  // internal state list of tags
+        substitutionTag = null;
+        annotationsCache = [];
 
         // create a drop-down menu as a new field on the annotator floating dialog
 
@@ -112,116 +117,142 @@
             if (!Annotator.supported()) {
                 return;
             }
-//            this.loadAnnotationsTags(); // get list of existing tags
-//            var testload = [];
-            testload = this.annotator.annotations;
+
+            // language support taken out for now while testing substitution
+
+            /*
+             this.field = this.annotator.editor.addField({
+
+             label: Annotator._t('LanguageDropdown'),
+             load: this.updateField,
+             submit: this.setAnnotationSubstitutions
+             });
+             id = Annotator.$(this.field).find('input').attr('id');
+             select = '<li class="annotator-item"><select style="width:100%"><option value="">(No language)</option>';
+             ref = this.options.substitutions;
+             for (i = 0, len = ref.length; i < len; i++) {
+             m = ref[i];
+             select += '<option value="' + m.value + '">' + m.label + '</option>';
+             }
+             select += '</select></li>';
+             newfield = Annotator.$(select);
+             Annotator.$(this.field).replaceWith(newfield);
+             this.field = newfield[0];
+             this.annotator.viewer.addField({
+             load: this.updateViewer,
+             annoPlugin: this
+             });
+             */
+            // add button to execute substitution
+
             this.field = this.annotator.editor.addField({
-                label: Annotator._t('LanguageDropdown'),
-                load: this.updateField,
-                submit: this.setAnnotationSubstitutions
+                id: 'substitution-button',
+                type: 'input', //options (textarea,input,select,checkbox)
+                label: 'Substitute Annotations',
+                submit: this.buttonsActions
+
             });
-            id = Annotator.$(this.field).find('input').attr('id');
-            select = '<li class="annotator-item"><select style="width:100%"><option value="">(No language)</option>';
-            ref = this.options.substitutions;
-            for (i = 0, len = ref.length; i < len; i++) {
-                m = ref[i];
-                select += '<option value="' + m.value + '">' + m.label + '</option>';
-            }
-            select += '</select></li>';
-            newfield = Annotator.$(select);
+
+            //Modify the element created with annotator to be an invisible span
+            butt = '<a href="#save" class="annotator-save annotator-focus">' + 'Substitute' + '</a>';
+
+            var newfield = Annotator.$('<li id = "subsButton" class="annotator-item">' + '<button type="button">' + butt + '</button>' + '</li>');
             Annotator.$(this.field).replaceWith(newfield);
             this.field = newfield[0];
-            this.annotator.viewer.addField({
-                load: this.updateViewer,
-                annoPlugin: this
-            });
+
+
+            //-- Viewer
+            this.subButton = $(this.field).find(':input');
 
             this.field = this.annotator.editor.addField({
                 label: Annotator._t('TagsDropdown'),
+                type: 'textarea',
                 load: this.updateField,
                 submit: this.setAnnotationSubstitutions
             });
+
             id = Annotator.$(this.field).find('input').attr('id');
-            select = '<li class="annotator-item"><select style="width:100%"><option value="">(No tags)</option>';
-            for (i = 0, len = tagstore.length; i < len; i++) {
-                m = tagstore[i];
-                select += '<option value="' + m + '">' + m + '</option>';
-            }
-            select += '</select></li>';
-            newfield = Annotator.$(select);
-            Annotator.$(this.field).replaceWith(newfield);
-            this.field = newfield[0];
-            this.annotator.viewer.addField({
-                load: this.updateViewerTags,
-                annoPlugin: this
-            });
 
-            // this will be a new button embedded on the floating Annotator menu when I work out how to do it properly
-
-            this.field = this.annotator.editor.addField({
-                type: 'select',
-                label: Annotator._t('ExplanatoryNote'),
-                id: 'annotator substitute'
-            });
 
             return this.input = Annotator.$(this.field).find('select');
-        };
+        }
+
+
+        Substitutions.prototype.buttonsActions = function (field, annotation) {
+            var i, j;
+            console.log("buttonsActions");
+
+
+            id = Annotator.$(field).find('input').attr('id');
+
+
+
+            annotationsToSub = [];
+
+            for (i = 0; i < annotationsCache.length; i++) {
+                annoToCheck = annotationsCache[i];
+
+                for (j = 0; j < annotationsCache[i].tags.length; j++) {
+                    if (annoToCheck.tags.indexOf(substitutionTag) >= 0) {
+                        annotationsToSub.push(annotationsCache[i]);
+                    }
+                }
+
+            }
+            console.log(JSON.stringify(annotationsToSub, null, "  "));
+
+        }
+
 
 
         function Substitutions(element, options) {
             this.setAnnotationSubstitutions = bind(this.setAnnotationSubstitutions, this);
             this.updateField = bind(this.updateField, this);
-            Substitutions.__super__.constructor.apply(this, arguments);
+            this.subButton = bind(this.subButton, this);
+            this.updateViewer = bind(this.updateViewer, this);
+            _ref = Substitutions.__super__.constructor.apply(this, arguments);
             if (options.substitutions) {
                 this.options.substitutions = options.substitutions;
             }
+            return _ref;
         }
 
         Substitutions.prototype.updateField = function (field, annotation) {
             var value;
             value = '';
-            if (annotation.substitution) {
-                value = annotation.substitution;
+            if (substitutionTag) {
+                value = substitutionTag;
             }
+            console.log("updateField", substitutionTag);
             return this.input.val(value);
-        };
+        }
 
         Substitutions.prototype.setAnnotationSubstitutions = function (field, annotation) {
-            return annotation.substitution = this.input.val();
-        };
+            console.log("setAnnotationSubstitutions", this.input.val());
+            return substitutionTag = this.input.val();
+        }
 
         Substitutions.prototype.updateViewer = function (field, annotation) {
-            var displayValue, i, len, m, ref, results;
-            field = Annotator.$(field);
-            if (annotation.substitution) {
-                displayValue = annotation.substitution;
-                ref = this.annoPlugin.options.substitutions;
-                results = [];
-                for (i = 0, len = ref.length; i < len; i++) {
-                    m = ref[i];
-                    if (m.value === annotation.substitution) {
-                        displayValue = m.label;
-                        field.parent().parent().find('.annotator-substitution').html(Annotator.Util.escape(displayValue) + " ");
-                        if (this.annoPlugin.options.showField) {
-                            results.push(field.addClass('annotator-substitution').html('<span class="annotator-substitution">' + Annotator.Util.escape(displayValue) + '</span>'));
-                        } else {
-                            results.push(field.remove());
-                        }
-                    } else {
-                        results.push(void 0);
-                    }
-                }
-                return results;
-            } else {
-                return field.remove();
-            }
-        };
+            this.annotation = annotation;
+
+            var self = this,
+                field = $(field),
+                ret = field.addClass('sub-viewer-annotator').html(function () {
+                    var string;
+                    //               return self.subButton('Substitute:', self.getSource('ovaId'));
+                })
+        }
 
         Substitutions.prototype.updateViewerTags = function (field, annotation) {
             var displayValue, i, len, m, ref, results;
             field = Annotator.$(field);
+            this.input = Annotator.$(this.field).find('select');
+            var value = '';
+            displayValue = this.input.val(value);
+            console.log("updateViewerTags fired", substitutionTag);
             if (annotation.substitution) {
                 displayValue = annotation.substitution;
+                console.log(displayvalue);
                 ref = this.annoPlugin.options.substitutions;
                 results = [];
                 for (i = 0, len = ref.length; i < len; i++) {
@@ -240,48 +271,55 @@
                 }
                 return results;
             } else {
-                return field.remove();
+                return;
+//                return field.remove();
             }
-        };
+        }
 
-        // load all annotations from store
-
-        Substitutions.prototype.loadAnnotationsTags = function () {
-            //           var annotation, annotations, current, i, len;
-            //           current = [];
-            //           annotations = store.loadAnnotations();
-            //           for (i = 0, len = annotations.length; i < len; i++) {
-            //               annotation = annotations[i];
-            //               console.log(annotation.tags);
-            //           }
-            //           return this;
-            var annotations = [];
-            this.annotator.loadAnnotations(annotations);
-            //           for (i = 0, len = annotations.length; i < len; i++) {
-            //               annotation = annotations[i];
-            //               console.log(annotation.tags);
-            //           }
-
-        };
 
         // maintain list of tags
 
         Substitutions.prototype.updateAnnotationTags = function (annotation) {
             var i, len;
+            id = Annotator.$(this.field).find('input').attr('id');
+
+            annotationsCache.push(annotation);
+
             for (i = 0, len = annotation.tags.length; i < len; i++) {
                 if (tagstore.indexOf(annotation.tags[i]) <= 0) {
                     tagstore.push(annotation.tags[i]);
                     console.log(annotation.tags[i]);
+
+                    select = '<li class="annotator-item"><select style="width:100%"><option value="">(No tags)</option>';
+                    for (i = 0, len = tagstore.length; i < len; i++) {
+                        m = tagstore[i];
+                        select += '<option value="' + m + '">' + m + '</option>';
+                    }
+                    select += '</select></li>';
+                    newfield = Annotator.$(select);
+                    Annotator.$(this.field).replaceWith(newfield);
+                    this.field = newfield[0];
+
+                    this.annotator.viewer.addField({
+                        load: this.updateViewerTags,
+                        annoPlugin: this
+                    });
+
+
                 }
             }
-        };
+            return this.input = Annotator.$(this.field).find('select');
+
+        }
 
         Substitutions.prototype.annotationsLoadedDump = function (annotations) {
             console.log("annotations loaded");
             //       var annotations = [];
             for (i = 0, len = annotations.length; i < len; i++) {
                 annotation = annotations[i];
-                console.log(JSON.stringify(annotations, null, "  "));
+                annotationsCache.push(annotation);
+                this.updateAnnotationTags(annotation);
+//                console.log(JSON.stringify(annotations, null, "  "));
             }
         }
 
