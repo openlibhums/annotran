@@ -13,70 +13,64 @@ function Substitution(jsonAnnotation, substituteText) {
     var endOffset = obj.ranges[1].endOffset;
     var startContainer = document.evaluate(xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     var endContainer = document.evaluate(xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-
-    console.log("start container: " + startContainer);
-    console.log("end conatiner: " + endContainer);
-
     var substitutionLength = substituteText.length;
     var annotationLength = endOffset - startOffset;
 
     console.log(startContainer.childNodes[0].nodeValue);
 
-    var commonAncestor = startContainer;
-
-    while (!contains(commonAncestor, endContainer)) {
-        commonAncestor = commonAncestor.parentNode;
-    }
     //commonAncestor = xpath.fromNode($(commonAncestor))[0]
     //console.log(commonAncestor);
 
-    var startNodeToBeginSubstitution = findStartNodeToBeginSubstitution(commonAncestor, startOffset, 0);
+    fun = (function () {
+        var commonAncestor = startContainer;
+        var child = commonAncestor;
+        var prefOffset = 0; //sum of all predeccessor lengths
 
+        var findStartNodeToBeginSubstitution = function() {
+            var childNodes = child.childNodes;
+            for(i = 0; i < childNodes.length; i++) {
+                child = childNodes[i];
+                if (child.nodeType == 3) {
+                    var len = child.nodeValue.length - 1;
+                    if ((len + prefOffset) < startOffset) {
+                        prefOffset += (child.nodeValue).length;
+                        continue;
+                    } else {
+                        return;
+                    }
+                } else {
+                    return findStartNodeToBeginSubstitution();}
+                }
+        }
+        findStartNodeToBeginSubstitution();
+        var substNodeLen = child.length;
+        child.nodeValue = getSubstituteText(prefOffset, startOffset, endOffset, child.nodeValue, substituteText);
+
+        var nextSibl;
+        if(child.nextSibling) {
+            nextSibl = child.nextSibling;
+        } else if(child.parentNode) {
+            nextSibl = child.parentNode.nextSibling;
+        }
+        var flag = true;
+        while (prefOffset < endOffset && nextSibl && nextSibl != commonAncestor) {
+            if (flag) {
+                prefOffset += substNodeLen;
+                flag = false;
+            }
+            prefOffset = removeHangingTextPerNodes(nextSibl, prefOffset, endOffset, true);
+            nextSibl = nextSibl.parentNode.nextSibling;
+        }
+    })(startContainer, endContainer);
+
+    fun(startContainer, endContainer);
+
+    //var startNodeToBeginSubstitution = findStartNodeToBeginSubstitution(commonAncestor, startOffset, 0);
   // var commonAncestorXPath = xpath.fromNode($(commonAncestor))[0];
 
-    var substNodeLen = startNodeToBeginSubstitution[0].length;
-    var prefOffset = startNodeToBeginSubstitution[1]; //sum of all predeccessor lengths
-    startNodeToBeginSubstitution[0].nodeValue = getSubstituteText(prefOffset, startOffset, endOffset, startNodeToBeginSubstitution[0].nodeValue, substituteText);
-
-    if (annotationLength > substNodeLen) {
-        prefOffset += substNodeLen;
-      // var node = findContainingChildNode(commonAncestor, startNodeToBeginSubstitution[0]);
-        removeHangingTextPerNodes(startNodeToBeginSubstitution[0].nextSibling, prefOffset, endOffset);
-    }
 };
 
-/*
-function findContainingChildNode(commonAncestor, node) {
-    var childNodes = commonAncestor.childNodes;
-    for(i = 0; i < childNodes.length; i++) {
-        var child = childNodes[i];
-        if (child != node && child.childNodes) {
-            if (findInDepth(child, node))
-                return child;
-        } else if (child == node) {
-            return child;
-        }
-    }
-}
-
-function findInDepth(node, nodeToFind) {
-    var childNodes = node.childNodes;
-    for(i = 0; i < childNodes.length; i++) {
-        var child = childNodes[i];
-        if (child == nodeToFind)
-            return true;
-        if (child.childNodes)
-            findInDepth(child, nodeToFind);
-    }
-    return false;
-}
-*/
-
-function removeHangingTextPerNodes(node, prefOffset, endOffset) {
-   /* if ((prefOffset + prefOffsetWithinNode) >= endOffset) {
-        return;
-    }*/
-   // endOffset = endOffset - prefOffset;
+function removeHangingTextPerNodes(node, prefOffset, endOffset, callNextSibling) {
     if (node.nodeType == 3) {
         var remainedTxtToRemove = endOffset - prefOffset;
         var len = node.nodeValue.length;
@@ -86,19 +80,23 @@ function removeHangingTextPerNodes(node, prefOffset, endOffset) {
         } else {
             node.nodeValue = (node.nodeValue).substring(remainedTxtToRemove, len);
         }
-    } else {
+    } else if (node.childNodes) {
         var childNodes = node.childNodes;
-        for(i = 0; i < childNodes.length; i++) {
+        var i = 0, num = childNodes.length;
+        while (i < num) {
             var child = childNodes[i];
+            console.log(child);
+            console.log(i);
             if (prefOffset < endOffset) {
-                prefOffset = removeHangingTextPerNodes(child, prefOffset, endOffset);
+                prefOffset = removeHangingTextPerNodes(child, prefOffset, endOffset, false);
             } else {
                 break;
             }
+            i++;
         }
     }
-    if (prefOffset < endOffset && node.nextSibling != null) {
-        removeHangingTextPerNodes(node.nextSibling, prefOffset, endOffset);
+    if (prefOffset < endOffset && node.nextSibling != null && callNextSibling) {
+        removeHangingTextPerNodes(node.nextSibling, prefOffset, endOffset, true);
     }
     return prefOffset;
 };
@@ -120,6 +118,7 @@ function getSubstituteText(prefOffset, startOffset, endOffset, originalText, sub
     return prefText + substituteText + sufText;
 };
 
+/*
 function findStartNodeToBeginSubstitution(commonAncestor, offset, prefOffset) {
     var childNodes = commonAncestor.childNodes;
     for(i = 0; i < childNodes.length; i++) {
@@ -137,7 +136,7 @@ function findStartNodeToBeginSubstitution(commonAncestor, offset, prefOffset) {
         }
     }
 };
-
+*/
 
 function contains(parent, child) {
     var node;
