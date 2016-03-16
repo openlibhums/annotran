@@ -109,6 +109,8 @@
         tagstore = [];  // internal state list of tags
         substitutionTag = null;
         annotationsCache = [];
+        substituteFlag = false;
+        currentAnnotation = [];
 
         // create a drop-down menu as a new field on the annotator floating dialog
 
@@ -168,7 +170,7 @@
             this.subButton = $(this.field).find(':input');
 
             this.field = this.annotator.editor.addField({
-                label: Annotator._t('TagsDropdown'),
+                label: Annotator._t('No tags yet defined'),
                 type: 'textarea',
                 load: this.updateField,
                 submit: this.setAnnotationSubstitutions
@@ -183,27 +185,40 @@
 
         Substitutions.prototype.buttonsActions = function () {
             var i, j;
-            console.log("buttonsActions");
+//            console.log("buttonsActions");
 
+            substituteFlag = true;
+        }
 
-//            this.field = Annotator.$(field);
-//            this.input = Annotator.$(this.field).find('select');
-//            substitutionTag = this.input.val();
-
-
+        Substitutions.prototype.substituteExecute = function () {
+            var i, j;
+//            console.log("substituteExecute", substitutionTag);
             annotationsToSub = [];
 
-            for (i = 0; i < annotationsCache.length; i++) {
-                annoToCheck = annotationsCache[i];
+            if (substitutionTag) {
+                for (i = 0; i < annotationsCache.length; i++) {
+                    annoToCheck = annotationsCache[i];
 
-                for (j = 0; j < annotationsCache[i].tags.length; j++) {
-                    if (annoToCheck.tags.indexOf(substitutionTag) >= 0) {
-                        annotationsToSub.push(annotationsCache[i]);
+                    for (j = 0; j < annotationsCache[i].tags.length; j++) {
+                        if (annoToCheck.tags.indexOf(substitutionTag) >= 0) {
+                            annotationsToSub.push(annotationsCache[i]);
+                        }
                     }
+
                 }
+            }
+            else {
+                annotationsToSub.push(currentAnnotation);
 
             }
-            console.log(JSON.stringify(annotationsToSub, null, "  "));
+
+            console.log(JSON.stringify(JSON.decycle(annotationsToSub), null, "  "));
+
+
+            // API call to substitute DOM
+
+//            Substitution(JSON.stringify(JSON.decycle(annotationsToSub)), annotationsToSub[0].text);
+            substituteFlag = false;
 
         }
 
@@ -226,21 +241,20 @@
             if (substitutionTag) {
                 value = substitutionTag;
             }
-            console.log("updateField", substitutionTag);
+//            console.log("updateField", substitutionTag);
             return this.input.val(value);
         }
 
         Substitutions.prototype.setAnnotationSubstitutions = function (field, annotation) {
-            console.log("setAnnotationSubstitutions", this.input.val());
+            //           console.log("setAnnotationSubstitutions", this.input.val());
             return substitutionTag = this.input.val();
         }
 
-        Substitutions.prototype.dropdownChange = function() {
+        Substitutions.prototype.dropdownChange = function () {
             this.input = Annotator.$(this.field).find('select');
             substitutionTag = this.input.val();
 
         }
-
 
 
         Substitutions.prototype.updateViewerTags = function (field, annotation) {
@@ -249,10 +263,10 @@
             this.input = Annotator.$(this.field).find('select');
             var value = '';
             displayValue = this.input.val(value);
-            console.log("updateViewerTags fired", substitutionTag);
+//            console.log("updateViewerTags fired", substitutionTag);
             if (annotation.substitution) {
                 displayValue = annotation.substitution;
-                console.log(displayvalue);
+//                console.log(displayvalue);
                 ref = this.annoPlugin.options.substitutions;
                 results = [];
                 for (i = 0, len = ref.length; i < len; i++) {
@@ -281,15 +295,18 @@
         Substitutions.prototype.updateAnnotationTags = function (annotation) {
             var i, len;
             id = Annotator.$(this.field).find('input').attr('id');
+//            console.log("updateAnnotationTags", annotation);
+
+            currentAnnotation = annotation;
 
             annotationsCache.push(annotation);
 
             for (i = 0, len = annotation.tags.length; i < len; i++) {
                 if (tagstore.indexOf(annotation.tags[i]) <= 0) {
                     tagstore.push(annotation.tags[i]);
-                    console.log(annotation.tags[i]);
+//                    console.log(annotation.tags[i]);
 
-                    select = '<li class="annotator-item"><select style="width:100% " id = "annotator-subsdropdown"><option value="">(No tags)</option>';
+                    select = '<li class="annotator-item"><select style="width:100% " id = "annotator-subsdropdown"><option value="">Substitute Current Annotation</option>';
                     for (i = 0, len = tagstore.length; i < len; i++) {
                         m = tagstore[i];
                         select += '<option value="' + m + '">' + m + '</option>';
@@ -310,12 +327,15 @@
 
                 }
             }
+            if (substituteFlag) {
+                this.substituteExecute();
+            }
             return this.input = Annotator.$(this.field).find('select');
 
         }
 
         Substitutions.prototype.annotationsLoadedDump = function (annotations) {
-            console.log("annotations loaded");
+//            console.log("annotations loaded");
             //       var annotations = [];
             for (i = 0, len = annotations.length; i < len; i++) {
                 annotation = annotations[i];
