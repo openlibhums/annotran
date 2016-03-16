@@ -23,7 +23,9 @@
   "browserify": {
     "transform": [
       "browserify-ngannotate",
-      "browserify-shim"
+      "browserify-shim",
+      "browserify-css",
+      "coffeeify"
     ]
   },
   "browser": {
@@ -38,5 +40,10 @@
       ]
     },
     "jquery": "$"
-  }
+  },
+    "browserify-css": {
+        "autoInject": true,
+        "minify": true,
+        "rootDir": "."
+    }
 }
