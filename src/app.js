@@ -1,14 +1,43 @@
 var $ = require('jquery')
 annotator = require('annotator');
 $ = annotator.$
-var substitution = require('./substitution');
+var substitution1 = require('./SubstituteAnnotation');
+var substitution2 = require('./substitution');
+var tags = require('../plugins/tags.coffee');
+
+var css = require('./app.css');
+// console.log(css);
+
+OpenAnnotate = ("OpenAnnotate" in window) ? OpenAnnotate : {}
+
+OpenAnnotate.Annotator = function (element) {
+    var $ = jQuery, self = this
+
+    this.annotator = $(element).annotator().data('annotator')
+    this.currentUser = null
+
+    this.options = {
+        user: {}
+
+    }
+
+    $(element).annotator().annotator('addPlugin', 'Substitutions', 'bbk:english');
+    $(element).annotator().annotator('addPlugin', 'Tags');
 
 
-var jsonAnnotation = '{ "ranges" : [' +
-'{ "start":"//div/p" , "end":"//div/p" },' +
-'{ "startOffset":0 , "endOffset":5 }]}';
 
-substitution.Substitution(jsonAnnotation, "this is a substitution text");
+    jQuery(function ($) {
+       $(element).annotator()
+                .annotator('setupPlugins');
+    });
+
+
+    return this
+}
+
+
+
+
 
 
 
