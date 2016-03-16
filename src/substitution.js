@@ -5,18 +5,19 @@ var xpath = require('xpath-range').xpath;
 
 
 //function that does replacement based on xpath and offsets
-function Substitution(jsonAnnotation, substituteText) {
+function Substitution(jsonAnnotation) {
     var obj = JSON.parse(jsonAnnotation);
     var xpathPositionStart = obj.ranges[0].start;
     var xpathPositionEnd = obj.ranges[0].end;
-    var startOffset = obj.ranges[1].startOffset;
-    var endOffset = obj.ranges[1].endOffset;
+    var startOffset = obj.ranges[0].startOffset;
+    var endOffset = obj.ranges[0].endOffset;
     var startContainer = document.evaluate(xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     var endContainer = document.evaluate(xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    var substituteText = obj.text;
     var substitutionLength = substituteText.length;
     var annotationLength = endOffset - startOffset;
 
-    console.log(startContainer.childNodes[0].nodeValue);
+    //console.log(startContainer.childNodes[0].nodeValue);
 
     //commonAncestor = xpath.fromNode($(commonAncestor))[0]
     //console.log(commonAncestor);
