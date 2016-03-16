@@ -20,6 +20,9 @@
 
 // standard boilerplate Annotator plugin code
 
+var substitution1 = require('./substitution');
+
+
 (function () {
     var bind = function (fn, me) {
             return function () {
@@ -212,12 +215,14 @@
 
             }
 
-            console.log(JSON.stringify(JSON.decycle(annotationsToSub), null, "  "));
+
+            jsonObjects = JSON.stringify(JSON.decycle(annotationsToSub[0]), null, "  ");
+            console.log(jsonObjects);
 
 
             // API call to substitute DOM
 
-//            Substitution(JSON.stringify(JSON.decycle(annotationsToSub)), annotationsToSub[0].text);
+            substitution1.Substitution(jsonObjects);
             substituteFlag = false;
 
         }
