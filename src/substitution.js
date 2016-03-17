@@ -11,8 +11,23 @@ function Substitution(jsonAnnotation) {
     var xpathPositionEnd = obj.ranges[0].end;
     var startOffset = obj.ranges[0].startOffset;
     var endOffset = obj.ranges[0].endOffset;
-    var startContainer = document.evaluate(xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    var endContainer = document.evaluate(xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+    if (document.implementation.hasFeature("Range", "2.0")) {
+        var oRange = document.createRange();
+       // oRange.setStart(xpathPositionStart, startOffset);
+       // oRange.setEnd(xpathPositionEnd, endOffset);
+        console.log(oRange);
+             //range code here
+    }
+
+   // var proba = xpath.toRange('//div/p[1]', 8, '//div/p[1]', 37, "/");
+
+    var startContainer = document.evaluate('/'+ xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    var endContainer = document.evaluate('/' + xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+   // var p = xpath.toRange(startContainer, 2, endContainer, 8);
+    //var tst = xpath.toRange('html/body/div[1]/div/p', 8, 'html/body/div[1]/div/p', 37);
+
     var substituteText = obj.text;
     var substitutionLength = substituteText.length;
     var annotationLength = endOffset - startOffset;
@@ -26,24 +41,36 @@ function Substitution(jsonAnnotation) {
         var commonAncestor = startContainer;
         var child = commonAncestor;
         var prefOffset = 0; //sum of all predeccessor lengths
+        var startNode = null;
 
         var findStartNodeToBeginSubstitution = function() {
             var childNodes = child.childNodes;
-            for(i = 0; i < childNodes.length; i++) {
+            var i = 0, num = childNodes.length;
+            while (i < num && startNode == null) {
                 child = childNodes[i];
+                i++;
                 if (child.nodeType == 3) {
-                    var len = child.nodeValue.length - 1;
+                    var len;
+                    if (child.nodeValue != "") {
+                        len = child.nodeValue.length - 1;
+                    } else {
+                        len = 0;
+                    }
                     if ((len + prefOffset) < startOffset) {
                         prefOffset += (child.nodeValue).length;
                         continue;
                     } else {
+                        startNode = child;
                         return;
                     }
                 } else {
-                    return findStartNodeToBeginSubstitution();}
+                    findStartNodeToBeginSubstitution();
                 }
+            }
+            return;
         }
         findStartNodeToBeginSubstitution();
+        child = startNode;
         var substNodeLen = child.length;
         child.nodeValue = getSubstituteText(prefOffset, startOffset, endOffset, child.nodeValue, substituteText);
 
