@@ -1,0 +1,49 @@
+{
+  "name": "substitution",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "browserify ./src/app.js -o bundle.js --debug"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "browserify-ngannotate": "^2.0.0",
+    "browserify-shim": "^3.8.12"
+  },
+  "dependencies": {
+    "annotator": "^1.2.2",
+    "es6-promise": "^3.0.2",
+    "findandreplacedomtext": "^0.4.4",
+    "jquery": "^2.2.1",
+    "xpath-range": "0.0.5"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-ngannotate",
+      "browserify-shim",
+      "browserify-css",
+      "coffeeify"
+    ]
+  },
+  "browser": {
+    "annotator": "./libs/annotator.js",
+    "jquery": "./node_modules/jquery/dist/jquery.js"
+  },
+  "browserify-shim": {
+    "annotator": {
+      "exports": "Annotator",
+      "depends": [
+        "jquery"
+      ]
+    },
+    "jquery": "$"
+  },
+    "browserify-css": {
+        "autoInject": true,
+        "minify": true,
+        "rootDir": "."
+    }
+}
