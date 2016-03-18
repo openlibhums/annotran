@@ -197,6 +197,8 @@ var substitution1 = require('./substitution');
             var i, j;
 //            console.log("substituteExecute", substitutionTag);
             annotationsToSub = [];
+            substituteFlag = false;
+
 
             if (substitutionTag) {
                 for (i = 0; i < annotationsCache.length; i++) {
@@ -215,15 +217,15 @@ var substitution1 = require('./substitution');
 
             }
 
+            for (i = 0; i < annotationsToSub.length; i++) {
+                jsonObjects = JSON.stringify(JSON.decycle(annotationsToSub[i]), null, "  ");
+                console.log(jsonObjects);
 
-            jsonObjects = JSON.stringify(JSON.decycle(annotationsToSub[0]), null, "  ");
-            console.log(jsonObjects);
 
+                // API call to substitute DOM
 
-            // API call to substitute DOM
-
-            substitution1.Substitution(jsonObjects);
-            substituteFlag = false;
+                substitution1.Substitution(jsonObjects);
+            }
 
         }
 
@@ -304,10 +306,13 @@ var substitution1 = require('./substitution');
 
             currentAnnotation = annotation;
 
-            annotationsCache.push(annotation);
+            if (annotationsCache.indexOf(annotation) < 0){
+                annotationsCache.push(annotation);
+
+            }
 
             for (i = 0, len = annotation.tags.length; i < len; i++) {
-                if (tagstore.indexOf(annotation.tags[i]) <= 0) {
+                if (tagstore.indexOf(annotation.tags[i]) < 0) {
                     tagstore.push(annotation.tags[i]);
 //                    console.log(annotation.tags[i]);
 
