@@ -3,24 +3,43 @@
  */
 var xpath = require('xpath-range').xpath;
 
+function MultipleSubstitution(annotationsToSub) {
+    var prefOffset = 0, jsonObj, obj, xpathPositionStart, xpathPositionEnd, startOffset, endOffset, substituteText;
+    for (i = 0; i < annotationsToSub.length; i++) {
+       jsonObj = JSON.stringify(JSON.decycle(annotationsToSub[i]), null, "  ");
+       obj = JSON.parse(jsonObj);
+       xpathPositionStart = obj.ranges[0].start;
+       xpathPositionEnd = obj.ranges[0].end;
+       startOffset = obj.ranges[0].startOffset;
+       endOffset = obj.ranges[0].endOffset;
+       substituteText = obj.text;
+       var annotationLen = endOffset - startOffset;
+       var substituteTextLen = substituteText.length;
+       if (i != 0) {
+           startOffset += prefOffset;
+           endOffset += prefOffset;
+       }
+       Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffset, substituteText);
+         if (annotationLen < substituteTextLen) {
+           prefOffset += (substituteTextLen - annotationLen);
+       } else {
+           prefOffset -= (annotationLen - substituteTextLen);
+       }
+    }
+}
 
 //function that does replacement based on xpath and offsets
-function Substitution(jsonAnnotation) {
-    var obj = JSON.parse(jsonAnnotation);
-    var xpathPositionStart = obj.ranges[0].start;
-    var xpathPositionEnd = obj.ranges[0].end;
-    var startOffset = obj.ranges[0].startOffset;
-    var endOffset = obj.ranges[0].endOffset;
-
+function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffset, substituteText) {
+    /*
     if (document.implementation.hasFeature("Range", "2.0")) {
         var oRange = document.createRange();
        // oRange.setStart(xpathPositionStart, startOffset);
        // oRange.setEnd(xpathPositionEnd, endOffset);
         console.log(oRange);
              //range code here
-    }
+    }*/
 
-   // var proba = xpath.toRange('//div/p[1]', 8, '//div/p[1]', 37, "/");
+   // var test = xpath.toRange('//div/p[1]', 8, '//div/p[1]', 37, "/");
 
     var startContainer = document.evaluate('/'+ xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     var endContainer = document.evaluate('/' + xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -28,7 +47,6 @@ function Substitution(jsonAnnotation) {
    // var p = xpath.toRange(startContainer, 2, endContainer, 8);
     //var tst = xpath.toRange('html/body/div[1]/div/p', 8, 'html/body/div[1]/div/p', 37);
 
-    var substituteText = obj.text;
     var substitutionLength = substituteText.length;
     var annotationLength = endOffset - startOffset;
 
@@ -37,7 +55,7 @@ function Substitution(jsonAnnotation) {
     //commonAncestor = xpath.fromNode($(commonAncestor))[0]
     //console.log(commonAncestor);
 
-    fun = (function () {
+    var fun = (function () {
         var commonAncestor = startContainer;
         var child = commonAncestor;
         var prefOffset = 0; //sum of all predeccessor lengths
@@ -91,7 +109,7 @@ function Substitution(jsonAnnotation) {
         }
     })(startContainer, endContainer);
 
-    fun(startContainer, endContainer);
+    // fun(startContainer, endContainer);
 
     //var startNodeToBeginSubstitution = findStartNodeToBeginSubstitution(commonAncestor, startOffset, 0);
   // var commonAncestorXPath = xpath.fromNode($(commonAncestor))[0];
@@ -178,5 +196,5 @@ function contains(parent, child) {
     return false;
 };
 
-
 exports.Substitution = Substitution;
+exports.MultipleSubstitution = MultipleSubstitution;
