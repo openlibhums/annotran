@@ -198,6 +198,7 @@ var substitution1 = require('./substitution');
 //            console.log("substituteExecute", substitutionTag);
             annotationsToSub = [];
             substituteFlag = false;
+            jsonObjects = [];
 
 
             if (substitutionTag) {
@@ -217,15 +218,7 @@ var substitution1 = require('./substitution');
 
             }
 
-            for (i = 0; i < annotationsToSub.length; i++) {
-                jsonObjects = JSON.stringify(JSON.decycle(annotationsToSub[i]), null, "  ");
-                console.log(jsonObjects);
-
-
-                // API call to substitute DOM
-
-                substitution1.Substitution(jsonObjects);
-            }
+            substitution1.MultipleSubstitution(annotationsToSub);
 
         }
 
