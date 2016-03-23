@@ -1,15 +1,14 @@
 var $ = require('jquery')
 annotator = require('annotator');
 $ = annotator.$
-var substitution1 = require('./SubstituteAnnotation');
-var substitution2 = require('./substitution');
+var substitution1 = require('./substitution/SubstituteAnnotation.js');
+var substitution2 = require('./substitution/substitution');
 var cycle = require('../libs/cycle');
 
 
-var tags = require('../plugins/tags.coffee');
+var tags = require('../libs/plugins/tags.coffee');
 
-var css = require('./app.css');
-// console.log(css);
+var css = require('../css/annotran.css');
 
 OpenAnnotate = ("OpenAnnotate" in window) ? OpenAnnotate : {}
 
@@ -26,7 +25,6 @@ OpenAnnotate.Annotator = function (element) {
 
     $(element).annotator().annotator('addPlugin', 'Substitutions', 'bbk:english');
     $(element).annotator().annotator('addPlugin', 'Tags');
-
 
     return this
 }
