@@ -5,6 +5,7 @@ var xpath = require('xpath-range').xpath;
 
 function MultipleSubstitution(annotationsToSub) {
     var prefOffset = 0, jsonObj, obj, xpathPositionStart, xpathPositionEnd, startOffset, endOffset, substituteText;
+    var prevXpathStart = null, prevXpathEnd = null;
     for (i = 0; i < annotationsToSub.length; i++) {
        jsonObj = JSON.stringify(JSON.decycle(annotationsToSub[i]), null, "  ");
        obj = JSON.parse(jsonObj);
@@ -12,20 +13,34 @@ function MultipleSubstitution(annotationsToSub) {
        xpathPositionEnd = obj.ranges[0].end;
        startOffset = obj.ranges[0].startOffset;
        endOffset = obj.ranges[0].endOffset;
+       if (isWithinSameXPath(prevXpathStart, xpathPositionStart, prevXpathEnd, xpathPositionEnd)) {
+         if (annotationLen < substituteTextLen) {
+           prefOffset += (substituteTextLen - annotationLen);
+         } else {
+           prefOffset -= (annotationLen - substituteTextLen);
+         }
+           startOffset += prefOffset;
+           endOffset += prefOffset;
+       } else {
+           prefOffset = 0;
+       }
        substituteText = obj.text;
        var annotationLen = endOffset - startOffset;
        var substituteTextLen = substituteText.length;
-       if (i != 0) {
-           startOffset += prefOffset;
-           endOffset += prefOffset;
-       }
        Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffset, substituteText);
-         if (annotationLen < substituteTextLen) {
-           prefOffset += (substituteTextLen - annotationLen);
-       } else {
-           prefOffset -= (annotationLen - substituteTextLen);
-       }
+       prevXpathStart = xpathPositionStart; prevXpathEnd = xpathPositionEnd;
     }
+}
+
+function isWithinSameXPath(prevXpathStart, xpathPositionStart, prevXpathEnd, xpathPositionEnd) {
+    if (prevXpathStart != null && prevXpathEnd != null) {
+        if (prevXpathStart == xpathPositionStart && prevXpathEnd == xpathPositionEnd) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
 }
 
 //function that does replacement based on xpath and offsets
