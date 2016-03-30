@@ -1,15 +1,15 @@
 @import url("../libs/css/annotator.css");
 body {
     background-color: #fff;
-    text-align: left;
 }
 .rank {
-  direction: rtl;
-  unicode-bidi: bidi-override;
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    text-align: left;
 }
 .rank > span:hover:before,
 .rank > span:hover ~ span:before {
-   content: "\2605";
-   color: blue;
-   position: absolute;
+    content: "\2605";
+    color: blue;
+    position: absolute;
 }
