@@ -59,8 +59,8 @@ function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffs
     var startContainer = document.evaluate('/'+ xpathPositionStart, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     var endContainer = document.evaluate('/' + xpathPositionEnd, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-   // var p = xpath.toRange(startContainer, 2, endContainer, 8);
-    //var tst = xpath.toRange('html/body/div[1]/div/p', 8, 'html/body/div[1]/div/p', 37);
+    // var p = xpath.toRange('/'+ xpathPositionStart, startOffset, '/' + xpathPositionEnd, endOffset);
+    //var tst = xpath.toRange('html/body/div[1]/div[1]/p[1]', 0, 'html/body/div[1]/div[1]/p[1]', 5);
 
     var substitutionLength = substituteText.length;
     var annotationLength = endOffset - startOffset;
@@ -104,22 +104,46 @@ function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffs
         }
         findStartNodeToBeginSubstitution();
         child = startNode;
-        var substNodeLen = child.length;
-        child.nodeValue = getSubstituteText(prefOffset, startOffset, endOffset, child.nodeValue, substituteText);
 
-        var nextSibl;
+        var substNodeLen = child.length;
+        if (xpathPositionStart != xpathPositionEnd) {
+            //because we want to remove all remaining text within that node as annotation will end within some other node,
+            // and endOffset will denote the end character within that node
+            child.nodeValue = getSubstituteText(prefOffset, startOffset, child.nodeValue.length, child.nodeValue, substituteText);
+        } else {
+            child.nodeValue = getSubstituteText(prefOffset, startOffset, endOffset, child.nodeValue, substituteText);
+        }
+
+        var nextSibl, nextNodeSelection = null;
         if(child.nextSibling) {
             nextSibl = child.nextSibling;
         } else if(child.parentNode) {
-            nextSibl = child.parentNode.nextSibling;
+            var innerParent = child.parentNode;
+            nextSibl = innerParent.nextSibling;
+            while (nextSibl == null && innerParent != commonAncestor) {
+                innerParent = innerParent.parentNode;
+                nextSibl = innerParent.nextSibling;
+            }
+        }
+         //determine node selection
+        if (!isNodeSubNodeOfNode(startContainer, nextSibl)) {
+            nextNodeSelection = nextSibl;
+            prefOffset = 0;
+        } else if (xpathPositionStart != xpathPositionEnd && nextSibl != null) {
+            //the rest of the text within that nextSibl node must be removed as the annotation ends within some other node
+            nextNodeSelection = removeNestedNodes(nextSibl, startContainer, endContainer);
+            nextSibl = nextNodeSelection;
+        } else if (nextNodeSelection != null) {
+            nextNodeSelection = removeNestedNodes(nextNodeSelection, startContainer, endContainer);
+            nextSibl = nextNodeSelection;
         }
         var flag = true;
         while (prefOffset < endOffset && nextSibl && nextSibl != commonAncestor) {
-            if (flag) {
+            if (flag && nextNodeSelection == null) {
                 prefOffset += substNodeLen;
                 flag = false;
             }
-            prefOffset = removeHangingTextPerNodes(nextSibl, prefOffset, endOffset, true);
+            prefOffset = removeHangingTextPerNodes(nextSibl, prefOffset, endOffset, true, endContainer);
             nextSibl = nextSibl.parentNode.nextSibling;
         }
     })(startContainer, endContainer);
@@ -131,7 +155,60 @@ function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffs
 
 };
 
-function removeHangingTextPerNodes(node, prefOffset, endOffset, callNextSibling) {
+
+function isNodeSubNodeOfNode(node, subnode) {
+    //starting from startContainer, and the next that is not within it a new node selection, until endContainer
+    var parent = subnode;
+    if (parent == node) {
+        return true;
+    }
+    while (parent != null && parent != node) {
+        parent = parent.parentNode;
+        if (parent == node) {
+            return true;
+        }
+    }
+    return false;
+};
+
+//this function will empty all nodes between startContainer and endContainer
+function removeNestedNodes(nextNodeSelection, startContainer, endContainer) {
+    var nextNode = nextNodeSelection;
+    while (nextNode != null && !isNodeSubNodeOfNode(endContainer, nextNode)) {
+        if (nextNode.nodeType == 3) {
+            nextNode.nodeValue = "";
+        }
+        if (nextNode.childNodes != null && nextNode.childNodes.length != 0) {
+            var childNodes = nextNode.childNodes;
+            var numRemove = 0, i = 0, num = childNodes.length;
+            while (i < num) {
+                var child = childNodes[i];
+                if (isNodeSubNodeOfNode(endContainer, child)) {
+                    break;
+                }
+                numRemove++;
+                i++;
+            }
+            var j = 0;
+            while (j < numRemove) {
+                nextNode.removeChild(childNodes[0]);
+                j++;
+            }
+        }
+        while(nextNode.nextElementSibling == null && nextNode != startContainer) {
+            nextNode = nextNode.parentNode;
+        }
+        if (nextNode == startContainer && nextNode.nextElementSibling == null) {
+            nextNode = nextNode.parentNode;
+        }
+        nextNode = nextNode.nextElementSibling;
+    }
+    return nextNode;
+}
+
+function removeHangingTextPerNodes(node, prefOffset, endOffset, callNextSibling, endContainer) {
+    console.log(node);
+    console.log(endContainer);
     if (node.nodeType == 3) {
         var remainedTxtToRemove = endOffset - prefOffset;
         var len = node.nodeValue.length;
@@ -157,7 +234,7 @@ function removeHangingTextPerNodes(node, prefOffset, endOffset, callNextSibling)
         }
     }
     if (prefOffset < endOffset && node.nextSibling != null && callNextSibling) {
-        removeHangingTextPerNodes(node.nextSibling, prefOffset, endOffset, true);
+        prefOffset = removeHangingTextPerNodes(node.nextSibling, prefOffset, endOffset, true);
     }
     return prefOffset;
 };
