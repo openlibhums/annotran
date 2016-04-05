@@ -115,25 +115,30 @@ function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffs
         }
 
         var nextSibl, nextNodeSelection = null;
-        if(child.nextSibling) {
+       /* if(child.nextSibling) {
             nextSibl = child.nextSibling;
         } else if(child.parentNode) {
             var innerParent = child.parentNode;
-            nextSibl = innerParent.nextSibling;
-            while (nextSibl == null && innerParent != commonAncestor) {
+            while ((innerParent.nextSibling == null && innerParent != startContainer)) {
                 innerParent = innerParent.parentNode;
-                nextSibl = innerParent.nextSibling;
             }
-        }
+            if (innerParent == startContainer && innerParent.nextSibling == null) {
+                    innerParent = innerParent.parentNode;
+            }
+            nextSibl = innerParent.nextSibling;
+        }*/
+        nextSibl = getNonWhitespaceNextSibling(child, startContainer, endContainer);
+
          //determine node selection
         if (!isNodeSubNodeOfNode(startContainer, nextSibl)) {
             nextNodeSelection = nextSibl;
             prefOffset = 0;
-        } else if (xpathPositionStart != xpathPositionEnd && nextSibl != null) {
+        }
+        if (xpathPositionStart != xpathPositionEnd && nextSibl != null) {
             //the rest of the text within that nextSibl node must be removed as the annotation ends within some other node
             nextNodeSelection = removeNestedNodes(nextSibl, startContainer, endContainer);
             nextSibl = nextNodeSelection;
-        } else if (nextNodeSelection != null) {
+        } else if (nextNodeSelection != null && isNodeSubNodeOfNode(startContainer, nextSibl)) {
             nextNodeSelection = removeNestedNodes(nextNodeSelection, startContainer, endContainer);
             nextSibl = nextNodeSelection;
         }
@@ -155,6 +160,24 @@ function Substitution(xpathPositionStart, xpathPositionEnd, startOffset, endOffs
 
 };
 
+function getNonWhitespaceNextSibling(node, startContainer, endContainer) {
+    var nextNonWhiteSpaceNextSibling;
+    if (node.nextSibling != null && isIgnorable(node.nextSibling)) {
+        nextNonWhiteSpaceNextSibling = getNonWhitespaceNextSibling(node.nextSibling, startContainer, endContainer);
+    } else if (node.nextSibling != null) {
+        nextNonWhiteSpaceNextSibling =  node.nextSibling;
+    } else {
+        var innerParent = node.parentNode;
+        while ((innerParent.nextSibling == null && innerParent != startContainer)) {
+            innerParent = innerParent.parentNode;
+        }
+        if((innerParent == startContainer) && (startContainer == endContainer)) {
+            return null; //sibling has been searched for within the same xpath
+        }
+        nextNonWhiteSpaceNextSibling = getNonWhitespaceNextSibling(innerParent, startContainer, endContainer);
+    }
+    return nextNonWhiteSpaceNextSibling;
+}
 
 function isNodeSubNodeOfNode(node, subnode) {
     //starting from startContainer, and the next that is not within it a new node selection, until endContainer
@@ -180,19 +203,22 @@ function removeNestedNodes(nextNodeSelection, startContainer, endContainer) {
         }
         if (nextNode.childNodes != null && nextNode.childNodes.length != 0) {
             var childNodes = nextNode.childNodes;
-            var numRemove = 0, i = 0, num = childNodes.length;
+            var foundChild = null, i = 0, num = childNodes.length;
             while (i < num) {
                 var child = childNodes[i];
                 if (isNodeSubNodeOfNode(endContainer, child)) {
+                    foundChild = child;
                     break;
                 }
-                numRemove++;
                 i++;
             }
             var j = 0;
-            while (j < numRemove) {
+            while (j < i) {
                 nextNode.removeChild(childNodes[0]);
                 j++;
+            }
+            if (foundChild != null) {
+                return foundChild;
             }
         }
         while(nextNode.nextElementSibling == null && nextNode != startContainer) {
@@ -255,6 +281,15 @@ function getSubstituteText(prefOffset, startOffset, endOffset, originalText, sub
     }
     return prefText + substituteText + sufText;
 };
+
+function isWhiteSpaceNode(node) {
+  return !(/[^\t\n\r ]/.test(node.textContent));
+}
+
+function isIgnorable(node) {
+  return (node.nodeType == 8) || ( (node.nodeType == 3) && isWhiteSpaceNode(node) );
+}
+
 
 /*
 function findStartNodeToBeginSubstitution(commonAncestor, offset, prefOffset) {
