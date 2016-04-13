@@ -7,6 +7,19 @@ Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
 Description: annotran README
+        ==================
+        
+        Getting Started
+        ---------------
+        
+        - cd <directory containing this file>
+        
+        - $VENV/bin/python setup.py develop
+        
+        - $VENV/bin/initialize_annotran_db development.ini
+        
+        - $VENV/bin/pserve development.ini
+        
         
         
         0.0
@@ -14,7 +27,7 @@ Description: annotran README
         
         -  Initial version
         
-Keywords: web pyramid pylons
+Keywords: web wsgi bfg pylons pyramid
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Framework :: Pyramid

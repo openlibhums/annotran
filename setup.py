@@ -12,6 +12,10 @@ requires = [
     'pyramid',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
+    'pyramid_tm',
+    'SQLAlchemy',
+    'transaction',
+    'zope.sqlalchemy',
     'waitress',
     ]
 
@@ -28,15 +32,16 @@ setup(name='annotran',
       author='',
       author_email='',
       url='',
-      keywords='web pyramid pylons',
+      keywords='web wsgi bfg pylons pyramid',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
+      test_suite='annotran',
       install_requires=requires,
-      tests_require=requires,
-      test_suite="annotran",
       entry_points="""\
       [paste.app_factory]
       main = annotran:main
+      [console_scripts]
+      initialize_annotran_db = annotran.scripts.initializedb:main
       """,
       )
