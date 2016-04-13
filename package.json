@@ -1,0 +1,35 @@
+{
+  "name": "annotran",
+  "version": "1.0.0",
+  "description": "translation plugin",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^13.0.0"
+  },
+  "dependencies": {
+    "annotator": "^1.2.2",
+    "jquery": "^2.2.3"
+  },
+  "browser": {
+    "annotator": "./annotran/static/scripts/vendor/annotator.js",
+    "jquery": "./node_modules/jquery/dist/jquery.js"
+  },
+  "browserify-shim": {
+    "annotator": {
+      "exports": "Annotator",
+      "depends": [
+        "jquery"
+      ]
+    },
+    "jquery": "$"
+  },
+  "browserify-css": {
+    "autoInject": true,
+    "minify": true,
+    "rootDir": "."
+  }
+}
