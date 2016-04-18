@@ -7,6 +7,7 @@ setup.cfg
 setup.py
 annotran/__init__.py
 annotran/models.py
+annotran/test.py
 annotran/tests.py
 annotran/views.py
 annotran.egg-info/PKG-INFO
@@ -31,3 +32,4 @@ annotran/static/theme.css
 annotran/static/theme.min.css
 annotran/static/transparent.gif
 annotran/templates/mytemplate.pt
+annotran/templates/app.html.jinja2

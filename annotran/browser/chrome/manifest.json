@@ -1,0 +1,14 @@
+{
+  "name": "Annotran - Annotation for Translation",
+  "short_name": "Annotran",
+  "description": "This extension will enable adding translations in form of annotations.",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  "browser_action": {
+   "default_icon": "images/annotran-active.png"
+  },
+  "permissions": [
+   "activeTab"
+   ]
+}
