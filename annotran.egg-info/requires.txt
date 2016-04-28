@@ -1,0 +1,6 @@
+pyramid
+pyramid_debugtoolbar
+pyramid_tm
+SQLAlchemy
+transaction
+zope.sqlalchemy

@@ -1,35 +1,21 @@
 {
-  "name": "substitution",
+  "name": "annotran",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "translation plugin",
   "scripts": {
-    "build": "browserify ./src/app.js -o bundle.js --debug"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "browserify-ngannotate": "^2.0.0",
-    "browserify-shim": "^3.8.12"
+    "browserify": "^13.0.0"
   },
   "dependencies": {
     "annotator": "^1.2.2",
-    "es6-promise": "^3.0.2",
-    "findandreplacedomtext": "^0.4.4",
-    "jquery": "^2.2.1",
-    "xpath-range": "0.0.5"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-ngannotate",
-      "browserify-shim",
-      "browserify-css",
-      "coffeeify"
-    ]
+    "jquery": "^2.2.3"
   },
   "browser": {
-    "annotator": "./libs/annotator.js",
+    "annotator": "./annotran/static/scripts/vendor/annotator.js",
     "jquery": "./node_modules/jquery/dist/jquery.js"
   },
   "browserify-shim": {
@@ -41,9 +27,9 @@
     },
     "jquery": "$"
   },
-    "browserify-css": {
-        "autoInject": true,
-        "minify": true,
-        "rootDir": "."
-    }
+  "browserify-css": {
+    "autoInject": true,
+    "minify": true,
+    "rootDir": "."
+  }
 }

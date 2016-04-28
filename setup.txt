@@ -1,0 +1,3 @@
+1)create requirements.txt and reference the location of h
+2) workon your ve from terminal
+3) pip install -r requirements.txt
