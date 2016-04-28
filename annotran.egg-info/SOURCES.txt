@@ -31,5 +31,5 @@ annotran/static/pyramid.png
 annotran/static/theme.css
 annotran/static/theme.min.css
 annotran/static/transparent.gif
-annotran/templates/mytemplate.pt
 annotran/templates/app.html.jinja2
+annotran/templates/home.html.jinja2

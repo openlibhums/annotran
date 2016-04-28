@@ -2,4 +2,3 @@
       main = annotran:main
       [console_scripts]
       initialize_annotran_db = annotran.scripts.initializedb:main
-      
