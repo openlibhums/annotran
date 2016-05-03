@@ -1,0 +1,68 @@
+{% set rss_feed_url = base_url + "feed/" %}
+
+{% extends "h:templates/layouts/base.html.jinja2" %}
+
+{% block page_title %}Annotran | Translate by annotating.{% endblock %}
+
+{% block meta %}
+  {{ super() }}
+  <link rel='canonical' href='{{ base_url }}'>
+  <link rel="chrome-webstore-item"
+        href="{{ chrome_extension_link }}">
+  <link href="{{ rss_feed_url }}" rel="alternate" type="application/rss+xml">
+{% endblock %}
+
+{% block styles %}
+  {% assets "front_page_css" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
+
+{% block content %}
+  <style>
+    .press-release-banner {
+      background-color: #87CEEB;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .press-release-banner > p {
+      font-size: 21px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+  <header class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed"
+                data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ base_url }}">
+          Annotran
+        </a>
+      </div>
+      <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-nav pull-right login">
+          {% if username %}
+            <li><a href="{{ user_profile_link }}">{{ username }}</a></li>
+            <li><a href="{{ request.route_url("logout") }}">Sign out</a></li>
+          {% else %}
+            <li><a href="{{ base_url }}login">Sign in</a></li>
+            <li><a href="{{ base_url }}register">Create an account</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+{% endblock %}
+
+{% block scripts %}
+  {% assets "front_page_js" %}
+    <script src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+{% endblock %}
