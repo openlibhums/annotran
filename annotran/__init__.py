@@ -12,8 +12,8 @@ def includeme(config):
     config.registry.settings.setdefault('webassets.bundles', 'annotran:assets.yaml')
     config.include('pyramid_webassets')
     config.override_asset(
-        to_override='h:templates/accounts/login.html.jinja2',
-        override_with='annotran:templates/accounts/login.html.jinja2')
+        to_override='h:templates/old-home.html.jinja2',
+        override_with='annotran:templates/home.html.jinja2')
     config.commit()
 
 def get_settings(global_config, **settings):
@@ -27,7 +27,7 @@ def main(global_config, **settings):
     settings = get_settings(global_config, **settings)
     config = Configurator(settings=settings)
 
-    #add settings from H to init H from this annotran
+    #add settings from H to init H from annotran
     config.set_root_factory('h.resources.create_root')
     config.add_subscriber('h.subscribers.add_renderer_globals',
                       'pyramid.events.BeforeRender')
