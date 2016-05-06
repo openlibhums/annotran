@@ -18,6 +18,7 @@ git clone https://github.com/hypothesis/h.git
 cd h
 git reset --hard v0.8.14
 ```
+Install `h` by refering to its documentation: http://h.readthedocs.io/en/latest/hacking/install.html
 
 Create a Python virtual environment. Refer to the documentation on how to create virtual environments: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
