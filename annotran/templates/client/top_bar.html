@@ -1,0 +1,84 @@
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+--!>
+
+<!--this is a top bar extended with a language-list tag insertion for incorporation of a new directive
+that works in the sidebar--!>
+
+<!-- top bar for the sidebar and the stream.
+!-->
+<div class="top-bar" ng-class="frame.visible && 'shown'" ng-cloak>
+  <!-- Legacy design for top bar, as used in the stream !-->
+  <div class="top-bar__inner content" ng-if="::!isSidebar">
+    <simple-search
+      class="simple-search"
+      query="searchController.query"
+      on-search="searchController.update(query)"
+      on-clear="searchController.clear()"
+      always-expanded="true">
+    </simple-search>
+    <div class="top-bar__expander"></div>
+    <signin-control
+      auth="auth"
+      new-style="false"
+      on-login="onLogin()"
+      on-logout="onLogout()">
+    </signin-control>
+  </div>
+  <!-- New design for the top bar, as used in the sidebar.
+
+       The inner div is styled with 'content' to center it in
+       the stream view.
+  !-->
+  <div class="top-bar__inner content" ng-if="::isSidebar">
+    <group-list class="group-list" auth="auth"></group-list>
+    <language-list class="language-list" auth="auth"></language-list>
+    <div class="top-bar__expander"></div>
+    <simple-search
+      class="simple-search"
+      query="searchController.query"
+      on-search="searchController.update(query)"
+      on-clear="searchController.clear()"
+      title="Filter the annotation list">
+    </simple-search>
+    <sort-dropdown
+      sort-options="sortOptions"
+      sort-by="sortBy"
+      show-as-icon="true"
+      on-change-sort-by="onChangeSortBy({sortBy: sortBy})">
+    </sort-dropdown>
+    <a class="top-bar__btn"
+       ng-click="shareDialog.visible = !shareDialog.visible"
+       title="Share this page">
+      <i class="h-icon-share"></i>
+    </a>
+    <signin-control
+      auth="auth"
+      new-style="true"
+      on-login="onLogin()"
+      on-logout="onLogout()">
+    </signin-control>
+  </div>
+</div>
