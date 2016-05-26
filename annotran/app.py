@@ -1,11 +1,14 @@
 from pyramid.config import Configurator
 
+from h.assets import *
 
 from h.config import settings_from_environment
 from jinja2 import Environment, PackageLoader
 
 import h.app
 import h.client
+from h.client import ANGULAR_DIRECTIVE_TEMPLATES
+
 
 def includeme(config):
     config.registry.settings.setdefault('webassets.bundles', 'annotran:assets.yaml')
@@ -16,6 +19,7 @@ def includeme(config):
     config.override_asset(
         to_override='h:templates/client/top_bar.html',
         override_with='annotran:templates/client/top_bar.html')
+    #config.add_webasset()
     config.commit()
 
 def get_settings(global_config, **settings):
@@ -23,22 +27,6 @@ def get_settings(global_config, **settings):
     result.update(settings)
     result.update(settings_from_environment())
     return result
-
-def _angular_template_context_ext(name):
-    """Return the context for rendering a 'text/ng-template' <script>
-       tag for an Angular directive.
-    """
-    jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
-    jinja_env = h.client.jinja_env
-    if (name == 'language_list'):
-        angular_template_path = 'client/{}.html'.format(name)
-        content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
-                                                    angular_template_path)
-    else:
-        angular_template_path = 'client/{}.html'.format(name)
-        content, _, _ = jinja_env.loader.get_source(jinja_env,
-                                                angular_template_path)
-    return {'name': '{}.html'.format(name), 'content': content}
 
 
 def main(global_config, **settings):
@@ -63,4 +51,24 @@ def main(global_config, **settings):
     h.client._angular_template_context = _angular_template_context_ext
     return config.make_wsgi_app()
 
+def _angular_template_context_ext(name):
+    """Return the context for rendering a 'text/ng-template' <script>
+       tag for an Angular directive.
+    """
+    jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
+    jinja_env = h.client.jinja_env
+    if (name == 'language_list' or name == 'top_bar'):
+        angular_template_path = 'client/{}.html'.format(name)
+        content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
+                                                    angular_template_path)
+    else:
+        angular_template_path = 'client/{}.html'.format(name)
+        content, _, _ = jinja_env.loader.get_source(jinja_env,
+                                                angular_template_path)
+    return {'name': '{}.html'.format(name), 'content': content}
 
+
+def configure_jinja2_assets(config):
+    assets_env = config.get_webassets_env()
+    jinja2_env = config.get_jinja2_environment()
+    jinja2_env.assets_environment = assets_env
