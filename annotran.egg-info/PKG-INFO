@@ -6,21 +6,7 @@ Home-page: UNKNOWN
 Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
-Description: annotran README
-        ==================
-        
-        Getting Started
-        ---------------
-        
-        - cd <directory containing this file>
-        
-        - $VENV/bin/python setup.py develop
-        
-        - $VENV/bin/initialize_annotran_db development.ini
-        
-        - $VENV/bin/pserve development.ini
-        
-        
+Description: 
         
         0.0
         ---
