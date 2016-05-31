@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/birkbeckOLH/annotran.svg?branch=master)](https://travis-ci.org/birkbeckOLH/annotran)
+[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master)
+
 #annotran
 
 ## About
