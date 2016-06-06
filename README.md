@@ -9,7 +9,7 @@ The purpose of this project is to develop annotation technologies for translatio
 
 ## Development
 
-This project is built as an extension to hypothesis annotation framework: https://hypothes.is/. We are in an early stage of the development, and if you would like to join us you can set up your development environment in a following way:
+This project is built as an extension to hypothesis annotation framework: https://hypothes.is/. We are in an early stage of the development, and if you would like to join us you can set up your development environment in a following way. Please note these instructions for Ubuntu 14.04.
 
 Download the source code:
 ```
@@ -21,7 +21,7 @@ git clone https://github.com/hypothesis/h.git
 cd h
 git reset --hard v0.8.14
 ```
-Install `h` by refering to its documentation: http://h.readthedocs.io/en/latest/hacking/install.html
+Install `h` by refering to its documentation on how to install it. Search for this document in project files: ../h/docs/hacking/install.rst
 
 Create a Python virtual environment. Refer to the documentation on how to create virtual environments: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
