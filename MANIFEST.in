@@ -1,2 +1,17 @@
-include *.txt *.ini *.cfg *.rst
 recursive-include annotran *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
+include annotran/assets.yaml
+include Makefile AUTHORS CHANGES LICENSE NOTICE
+include Dockerfile
+include gunicorn.conf.py
+include package.json
+include requirements.txt
+graft conf
+graft docs
+prune docs/_build
+graft h/migrations
+graft h/static
+prune h/static/.webassets-cache
+graft h/templates
+graft scripts
+global-exclude __pycache__
+global-exclude *.py[co]
