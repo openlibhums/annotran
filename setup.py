@@ -22,7 +22,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
@@ -36,7 +35,7 @@ from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.txt')) as f:
+with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
@@ -129,7 +128,7 @@ setup(name='annotran',
       install_requires=INSTALL_REQUIRES,
       entry_points="""\
       [paste.app_factory]
-      main = annotran:main
+      main = annotran.app:main
       [console_scripts]
       initialize_annotran_db = annotran.scripts.initializedb:main
       """,

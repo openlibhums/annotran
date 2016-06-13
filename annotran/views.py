@@ -6,15 +6,11 @@ def my_view(request):
     return {'project': 'annotran'}
 '''
 
-@view_defaults(renderer='templates/app.html.jinja2')
-class Views:
-    def __init__(self, request):
-        self.request = request
+@view_config(renderer='templates/app.html.jinja2', route_name='app.html')
+def __init__(self):
+    return {'title': 'This is title', 'name': 'Home View'}
 
-    @view_config(route_name='app.html')
-    def home(self):
-        return {'name': 'Home View'}
 
-    @view_config(route_name='hello')
-    def hello(self):
-        return {'name': 'Hello View'}
+#@view_config(renderer='templates/login.html.jinja2', route_name='login.html')
+#def home(self):
+#    return {'title': 'This is title', 'name': 'Home View'}

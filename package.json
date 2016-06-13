@@ -1,21 +1,101 @@
 {
-  "name": "annotran",
-  "version": "1.0.0",
-  "description": "translation plugin",
+  "name": "h",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The Internet, peer reviewed.",
+  "dependencies": {
+    "angular": "1.4.7",
+    "angular-animate": "1.4.7",
+    "angular-jwt": "0.0.9",
+    "angular-mocks": "1.4.7",
+    "angular-resource": "1.4.7",
+    "angular-route": "1.4.7",
+    "angular-sanitize": "1.4.7",
+    "angular-toastr": "^1.5.0",
+    "angulartics": "0.17.2",
+    "autofill-event": "0.0.1",
+    "autoprefixer": "^6.0.3",
+    "babelify": "^6.1.3",
+    "bootstrap": "3.3.5",
+    "browserify": "^9.0.3",
+    "browserify-ngannotate": "^1.0.1",
+    "browserify-shim": "^3.8.3",
+    "clean-css": "3.3.9",
+    "coffee-script": "1.7.1",
+    "coffeeify": "^1.0.0",
+    "core-js": "^1.2.5",
+    "diff-match-patch": "^1.0.0",
+    "document-base-uri": "^1.0.0",
+    "dom-anchor-fragment": "^1.0.1",
+    "dom-anchor-text-position": "^2.0.0",
+    "dom-anchor-text-quote": "^2.0.0",
+    "dom-seek": "^1.0.1",
+    "es6-promise": "^3.0.2",
+    "escape-html": "^1.0.3",
+    "extend": "^2.0.0",
+    "hammerjs": "^2.0.4",
+    "inherits": "^2.0.1",
+    "is-equal-shallow": "^0.1.3",
+    "jquery": "1.11.1",
+    "js-polyfills": "^0.1.11",
+    "ng-tags-input": "2.2.0",
+    "node-uuid": "^1.4.3",
+    "page": "^1.6.4",
+    "postcss": "^5.0.6",
+    "raf": "^3.1.0",
+    "raven-js": "^2.0.2",
+    "retry": "^0.8.0",
+    "scroll-into-view": "^1.3.1",
+    "showdown": "^1.2.1",
+    "tiny-emitter": "^1.0.1",
+    "uglify-js": "^2.4.14",
+    "unorm": "^1.3.3"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "jscs": "^1.13.1",
+    "karma": "^0.13.10",
+    "karma-browserify": "^3.0.3",
+    "karma-chai": "^0.1.0",
+    "karma-cli": "0.0.4",
+    "karma-mocha": "^0.1.4",
+    "karma-ng-html2js-preprocessor": "^0.1.0",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon": "^1.0.4",
+    "mocha": "^1.20.1",
+    "phantom-ownpropertynames": "^1.0.0",
+    "phantomjs": "^1.9.7",
+    "proxyquire": "^1.6.0",
+    "proxyquire-universal": "^1.0.8",
+    "proxyquireify": "^3.0.0",
+    "sinon": "1.16.1",
+    "whatwg-fetch": "^0.10.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "browserify": "^13.0.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypothesis/h.git"
   },
-  "dependencies": {
-    "annotator": "^1.2.2",
-    "jquery": "^2.2.3"
+  "license": "Simplified BSD License",
+  "bugs": {
+    "url": "https://github.com/hypothesis/h/issues"
+  },
+  "homepage": "https://github.com/hypothesis/h",
+  "browserify": {
+    "transform": [
+      "browserify-ngannotate",
+      "browserify-shim"
+    ]
   },
   "browser": {
-    "annotator": "./annotran/static/scripts/vendor/annotator.js",
+    "annotator": "./h/static/scripts/vendor/annotator.js",
+    "angular": "./node_modules/angular/angular.js",
+    "hammerjs": "./node_modules/hammerjs/hammer.js",
     "jquery": "./node_modules/jquery/dist/jquery.js"
   },
   "browserify-shim": {
@@ -25,11 +105,13 @@
         "jquery"
       ]
     },
+    "angular": {
+      "exports": "global:angular",
+      "depends": [
+        "jquery"
+      ]
+    },
+    "hammerjs": "Hammer",
     "jquery": "$"
-  },
-  "browserify-css": {
-    "autoInject": true,
-    "minify": true,
-    "rootDir": "."
   }
 }

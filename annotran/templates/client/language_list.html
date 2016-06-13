@@ -1,2 +1,98 @@
-<script>console.log('zasto ovo ne radi')</script>
-<div>test2</div>
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+--!>
+
+<!--this is a drop-down list for language, and it is created by adapting the original file
+ from hypothes.is project: group-list.html-!>
+
+<span ng-if="auth.status === 'signed-out'"
+      ng-switch on="languages.focused().public">
+  <i class="language-list-label__icon h-icon-public" ng-switch-when="true"></i><!-- nospace
+  !--><i class="language-list-label__icon h-icon-language" ng-switch-default></i>
+  <span class="language-list-label__label">{{languages.focused().name}}</span>
+</span>
+
+<div class="pull-right"
+     ng-if="auth.status === 'signed-in'"
+     dropdown
+     keyboard-nav>
+  <div class="dropdown-toggle"
+        dropdown-toggle
+        data-toggle="dropdown"
+        role="button"
+        ng-switch on="languages.focused().public"
+        title="Change the selected language">
+    <i class="language-list-label__icon h-icon-public" ng-switch-when="true"></i><!-- nospace
+    !--><i class="language-list-label__icon h-icon-language" ng-switch-default></i>
+    <span class="language-list-label__label">{{languages.focused().name}}</span><!-- nospace
+    !--><i class="h-icon-arrow-drop-down"></i>
+  </div>
+  <div class="dropdown-menu__top-arrow"></div>
+  <ul class="dropdown-menu pull-none" role="menu">
+    <li class="dropdown-menu__row dropdown-menu__row--unpadded "
+        ng-repeat="language in languages">
+      <div ng-class="{'language-item': true, selected: language.id == languages.focused().id}"
+           ng-click="focusLanguage(language.id)">
+        <!-- the language icon !-->
+        <div class="language-icon-container" ng-switch on="language.public">
+          <i class="h-icon-public" ng-switch-when="true"></i>
+          <i class="h-icon-language" ng-switch-default></i>
+        </div>
+        <!-- the language name and share link !-->
+        <div class="language-details">
+          <div class="language-name-container">
+            <a class="language-name-link"
+               href=""
+               title="{{ language.public ? 'Show public translations' : 'Show and create translations in ' + language.name }}">
+               {{language.name}}
+            </a>
+          </div>
+          <div class="share-link-container" ng-click="$event.stopPropagation()" ng-if="!language.public">
+            <a class="share-link" href="{{language.url}}" target="_blank">
+              View language activity and invite others
+            </a>
+          </div>
+        </div>
+        <!-- the 'Leave language' icon !-->
+        <div class="language-cancel-icon-container" ng-click="$event.stopPropagation()">
+          <i class="h-icon-cancel-outline btn--cancel"
+             ng-if="!language.public"
+             ng-click="leaveLanguage(language.id)"
+             title="Leave '{{language.name}}'"></i>
+        </div>
+      </div>
+    </li>
+    <li class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
+      <div class="language-item" ng-click="createNewLanguage()">
+        <div class="language-icon-container"><i class="h-icon-add"></i></div>
+        <div class="language-details">
+          <a href="" class="language-name-link" title="Create a new language to share translations">
+            New language
+          </a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
