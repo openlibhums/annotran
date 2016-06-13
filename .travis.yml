@@ -1,4 +1,29 @@
-language: python
+# use Travis container build infrastructure
+sudo: false
+addons:
+artifacts:
+paths:
+# Upload all built zipfiles (browser extensions)
+- $(ls build/*.zip | tr "\n" ":")
+postgresql: "9.4"
+language:
+- python
 python:
-  - "2.7"
-script: make test
+- '2.7'
+install:
+- gem install compass
+- pip install -U pip wheel
+- pip install coveralls pyramid_redis_sessions
+- npm install
+- make
+before_script:
+- createdb htest
+script:
+# Run all tests
+- make test
+cache:
+directories:
+- node_modules
+- $HOME/.cache/pip
+before_cache:
+- rm -f $HOME/.cache/pip/log/debug.log
