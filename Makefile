@@ -26,3 +26,8 @@ clean:
 
 dev: deps
 	@gunicorn --reload --paste development.ini
+
+test: backend-test
+
+backend-test:
+	py.test -q
