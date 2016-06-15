@@ -48,6 +48,7 @@ def main(global_config, **settings):
     config.scan('h.client')
 
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(4, 'language_list')
+    h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(5, 'all_language_list')
     h.client._angular_template_context = _angular_template_context_ext
     return config.make_wsgi_app()
 
@@ -57,7 +58,8 @@ def _angular_template_context_ext(name):
     """
     jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
     jinja_env = h.client.jinja_env
-    if (name == 'language_list' or name == 'top_bar'):
+    if (name == 'language_list' or name == 'all_language_list'
+        or name == 'top_bar'):
         angular_template_path = 'client/{}.html'.format(name)
         content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
                                                     angular_template_path)

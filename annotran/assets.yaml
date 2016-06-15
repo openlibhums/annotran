@@ -149,6 +149,7 @@ app_js:
             - h:static/scripts/directive/*.js
             - h:static/scripts/filter/*.js
             - annotran:static/scripts/directive/language-list.js
+            - annotran:static/scripts/directive/all-language-list.js
             - annotran:static/scripts/languages.js
     - config
 
