@@ -52,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <div class="dropdown-menu__top-arrow"></div>
   <ul class="dropdown-menu pull-none" role="menu">
     <li class="dropdown-menu__row dropdown-menu__row--unpadded "
-        ng-repeat="language in languages">
+        ng-repeat="language in languages.all()">
       <div ng-class="{'language-item': true, selected: language.id == languages.focused().id}"
            ng-click="focusLanguage(language.id)">
         <!-- the language icon !-->
@@ -85,12 +85,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       </div>
     </li>
     <li class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
-      <div class="language-item" ng-click="createNewLanguage()">
+      <div class="language-item">
         <div class="language-icon-container"><i class="h-icon-add"></i></div>
-        <div class="language-details">
-          <a href="" class="language-name-link" title="Create a new language to share translations">
-            New language
-          </a>
+        <div class="language-details" ng-controller="languageController">
+            <select ng-model="selectedLanguage" ng-options="language as language.name for language in languages"
+                    ng-change="addLanguage(selectedLanguage)">
+                 <option value="">Add new language</option>
+            </select>
         </div>
       </div>
     </li>
