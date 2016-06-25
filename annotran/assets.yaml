@@ -189,13 +189,16 @@ inject_js:
         filters: browserify
         contents: h:static/scripts/annotator/main.js
         depends:
+          - annotran:static/scripts/annotator/test.js
           - h:static/scripts/annotation-sync.coffee
           - h:static/scripts/bridge.coffee
           - h:static/scripts/discovery.coffee
           - h:static/scripts/annotator/*.coffee
           - h:static/scripts/annotator/*.js
+          - annotran:static/scripts/annotator/main.js
           - h:static/scripts/annotator/anchoring/*.coffee
           - h:static/scripts/annotator/plugin/*.coffee
+          - annotran:static/scripts/annotator/plugin/*.coffee
 
 inject_css:
   output: styles/hypothesis.min.css
