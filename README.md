@@ -37,7 +37,7 @@ If you want to be able to easily monitor the emails that annotran/hypothes.is se
 docker exec nsqd nsq_tail --topic email --nsqd-tcp-address localhost:4150
 ```
 
-You can then browse to localhost:1080 to see the emails that are sent. This can be important as account sign-up confirmation links are sent by email.
+This can be important as account sign-up confirmation links are sent by email.
 
 Create a Python virtual environment. Refer to the documentation on how to create virtual environments: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
@@ -45,6 +45,7 @@ Run the following commands to install hypothes.is into your virtual environment:
 ```
 cd ..
 cd annotran
+sudo apt-get install -y --no-install-recommends     build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv
 pip install -r requirements.txt
 ```
 
