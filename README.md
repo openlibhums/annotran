@@ -21,7 +21,15 @@ git clone https://github.com/hypothesis/h.git
 cd h
 git reset --hard v0.8.14
 ```
-Install `h` by refering to its documentation on how to install it. Search for this document in project files: ../h/docs/hacking/install.rst
+Install `h` by refering to its documentation on how to install it. Search for this document in project files: ../h/docs/hacking/install.rst. In addition to the Docker containers there, you will also need nsqd. The full set of container installs are:
+
+```
+docker run -d --name postgres -p 5432:5432 postgres
+docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 nickstenning/elasticsearch-icu
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --hostname rabbit rabbitmq:3-management
+docker run -d --name redis -p 6379:6379 redis
+docker run -d --name nsqd -p 4150:4150 -p 4151:4151 nsqio/nsq /nsqd
+```
 
 Create a Python virtual environment. Refer to the documentation on how to create virtual environments: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
