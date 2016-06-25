@@ -142,6 +142,7 @@ app_js:
             - h:static/scripts/auth.js
             - h:static/scripts/features.js
             - h:static/scripts/groups.js
+            - annotran:static/scripts/languages.js
             - h:static/scripts/session.js
             - h:static/scripts/settings.js
             - h:static/scripts/store.js
@@ -149,7 +150,6 @@ app_js:
             - h:static/scripts/directive/*.js
             - h:static/scripts/filter/*.js
             - annotran:static/scripts/directive/language-list.js
-            - annotran:static/scripts/directive/all-language-list.js
             - annotran:static/scripts/languages.js
     - config
 

@@ -11,7 +11,6 @@ var app = angular.module("h");
 
 
 app.directive('languageList', require('./directive/language-list').directive)
-    .directive('allLanguageList', require('./directive/all-language-list').directive)
 
 .service('languages', require('./languages'))
 
