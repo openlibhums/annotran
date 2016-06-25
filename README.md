@@ -31,10 +31,10 @@ docker run -d --name redis -p 6379:6379 redis
 docker run -d --name nsqd -p 4150:4150 -p 4151:4151 nsqio/nsq /nsqd
 ```
 
-If you want to be able to easily monitor the emails that annotran/hypothes.is sends in your development environment, then you may wish to also install mailcatcher:
+If you want to be able to easily monitor the emails that annotran/hypothes.is sends in your development environment, then you may wish to use the following command:
 
 ```
-docker run -d --name mailcatcher -p 1080:1080 -p 25:1025 schickling/mailcatcher
+docker exec nsqd nsq_tail --topic email --nsqd-tcp-address localhost:4150
 ```
 
 You can then browse to localhost:1080 to see the emails that are sent. This can be important as account sign-up confirmation links are sent by email.
