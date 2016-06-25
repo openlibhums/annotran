@@ -31,6 +31,14 @@ docker run -d --name redis -p 6379:6379 redis
 docker run -d --name nsqd -p 4150:4150 -p 4151:4151 nsqio/nsq /nsqd
 ```
 
+If you want to be able to easily monitor the emails that annotran/hypothes.is sends in your development environment, then you may wish to also install mailcatcher:
+
+```
+docker run -d --name mailcatcher -p 1080:1080 -p 25:1025 schickling/mailcatcher
+```
+
+You can then browse to localhost:1080 to see the emails that are sent. This can be important as account sign-up confirmation links are sent by email.
+
 Create a Python virtual environment. Refer to the documentation on how to create virtual environments: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
 Run the following commands to install hypothes.is into your virtual environment:
