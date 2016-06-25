@@ -1,7 +1,7 @@
 'use strict';
 
-//TODO - resolve this path
-var events = require('/home/marija/h/h/static/scripts/events.js');
+// this assumes that h is stored in the same root directory as annotran
+var events = require('../../../../../h/h/static/scripts/events.js');
 
 // @ngInject
 function LanguageListController($scope, $window, languages) {
