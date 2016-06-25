@@ -1,6 +1,8 @@
 Annotator = require('annotator')
 $ = Annotator.$
 
+RangeAnchor = require('../../../../../../h/h/static/scripts/annotator/anchoring/types').RangeAnchor
+
 
 # This plugin implements the UI code for selecting sentences by clicking
 module.exports = class SentenceSelection extends Annotator.Plugin
@@ -28,20 +30,21 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   # Returns nothing.
   makeSentenceSelection: (event = {}) =>
     # Get the currently selected ranges.
-    range = document.createRange()
-    range.selectNodeContents(event.target)
 
     desiredText = event.target.innerText || event.target.textContent
     desiredText = desiredText.split('.')[0]
 
-    currentText = range.toString()
+    selector = new Selector_Class(event.target, event.target, 0, desiredText.length)
 
-    if desiredText != currentText
-      #range.collapse (true)
-      #range.setEnd(event.target, 5)
-      alert(range.endOffset)
-      alert(range.toString())
-
+    xpath_range = RangeAnchor.fromSelector(event.target, selector)
 
     window.getSelection().removeAllRanges()
-    window.getSelection().addRange(range)
+    window.getSelection().addRange(xpath_range)
+
+class Selector_Class
+  constructor: (startC, endC, startO, endO) ->
+    @startContainer = -> startC
+    @endContainer = -> endC
+    @startOffset = -> startO
+    @endOffset = -> endO
+
