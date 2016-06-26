@@ -53,8 +53,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       endOffset: desiredText.length
       commonAncestor: document
       commonAncestorContainer: document
-      startContainer: event.target
-      endContainer: event.target
     }
 
     anchor = new xpathRange.SerializedRange(data).normalize(document)
