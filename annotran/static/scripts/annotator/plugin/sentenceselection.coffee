@@ -1,6 +1,7 @@
 Annotator = require('annotator')
 $ = Annotator.$
 xpathRange = Annotator.Range
+Util = Annotator.Util
 
 RangeAnchor = require('../../../../../../h/h/static/scripts/annotator/anchoring/types').RangeAnchor
 FragmentAnchor = require('../../../../../../h/h/static/scripts/annotator/anchoring/types').FragmentAnchor
@@ -43,22 +44,20 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     selector = new Selector_Class(event.target, event.target, 0, desiredText.length)
 
+    full_xpath = Util.xpathFromNode($(event.target), document)
+
     data = {
-      start: event.target
+      start: full_xpath
       startOffset: 0
-      end: event.target
+      end: full_xpath
       endOffset: desiredText.length
-      commonAncestor: event.target
-      commonAncestorContainer: event.target
+      commonAncestor: document
+      commonAncestorContainer: document
       startContainer: event.target
       endContainer: event.target
     }
 
-    anchor = new xpathRange.BrowserRange(data).normalize(event.target.parent)
-
-    alert(typeof anchor)
-
-    #new_range = new RangeAnchor(event.target, anchor)
+    anchor = new xpathRange.SerializedRange(data).normalize(document)
 
     window.getSelection().removeAllRanges()
     window.getSelection().addRange(anchor.toRange())
