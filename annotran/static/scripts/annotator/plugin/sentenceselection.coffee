@@ -30,7 +30,14 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   makeSentenceSelection: (event = {}) =>
     # Get the currently selected ranges.
 
-    desiredText = event.target.innerText || event.target.textContent
+    tagName = $(event.target).prop("tagName").toLowerCase()
+
+    # this loop checks that we are not within a formatting cell and that we should recurse upwards through parent elements
+    while tagName is "i" or tagName is "strong" or tagName is "em" or tagName is "b" or tagName is "mark" or tagName is "small" or tagName is "del" or tagName is "ins" or tagName is "sub" or tagName is "sup"
+      event.target = $(event.target).parent()
+      tagName = $(event.target).prop("tagName").toLowerCase()
+
+    desiredText = $(event.target).text()
     desiredText = desiredText.split('.')[0]
 
     full_xpath = Util.xpathFromNode($(event.target), document)
