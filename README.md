@@ -45,7 +45,7 @@ Run the following commands to install hypothes.is into your virtual environment:
 ```
 cd ..
 cd annotran
-sudo apt-get install -y --no-install-recommends  build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv
+sudo apt-get install -y --no-install-recommends  ruby-compass build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv
 pip install -r requirements.txt
 ```
 
