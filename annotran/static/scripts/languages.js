@@ -42,8 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var STORAGE_KEY = 'annotran.languages.focus';
 
-// this assumes that h is stored in the same root directory as annotran
-var events = require('../../../../h/h/static/scripts/events.js');
+var events = require('/home/marija/h/h/static/scripts/events.js');
 
 // @ngInject
 function languages(localStorage, session, settings, $rootScope, $http) {
@@ -51,6 +50,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // and any new translations that the user creates
   // will be created for this language.
   var focusedLanguage;
+  var focusedGroup;
 
   function all() {
     return session.state.languages || [];
@@ -66,13 +66,11 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   };
 
-  /** Leave the language with the given ID.
-   * Returns a promise which resolves when the action completes.
-   */
-  function leave(id) {
+
+  function addLanguage(language, groupubid) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + id + '/leave',
+      url: settings.serviceUrl + 'languages/' + language + '/' + groupubid + '/addLanguage',
     });
 
     // the language list will be updated in response to a session state
@@ -107,7 +105,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
      localStorage.setItem(STORAGE_KEY, g.id);
      $rootScope.$broadcast(events.LANGUAGES_FOCUSED, g.id);
    }
-  }
+  };
 
   // reset the focused language if the user leaves it
   $rootScope.$on(events.LANGUAGES_CHANGED, function () {
@@ -119,15 +117,27 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   });
 
+  $rootScope.$on(events.GROUP_FOCUSED, function (event, groupubid) {
+    //load languages for selected group
+
+    var response = $http({
+      method: 'POST',
+      url: settings.serviceUrl + 'languages/' + groupubid,
+    });
+    return all();
+  });
+  
+  
   return {
     all: all,
     get: get,
 
     leave: leave,
+    addLanguage: addLanguage,
 
     focused: focused,
     focus: focus,
   };
-}
+};
 
 module.exports = languages;
