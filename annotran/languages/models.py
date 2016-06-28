@@ -25,6 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #this is a code reused from hypothesis, adapted and extended to be used for languages
 # -*- coding: utf-8 -*-
+
 import datetime
 
 import sqlalchemy as sa
@@ -33,7 +34,6 @@ import slugify
 
 from h.db import Base
 from h import pubid
-
 
 LANGUAGE_NAME_MIN_LENGTH = 4
 LANGUAGE_NAME_MAX_LENGTH = 25

@@ -43,9 +43,6 @@ from h.api import uri
 from annotran.languages import schemas
 import h
 
-import annotran.session
-
-
 _ = i18n.TranslationString
 
 
@@ -66,7 +63,7 @@ def addLanguage(request):
     # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
 
-    url = request.route_url('language_read', pubid=language.pubid, slug=language.slug)
+    url = request.route_url('language_read', pubid=language.pubid)
     return exc.HTTPSeeOther(url)
 
 
@@ -81,5 +78,5 @@ def read(request):
 
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/addLanguage')
-    config.add_route('language_read_noslug', '/languages/{pubid}')
+    config.add_route('language_read', '/languages/{pubid}')
     config.scan(__name__)

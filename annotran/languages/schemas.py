@@ -39,6 +39,7 @@ from annotran.languages.models import LANGUAGE_NAME_MAX_LENGTH
 _ = i18n.TranslationString
 
 
+
 class LanguageSchema(CSRFSchema):
 
     """The schema for the create-a-new-language form."""
@@ -56,5 +57,3 @@ class LanguageSchema(CSRFSchema):
             label_css_class="language-form__name-label",
             max_length=LANGUAGE_NAME_MAX_LENGTH,
             placeholder=_("Language Name")))
-
-
