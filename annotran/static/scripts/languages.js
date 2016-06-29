@@ -42,7 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var STORAGE_KEY = 'annotran.languages.focus';
 
-var events = require('/home/marija/h/h/static/scripts/events.js');
+// this assumes that h is stored in the same root directory as annotran
+var events = require('../../../../h/h/static/scripts/events.js');
 
 // @ngInject
 function languages(localStorage, session, settings, $rootScope, $http) {
