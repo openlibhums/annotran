@@ -42,6 +42,7 @@ from h.api import search
 from h.api import uri
 from annotran.languages import schemas
 import h
+import annotran
 
 _ = i18n.TranslationString
 
@@ -71,12 +72,61 @@ def addLanguage(request):
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
     pubid = request.matchdict["pubid"]
+    groupubid = request.matchdict["groupubid"]
     language = models.Language.get_by_pubid(pubid)
-    if language is None:
+    group = h.groups.models.Group.get_by_pubid(groupubid)
+    if group is None:
         raise exc.HTTPNotFound()
+    if not request.authenticated_userid:
+        return None
+    else:
+        if group in request.authenticated_user.groups:
+            return _read_group(request, group, language)
+        else:
+            return None
 
+def _read_group(request, group, language):
+    """Return the rendered "Share this group" page.
+
+    This is the page that's shown when a user who is already a member of a
+    group visits the group's URL.
+
+    """
+    url = request.route_url('group_read', pubid=group.pubid, slug=group.slug)
+
+
+    #language = models.Language.get_by_groupubid(group.pubid)
+
+    '''
+    result = search.search(request,
+                           private=False,
+                           params={"group": group.pubid, "limit": 1000})
+    annotations = [presenters.AnnotationHTMLPresenter(models.Annotation(a))
+                   for a in result['rows']]
+
+    # Group the annotations by URI.
+    # Create a dict mapping the (normalized) URIs of the annotated documents
+    # to the most recent annotation of each document.
+    annotations_by_uri = collections.OrderedDict()
+    for annotation in annotations:
+        normalized_uri = uri.normalize(annotation.uri)
+        if normalized_uri not in annotations_by_uri:
+            annotations_by_uri[normalized_uri] = annotation
+            if len(annotations_by_uri) >= 25:
+                break
+
+    document_links = [annotation.document_link
+                      for annotation in annotations_by_uri.values()]
+
+    template_data = {
+        'group': group, 'group_url': url, 'document_links': document_links}
+
+    return renderers.render_to_response(
+        renderer_name='h:templates/groups/share.html.jinja2',
+        value=template_data, request=request)
+    '''
 
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/addLanguage')
-    config.add_route('language_read', '/languages/{pubid}')
+    config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)

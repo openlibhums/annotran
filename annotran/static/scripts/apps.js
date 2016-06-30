@@ -12,6 +12,7 @@ var app = angular.module("h");
 app.directive('languageList', require('./directive/language-list').directive)
 
 .service('languages', require('./languages'))
+.service('groups', require('./groups'))
 
 
 app.factory('langListFactory', require('./directive/language-service').factory)

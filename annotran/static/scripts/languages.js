@@ -42,7 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var STORAGE_KEY = 'annotran.languages.focus';
 
-var events = require('/home/marija/h/h/static/scripts/events.js');
+// this assumes that h is stored in the same root directory as annotran
+var events = require('../../../../h/h/static/scripts/events.js');
 
 // @ngInject
 function languages(localStorage, session, settings, $rootScope, $http) {
@@ -51,26 +52,61 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // will be created for this language.
   var focusedLanguage;
   var focusedGroup;
+  var groupPubid;
+  
+  var map;
+
+
+  function containsValue(groupubid, language) {
+    var i=0, langs = map[groupubid];
+    for (i = 0; i < langs.length; i++) {
+      if (langs[i] == language) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   function all() {
-    return session.state.languages || [];
+    var languages = [], i;
+    for (i = 0; i < session.state.languages.length; i++) {
+      var grpubid = session.state.languages[i].groupubid;
+      if (!map[grpubid]) {
+        map[grpubid] = [];
+      }
+      map[grpubid].push(session.state.languages[i]);
+    }
+    return map || [];
+  };
+  
+  function getLanguageList() {
+    var result;
+    if (groupPubid) {
+      if (!map) {
+        map = new Object();
+        map = all();
+      } 
+      result = map[groupPubid];
+      return result;
+    }
   };
 
   // Return the full object for the language with the given id.
   function get(id) {
-    var gs = all();
-    for (var i = 0, max = gs.length; i < max; i++) {
-      if (gs[i].id === id) {
-        return gs[i];
+    if (gs) {
+      var gs = getLanguageList();
+      for (var i = 0, max = gs.length; i < max; i++) {
+        if (gs[i].id === id) {
+          return gs[i];
+        }
       }
     }
   };
 
-
-  function addLanguage(language, groupubid) {
+  function addLanguage(language) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + language + '/' + groupubid + '/addLanguage',
+      url: settings.serviceUrl + 'languages/' + language + '/' + groupPubid + '/addLanguage',
     });
 
     // the language list will be updated in response to a session state
@@ -80,31 +116,36 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return response;
   };
 
-
   /** Return the currently focused language. If no language is explicitly focused we
    * will check localStorage to see if we have persisted a focused language from
    * a previous session. Lastly, we fall back to the first language available.
    */
   function focused() {
-    if (focusedLanguage) {
-      return focusedLanguage;
+    if (focusedLanguage && focusedLanguage.groupubid == groupPubid) {
+      if (containsValue(groupPubid, focusedLanguage)) {
+        return focusedLanguage;
+      }
     }
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
-    if (fromStorage) {
+    if (fromStorage && fromStorage.groupubid == groupPubid) {
       focusedLanguage = fromStorage;
       return focusedLanguage;
     }
-    return all()[0];
+    if (getLanguageList()) {
+      return getLanguageList()[0];
+    }    
   }
 
   /** Set the language with the passed id as the currently focused language. */
   function focus(id) {
-   var g = get(id);
-   if (g) {
-     focusedLanguage = g;
-     localStorage.setItem(STORAGE_KEY, g.id);
-     $rootScope.$broadcast(events.LANGUAGES_FOCUSED, g.id);
-   }
+    if (id) {
+      var g = get(id);
+      if (g) {
+        focusedLanguage = g;
+        localStorage.setItem(STORAGE_KEY, g.id);
+        $rootScope.$broadcast(events.LANGUAGES_FOCUSED, g.id);
+      }
+    }
   };
 
   // reset the focused language if the user leaves it
@@ -117,22 +158,31 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   });
 
+
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupubid) {
     //load languages for selected group
+    groupPubid = groupubid;
+    focused();
+     /*
+    var lid;
+    if (focusedLanguage)
+        lid = focusedLanguage.id;
+    else
+        lid = 'None';
 
     var response = $http({
-      method: 'POST',
-      url: settings.serviceUrl + 'languages/' + groupubid,
+      method: 'GET',
+      url: settings.serviceUrl + 'languages/' + lid + '/' + groupubid,
     });
-    return all();
+    */
+    return getLanguageList();
   });
-  
+
+
   
   return {
-    all: all,
+    getLanguageList: getLanguageList,
     get: get,
-
-    leave: leave,
     addLanguage: addLanguage,
 
     focused: focused,

@@ -8,7 +8,7 @@ modification, are permitted provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
+   this list of conditions and tleahe following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
@@ -52,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <div class="dropdown-menu__top-arrow"></div>
   <ul class="dropdown-menu pull-none" role="menu">
     <li class="dropdown-menu__row dropdown-menu__row--unpadded "
-        ng-repeat="language in languages.all()">
+        ng-repeat="language in languages.getLanguageList()">
       <div ng-class="{'language-item': true, selected: language.id == languages.focused().id}"
            ng-click="focusLanguage(language.id)">
         <!-- the language icon !-->
@@ -69,18 +69,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                {{language.name}}
             </a>
           </div>
-          <div class="share-link-container" ng-click="$event.stopPropagation()" ng-if="!language.public">
-            <a class="share-link" href="{{language.url}}" target="_blank">
-              View language activity and invite others
-            </a>
-          </div>
-        </div>
-        <!-- the 'Leave language' icon !-->
-        <div class="language-cancel-icon-container" ng-click="$event.stopPropagation()">
-          <i class="h-icon-cancel-outline btn--cancel"
-             ng-if="!language.public"
-             ng-click="leaveLanguage(language.id)"
-             title="Leave '{{language.name}}'"></i>
         </div>
       </div>
     </li>
