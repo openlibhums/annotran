@@ -1,6 +1,121 @@
-<title>{% block title %}{% endblock %}</title>
-<ul>
-{% for user in users %}
-  <li><a href="{{ user.url }}">{{ user.username }}</a></li>
-{% endfor %}
-</ul>
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+!-->
+
+<!--this is slightly extended version of app.html.jinja2!-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hypothesis</title>
+    {# the <base> tag is required by Angular JS when HTML 5 history is
+     enabled. We shouldn't really need this because a given instance of the app
+     only ever displays a single route.
+     #}
+    <base target="_top" href="/" />
+    {% for url in app_css_urls %}
+    <link rel="stylesheet" href="{{ url }}">
+    {% endfor %}
+    {% for attrs in meta_attrs -%}
+      <meta {% for key, value in attrs.items() %}{{ key }}="{{ value }}" {% endfor %}/>
+    {% endfor -%}
+    {% if link_tags %}
+      {% for link in link_tags %}
+        <link rel="{{ link.rel }}" type="{{ link.type }}"
+              href="{{ link.href }}"/>
+      {% endfor %}
+    {% endif %}
+  </head>
+  <body ng-app="h" ng-strict-di ng-controller="AppController" ng-csp="">
+    <top-bar
+      auth="auth"
+      on-login="login()"
+      on-logout="logout()"
+      account-dialog="accountDialog"
+      share-dialog="shareDialog"
+      user-list="userList"
+      is-sidebar="::isSidebar"
+      search-controller="search"
+      sort-by="sort.name"
+      sort-options="sort.options"
+      on-change-sort-by="sort.name = sortBy">
+    </top-bar>
+
+    <div class="create-account-banner" ng-if="isSidebar && auth.status === 'signed-out'" ng-cloak>
+      To annotate this document
+      <a href="{{ register_url }}" target="_blank">
+        create a free account
+      </a>
+      or <a href="" ng-click="login()">sign in</a>
+    </div>
+
+    <div class="content" ng-cloak>
+      <login-form ng-if="accountDialog.visible"
+                on-close="accountDialog.visible=false"></login-form>
+      <sidebar-tutorial ng-if="isSidebar"></sidebar-tutorial>
+      <share-dialog ng-show="shareDialog.visible"></share-dialog>
+      <main ng-view=""></main>
+    </div>
+    <div class="content" ng-cloak>
+      <login-form ng-if="accountDialog.visible"
+                on-close="accountDialog.visible=false"></login-form>
+      <sidebar-tutorial ng-if="isSidebar"></sidebar-tutorial>
+      <main ng-view=""></main>
+    </div>
+    <!-- Templates for Angular components !-->
+    {% for template in angular_templates -%}
+      <script type="text/ng-template" id="{{template.name}}">
+        {{ template.content | safe }}
+      </script>
+    {% endfor -%}
+
+    <!-- App Configuration !-->
+    <script class="js-hypothesis-settings" type="application/json">
+      {{ app_config | safe }}
+    </script>
+
+    <!-- Scripts !-->
+    {% for url in app_js_urls %}
+    <script src="{{ url }}"></script>
+    {% endfor %}
+
+    <!-- Analytics !-->
+    {% if ga_tracking_id %}
+      <!-- Google Analytics -->
+      <script async src='//www.google-analytics.com/analytics.js'></script>
+      <script>
+       window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+       ga('create', 'UA-{{ga_tracking_id}}', '{{ga_cookie_domain}}');
+
+       {# No pageview event is sent here because that is handled by the
+          Angular GA integration in the client app after it boots.
+        #}
+      </script>
+      <!-- End Google Analytics -->
+    {% endif %}
+  </body>
+</html>
