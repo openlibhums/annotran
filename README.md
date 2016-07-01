@@ -54,9 +54,9 @@ pip install -r requirements.txt
 1. Boot system. Since the annotran package has been installed into the same Python environment as the hypothes.is application, it is possibile to start hypothes.is application from the annotran. To do that, in annotran, a h's pyramid configuration should be included in the annotran's Pyramid configuration. 
 
 2. When extending Pyramid application (see documentation on how to do that: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/extending.html), it is necessary to override views, routes and static assets (http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/assets.html#assets-chapter). To extend hypothes.is UI code, there are following steps performed:
-	a) There is assets.yaml file in annotran that is a copy of the same file from hypothes.is. Paths for assets that are overwritten in annotran are appropriately updated within this file. 
-	b) Assets are overwitted by invoking config.override_asset(..) method.
-	b) Javascript is overwritten using Angular dependency injection. h/static/scripts/app.coffee is required from the main module within the annotran.
+	- There is assets.yaml file in annotran that is a copy of the same file from hypothes.is. Paths for assets that are overwritten in annotran are appropriately updated within this file. 
+	- Assets are overwitted by invoking config.override_asset(..) method.
+	- Javascript is overwritten using Angular dependency injection. h/static/scripts/app.coffee is required from the main module within the annotran.
 
 
 ##How to contribute
