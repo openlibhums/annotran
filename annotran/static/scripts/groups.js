@@ -60,7 +60,7 @@ function groups(localStorage, session, settings, $rootScope, $http) {
     var gs = all();
     for (var i = 0, max = gs.length; i < max; i++) {
       if (gs[i].id === id) {
-        $rootScope.$broadcast(events.GROUP_FOCUSED, gs[i].id);
+        //$rootScope.$broadcast(events.GROUP_FOCUSED, gs[i].id);
         return gs[i];
       }
     }
