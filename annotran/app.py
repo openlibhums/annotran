@@ -65,6 +65,7 @@ def get_settings(global_config, **settings):
 
 
 def main(global_config, **settings):
+    h.assets.includeme = override_hypothesis_includeme
     settings = get_settings(global_config, **settings)
     config = Configurator(settings=settings)
 
@@ -91,6 +92,17 @@ def main(global_config, **settings):
     h.session.model = model
     h.groups.views._read_group = languages.views._read_group
     return config.make_wsgi_app()
+
+
+def override_hypothesis_includeme(config):
+    # this method is an override of hypothes.is's default includeme. It fires instead and handles CORS.k
+    config.add_subscriber_predicate('asset_request', AssetRequest)
+    config.add_subscriber(
+        asset_response_subscriber,
+        pyramid.events.NewResponse,
+        asset_request=True
+    )
+
 
 def _angular_template_context_ext(name):
     """Return the context for rendering a 'text/ng-template' <script>

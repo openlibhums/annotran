@@ -1,7 +1,7 @@
 'use strict'
 
 // this assumes that h is stored in the same root directory as annotran
-require('../../../../../h/h/static/scripts/app.coffee');
+require('../../../../h/h/static/scripts/app.coffee');
 
 
 require('./directive/language-list.js');
