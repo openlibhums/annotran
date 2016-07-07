@@ -28,6 +28,10 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   #
   # Returns nothing.
   makeSentenceSelection: (event = {}) =>
+
+    # disabled for now
+    return
+
     # Get the currently selected ranges.
 
     tagName = $(event.target).prop("tagName").toLowerCase()
