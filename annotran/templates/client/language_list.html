@@ -71,6 +71,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           </div>
         </div>
       </div>
+      <a ng-click="userList.visible = !userList.visible"
+         title="View users">
+         <i class="h-icon-share"></i>
+         <user-list ng-show="userList.visible"></user-list>
+      </a>
     </li>
     <li class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
       <div class="language-item">
