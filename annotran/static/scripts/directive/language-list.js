@@ -1,7 +1,7 @@
 'use strict';
 
 //TODO - resolve this path
-var events = require('/home/marija/h/h/static/scripts/events.js');
+var events = require('../../../../../h/h/static/scripts/events.js');
 
 // @ngInject
 function LanguageListController($scope, $window, languages) {
