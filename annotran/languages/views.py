@@ -85,7 +85,7 @@ def read(request):
         else:
             return None
 
-def _read_group(request, group, language):
+def _read_group(request, group, language=None):
     """Return the rendered "Share this group" page.
 
     This is the page that's shown when a user who is already a member of a
@@ -97,7 +97,6 @@ def _read_group(request, group, language):
 
     #language = models.Language.get_by_groupubid(group.pubid)
 
-    '''
     result = search.search(request,
                            private=False,
                            params={"group": group.pubid, "limit": 1000})
@@ -124,7 +123,7 @@ def _read_group(request, group, language):
     return renderers.render_to_response(
         renderer_name='h:templates/groups/share.html.jinja2',
         value=template_data, request=request)
-    '''
+
 
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/addLanguage')
