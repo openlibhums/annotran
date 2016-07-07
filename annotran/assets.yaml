@@ -137,6 +137,7 @@ app_js:
           contents: annotran:static/scripts/apps.js
           depends:
             - h:static/scripts/*.coffee
+            - annotran:static/scripts/*.coffee
             - h:static/scripts/annotation-mapper.js
             - h:static/scripts/annotation-mapper.js
             - h:static/scripts/auth.js
@@ -149,8 +150,9 @@ app_js:
             - h:static/scripts/directive/*.coffee
             - h:static/scripts/directive/*.js
             - h:static/scripts/filter/*.js
-            - annotran:static/scripts/directive/language-list.js
-            - annotran:static/scripts/languages.js
+            - annotran:static/scripts/directive/*.js
+            - annotran:static/scripts/*.js
+            - annotran:static/scripts/directive/*.coffee
     - config
 
 app_css:
@@ -187,9 +189,8 @@ inject_js:
     contents:
       - output: scripts/hypothesis.js
         filters: browserify
-        contents: annotran:static/scripts/annotator/main.js
+        contents: h:static/scripts/annotator/main.js
         depends:
-          - annotran:static/scripts/annotator/plugin/*.coffee
           - h:static/scripts/annotation-sync.coffee
           - h:static/scripts/bridge.coffee
           - h:static/scripts/discovery.coffee
