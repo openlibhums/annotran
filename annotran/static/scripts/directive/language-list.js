@@ -1,19 +1,18 @@
 'use strict';
 
-// this assumes that h is stored in the same root directory as annotran
-var events = require('../../../../../h/h/static/scripts/events.js');
+//TODO - resolve this path
+var events = require('/home/marija/h/h/static/scripts/events.js');
 
 // @ngInject
 function LanguageListController($scope, $window, languages) {
-  $scope.leaveLanguage = function (languageId) {
-    var languageName = languages.get(languageId).name;
-    var message = 'Are you sure you want to change the language "' +
-      languageName + '"?';
+  $scope.addLanguage = function (language) {
+    var message = 'Are you sure you want to add new translations for the language "' +
+      language.name + '"?';
     if ($window.confirm(message)) {
-      languages.leave(languageId);
+      languages.addLanguage(language.name);
     }
   }
-
+ 
   $scope.focusLanguage = function (languageId) {
     languages.focus(languageId);
   }
@@ -31,14 +30,11 @@ function languageList( $window, languages, settings) {
     controller: LanguageListController,
     link: function ($scope, elem, attrs) {
       $scope.languages = languages;
-
-      $scope.createNewLanguage = function() {
-        $window.open(settings.serviceUrl + 'languages/new', '_blank');
-      }
     },
     restrict: 'E',
     scope: {
-      auth: '='
+      auth: '=',
+      userList: '='
     },
     templateUrl: 'language_list.html'
   };
