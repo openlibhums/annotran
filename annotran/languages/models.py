@@ -86,15 +86,6 @@ class Language(Base):
         except exc.NoResultFound:
             return None
 
-    @classmethod
-    def get_by_groupubid(cls, groupubid):
-        """Return the language list for the given group pubid, or None."""
-        try:
-            return cls.query.filter(
-                cls.groupubid == groupubid).one()
-        except exc.NoResultFound:
-            return None
-
 GROUP_LANGUAGE_TABLE = sa.Table(
     'group_language', Base.metadata,
     sa.Column('group_id',
