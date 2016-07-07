@@ -24,6 +24,7 @@ require('../../../../../h/h/static/scripts/vendor/annotator.document');  // Does
 // Selection plugins
 Annotator.Plugin.TextSelection = require('../../../../../h/h/static/scripts/annotator/plugin/textselection');
 Annotator.Plugin.SentenceSelection = require('./plugin/sentenceselection');
+//Annotator.Plugin.Substitution = require('./plugin/substitution');
 
 // Cross-frame communication
 Annotator.Plugin.CrossFrame = require('../../../../../h/h/static/scripts/annotator/plugin/cross-frame');
