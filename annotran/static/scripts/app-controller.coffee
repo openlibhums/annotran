@@ -1,5 +1,5 @@
 
-appcontroller =  require('../../../../../h/h/static/scripts/app-controller.coffee');
+appcontroller =  require('../../../../h/h/static/scripts/app-controller.coffee');
 
 class AppControllerExt extends appcontroller
    constructor: (

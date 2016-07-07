@@ -143,7 +143,6 @@ app_js:
             - h:static/scripts/auth.js
             - h:static/scripts/features.js
             - h:static/scripts/groups.js
-            - annotran:static/scripts/languages.js
             - h:static/scripts/session.js
             - h:static/scripts/settings.js
             - h:static/scripts/store.js
