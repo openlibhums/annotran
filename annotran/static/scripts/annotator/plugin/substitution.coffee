@@ -27,17 +27,14 @@ module.exports = class Substitution extends Annotator.Plugin
 
   startSubstitution: (event = {}) =>
     if this.original_document == ""
-      alert("storing")
       this.original_document = `$("body").html()`
 
     if this.original_document != `$("body").html()`
       `
-      alert(this.original_document);
       $("body").html(this.original_document);
       `
       return null
     else
-      alert("running sub")
       this.makeSubstitution(event)
 
 
