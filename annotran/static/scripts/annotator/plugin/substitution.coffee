@@ -2,23 +2,45 @@ Annotator = require('annotator')
 $ = Annotator.$
 xpathRange = Annotator.Range
 Util = Annotator.Util
+original_document = ''
 
 # This plugin implements the UI code for selecting sentences by clicking
 module.exports = class Substitution extends Annotator.Plugin
 
   pluginInit: ->
-# Register the event handlers required for creating a selection
+  # Register the event handlers required for creating a selection
+
     $(document).bind({
-      "click": @makeSubstitution
+      "click": @startSubstitution
     })
+
+    this.original_document = ""
 
     null
 
   destroy: ->
     $(document).unbind({
-      "click": @makeSubstitution
+      "click": @startSubstitution
     })
     super
+
+
+  startSubstitution: (event = {}) =>
+    if this.original_document == ""
+      alert("storing")
+      this.original_document = `$("body").html()`
+
+    if this.original_document != `$("body").html()`
+      `
+      alert(this.original_document);
+      $("body").html(this.original_document);
+      `
+      return null
+    else
+      alert("running sub")
+      this.makeSubstitution(event)
+
+
 
 # This is called when the mouse is clicked on a DOM element.
 # Checks to see if there is a sentence that we can select, if so
@@ -28,8 +50,6 @@ module.exports = class Substitution extends Annotator.Plugin
 #
 # Returns nothing.
   makeSubstitution: (event = {}) =>
-
-    #alert(Util.xpathFromNode($(event.target), document))
 
     start_xpath = "/html[1]/body[1]/div[2]/h2[1]"
     end_xpath = "/html[1]/body[1]/div[2]/div[5]/p[2]"
@@ -133,3 +153,5 @@ module.exports = class Substitution extends Annotator.Plugin
             return false
 
       return true
+
+
