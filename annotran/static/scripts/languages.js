@@ -54,11 +54,11 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   var focusedGroup;
   var groupPubid;
   
-  var map;
+ //var map;
 
 
   function containsValue(groupubid, language) {
-    var i=0, langs = map[groupubid];
+    var i=0, langs = $rootScope.map[groupubid];
     for (i = 0; i < langs.length; i++) {
       if (langs[i] == language) {
         return true;
@@ -70,43 +70,43 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   function all() {
     var languages = [], i;
     for (i = 0; i < session.state.languages.length; i++) {
-      var grpubid = session.state.languages[i].groupubid;
-      if (!map[grpubid]) {
-        map[grpubid] = [];
+      $rootScope.grpubid = session.state.languages[i].groupubid;
+      if (!$rootScope.map[$rootScope.grpubid]) {
+        $rootScope.map[$rootScope.grpubid] = [];
       }
-      map[grpubid].push(session.state.languages[i]);
+      $rootScope.map[$rootScope.grpubid].push(session.state.languages[i]);
     }
-    return map || [];
+    return $rootScope.map || [];
   };
   
   function getLanguageList() {
     var result;
-    if (groupPubid) {
-      if (!map) {
-        map = new Object();
-        map = all();
+    if ($rootScope.groupPubid) {
+      if (!$rootScope.map) {
+        $rootScope.map = new Object();
+        $rootScope.map = all();
       } 
-      result = map[groupPubid];
+      result = $rootScope.map[$rootScope.groupPubid];
       return result;
     }
   };
 
   // Return the full object for the language with the given id.
-  function get(id) {
+  function get(id) {  
+    var gs = getLanguageList();
     if (gs) {
-      var gs = getLanguageList();
       for (var i = 0, max = gs.length; i < max; i++) {
         if (gs[i].id === id) {
           return gs[i];
         }
-      }
-    }
+      } 
+    }   
   };
 
   function addLanguage(language) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + language + '/' + groupPubid + '/addLanguage',
+      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/addLanguage',
     });
 
     // the language list will be updated in response to a session state
@@ -121,13 +121,13 @@ function languages(localStorage, session, settings, $rootScope, $http) {
    * a previous session. Lastly, we fall back to the first language available.
    */
   function focused() {
-    if (focusedLanguage && focusedLanguage.groupubid == groupPubid) {
-      if (containsValue(groupPubid, focusedLanguage)) {
+    if (focusedLanguage && focusedLanguage.groupubid == $rootScope.groupPubid) {
+      if (containsValue($rootScope.groupPubid, focusedLanguage)) {
         return focusedLanguage;
       }
     }
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
-    if (fromStorage && fromStorage.groupubid == groupPubid) {
+    if (fromStorage && fromStorage.groupubid == $rootScope.groupPubid) {
       focusedLanguage = fromStorage;
       return focusedLanguage;
     }
@@ -143,7 +143,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       if (g) {
         focusedLanguage = g;
         localStorage.setItem(STORAGE_KEY, g.id);
-        $rootScope.$broadcast(events.LANGUAGES_FOCUSED, g.id);
+        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, g.id);
       }
     }
   };
@@ -153,7 +153,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     if (focusedLanguage) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
-        $rootScope.$broadcast(events.LANGUAGES_FOCUSED, focused());
+        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focused());
       }
     }
   });
@@ -161,7 +161,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupubid) {
     //load languages for selected group
-    groupPubid = groupubid;
+    $rootScope.groupPubid = groupubid;
     focused();
      /*
     var lid;
@@ -176,9 +176,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     });
     */
     return getLanguageList();
-  });
-
-
+  });  
   
   return {
     getLanguageList: getLanguageList,

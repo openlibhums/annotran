@@ -35,10 +35,17 @@ from jinja2 import Environment, PackageLoader
 
 import h.app
 import h.client
+import h.config
 from h.assets import *
 from h.config import settings_from_environment
 
+from annotran import replacements
 from annotran import languages
+
+import json
+
+
+
 
 
 
@@ -88,9 +95,13 @@ def main(global_config, **settings):
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(4, 'language_list')
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(5, 'user_list')
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(6, 'top_bar')
-    h.client._angular_template_context = _angular_template_context_ext
-    h.session.model = model
-    h.groups.views._read_group = languages.views._read_group
+    h.client._angular_template_context = replacements._angular_template_context_ext
+    h.session.model = replacements.model
+    h.groups.views._read_group = replacements._read_group
+    h.api.groups.set_group_if_reply = replacements.set_group_if_reply
+
+    #ANNOTATION_MAPPING_EXT = json.loads(h.config.ANNOTATION_MAPPING)
+    h.config.ANNOTATION_MAPPING = ANNOTATION_MAPPING_EXT
     return config.make_wsgi_app()
 
 
@@ -103,84 +114,98 @@ def override_hypothesis_includeme(config):
         asset_request=True
     )
 
+ANNOTATION_MAPPING_EXT = {
+    '_id': {'path': 'id'},
+    '_source': {'excludes': ['id']},
+    'analyzer': 'keyword',
+    'properties': {
+        'annotator_schema_version': {'type': 'string'},
+        'created': {'type': 'date'},
+        'updated': {'type': 'date'},
+        'quote': {'type': 'string', 'analyzer': 'uni_normalizer'},
+        'tags': {'type': 'string', 'analyzer': 'uni_normalizer'},
+        'text': {'type': 'string', 'analyzer': 'uni_normalizer'},
+        'deleted': {'type': 'boolean'},
+        'uri': {
+            'type': 'string',
+            'index_analyzer': 'uri',
+            'search_analyzer': 'uri',
+            'fields': {
+                'parts': {
+                    'type': 'string',
+                    'index_analyzer': 'uri_parts',
+                    'search_analyzer': 'uri_parts',
+                },
+            },
+        },
+        'user': {'type': 'string', 'index': 'analyzed', 'analyzer': 'user'},
+        'target': {
+            'properties': {
+                'source': {
+                    'type': 'string',
+                    'index_analyzer': 'uri',
+                    'search_analyzer': 'uri',
+                    'copy_to': ['uri'],
+                },
+                # We store the 'scope' unanalyzed and only do term filters
+                # against this field.
+                'scope': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
+                'selector': {
+                    'properties': {
+                        'type': {'type': 'string', 'index': 'no'},
 
-def _angular_template_context_ext(name):
-    """Return the context for rendering a 'text/ng-template' <script>
-       tag for an Angular directive.
-    """
-    jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
-    jinja_env = h.client.jinja_env
-    if (name == 'user_list' or name == 'language_list' or name == 'top_bar'):
-        angular_template_path = 'client/{}.html'.format(name)
-        content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
-                                                    angular_template_path)
-    else:
-        angular_template_path = 'client/{}.html'.format(name)
-        content, _, _ = jinja_env.loader.get_source(jinja_env,
-                                                angular_template_path)
-    return {'name': '{}.html'.format(name), 'content': content}
+                        # Annotator XPath+offset selector
+                        'startContainer': {'type': 'string', 'index': 'no'},
+                        'startOffset': {'type': 'long', 'index': 'no'},
+                        'endContainer': {'type': 'string', 'index': 'no'},
+                        'endOffset': {'type': 'long', 'index': 'no'},
 
+                        # Open Annotation TextQuoteSelector
+                        'exact': {
+                            'path': 'just_name',
+                            'type': 'string',
+                            'fields': {
+                                'quote': {
+                                    'type': 'string',
+                                    'analyzer': 'uni_normalizer',
+                                },
+                            },
+                        },
+                        'prefix': {'type': 'string'},
+                        'suffix': {'type': 'string'},
 
-def model(request):
-    session = {}
-    session['csrf'] = request.session.get_csrf_token()
-    session['userid'] = request.authenticated_userid
-    session['groups'] = h.session._current_groups(request)
-    session['features'] = h.session.features.all(request)
-    session['languages'] = _current_languages(request)
-    session['preferences'] = {}
-    user = request.authenticated_user
-    if user and not user.sidebar_tutorial_dismissed:
-        session['preferences']['show_sidebar_tutorial'] = True
-    return session
-
-def _language_sort_key(language):
-    """Sort private languages for the session model list"""
-
-    # languages are sorted first by name but also by ID
-    # so that multiple languages with the same name are displayed
-    # in a consistent order in clients
-    return (language.name.lower(), language.pubid)
-
-def _current_languages(request):
-    """Return a list of the groups the current user is a member of.
-
-    This list is meant to be returned to the client in the "session" model.
-
-    """
-    '''
-        if groupubid is None:
-        group = {'name': 'Public', 'id': '__world__', 'public': True}
-        return None
-    else:
-        group = h.groups.models.Group.get_by_pubid(groupubid)
-    '''
-
-    languages = []
-    userid = request.authenticated_userid
-    if userid is None:
-        return languages
-    user = request.authenticated_user
-    # if user is None or get_group(request) is None:
-    #   return languages
-    # return languages for all groups for that particular user
-    for group in user.groups:
-        for language in group.languages:
-            languages.append({
-                'groupubid': group.pubid,
-                'name': language.name,
-                'id': language.pubid,
-                'url': request.route_url('language_read',
-                                         pubid=language.pubid, groupubid=group.pubid),
-            })
-
-    return languages
-
-def get_group(request):
-    if request.matchdict.get('pubid') is None:
-        return None
-    pubid = request.matchdict["pubid"]
-    group = h.groups.models.Group.get_by_pubid(pubid)
-    if group is None:
-        raise exc.HTTPNotFound()
-    return group
+                        # Open Annotation (Data|Text)PositionSelector
+                        'start': {'type': 'long'},
+                        'end':   {'type': 'long'},
+                    }
+                }
+            }
+        },
+        'permissions': {
+            'index_name': 'permission',
+            'properties': {
+                'read': {'type': 'string'},
+                'update': {'type': 'string'},
+                'delete': {'type': 'string'},
+                'admin': {'type': 'string'}
+            }
+        },
+        'references': {'type': 'string'},
+        'document': {
+            'enabled': False,  # indexed explicitly by the save function
+        },
+        'thread': {
+            'type': 'string',
+            'analyzer': 'thread'
+        },
+        'group': {
+            'type': 'string',
+        },
+        'language': {
+            'type': 'string',
+        }
+    }
+}
