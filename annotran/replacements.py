@@ -34,7 +34,8 @@ import collections
 import h
 from pyramid import httpexceptions as exc
 from h.api import transform
-
+from jinja2 import Environment, PackageLoader
+jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
 #annotran's version of h.groups.views._read_group
 def _read_group(request, group, language=None):
@@ -195,6 +196,25 @@ def get_group(request):
     if group is None:
         raise exc.HTTPNotFound()
     return group
+
+
+def render_app_html(webassets_env,
+                    service_url,
+                    api_url,
+                    sentry_public_dsn,
+                    ga_tracking_id=None,
+                    websocket_url=None,
+                    extra={}):
+
+    template = jinja_env.get_template('app.html.jinja2')
+    assets_dict = h.client._app_html_context(api_url=api_url,
+                                    service_url=service_url,
+                                    ga_tracking_id=ga_tracking_id,
+                                    sentry_public_dsn=sentry_public_dsn,
+                                    webassets_env=webassets_env,
+                                    websocket_url=websocket_url)
+    return template.render(h.client._merge(assets_dict, extra))
+
 
 #annotran's version of h.api.groups.set_group_if_reply
 def set_group_if_reply(annotation):

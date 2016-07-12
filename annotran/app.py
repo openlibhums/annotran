@@ -107,6 +107,7 @@ def main(global_config, **settings):
     h.session.model = replacements.model
     h.groups.views._read_group = replacements._read_group
     h.api.groups.set_group_if_reply = replacements.set_group_if_reply
+    h.client.render_app_html = replacements.render_app_html
 
     #ANNOTATION_MAPPING_EXT = json.loads(h.config.ANNOTATION_MAPPING)
     h.config.ANNOTATION_MAPPING = ANNOTATION_MAPPING_EXT
