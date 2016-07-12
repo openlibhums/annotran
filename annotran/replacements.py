@@ -205,8 +205,8 @@ def render_app_html(webassets_env,
                     ga_tracking_id=None,
                     websocket_url=None,
                     extra={}):
-    jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
-    template = jinja_env_ext.get_template('app.html.jinja2')
+
+    template = jinja_env.get_template('app.html.jinja2')
     assets_dict = h.client._app_html_context(api_url=api_url,
                                     service_url=service_url,
                                     ga_tracking_id=ga_tracking_id,

@@ -487,7 +487,7 @@ function AnnotationController(
 
   /**
     * @ngdoc method
-    * @name annotation.AnnotaitonController#hasContent
+    * @name annotation.AnnotaitonCon        troller#hasContent
     * @returns {boolean} `true` if this annotation has content, `false`
     *   otherwise.
     */
