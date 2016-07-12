@@ -15,6 +15,17 @@ module.exports = class Substitution extends Annotator.Plugin
     })
 
     this.original_document = ""
+    this.continue_action = ""
+
+    # here we setup a DOM Mutation Observer to allow continued execution after we modify the body tag
+    `
+    var target = document.body;
+
+    var observer = new MutationObserver(this.handle_state_continuity);
+    var config = { attributes: true, childList: true, characterData: true };
+
+    observer.observe(target, config);
+    `
 
     null
 
@@ -24,17 +35,25 @@ module.exports = class Substitution extends Annotator.Plugin
     })
     super
 
+  handle_state_continuity: (mutation = null) =>
+    if this.continue_action != ""
+      this.continue_action = ""
+      console.log("Annotran: Starting substitution via state machine.")
+      this.makeSubstitution(null)
 
   startSubstitution: (event = {}) =>
     if this.original_document == ""
       this.original_document = `$("body").html()`
 
     if this.original_document != `$("body").html()`
+      this.continue_action = "substitute"
+      console.log("Annotran: Restoring DOM to original state.")
       `
       $("body").html(this.original_document);
       `
       return null
     else
+      console.log("Annotran: Starting substitution directly.")
       this.makeSubstitution(event)
 
 
