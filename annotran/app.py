@@ -86,7 +86,7 @@ def main(global_config, **settings):
     config.add_static_view(name='annotran_images', path='static/images')
 
     # it is necessary to add *new* angular directives here but not those that are being overridden
-    h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(4, 'language_list')
+    h.client.ANGULAR_DIRECTIVE_TEMPLATES.append('language_list')
 
     # the following functions are monkey-patched inside H in order to give the annotran context
     h.client._angular_template_context = replacements._angular_template_context_ext
