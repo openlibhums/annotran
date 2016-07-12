@@ -59,8 +59,12 @@ def includeme(config):
         to_override='h:templates/client/top_bar.html',
         override_with='annotran:templates/client/top_bar.html')
     config.override_asset(
+        to_override='h:templates/client/annotation.html',
+        override_with='annotran:templates/client/annotation.html')
+    config.override_asset(
         to_override='h:templates/app.html.jinja2',
         override_with='annotran:templates/app.html.jinja2')
+
     #config.add_webasset()
     config.commit()
 
@@ -97,6 +101,8 @@ def main(global_config, **settings):
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(4, 'language_list')
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(5, 'user_list')
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(6, 'top_bar')
+    h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(7, 'annotation')
+
     h.client._angular_template_context = replacements._angular_template_context_ext
     h.session.model = replacements.model
     h.groups.views._read_group = replacements._read_group
