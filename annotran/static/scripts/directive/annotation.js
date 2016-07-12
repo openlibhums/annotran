@@ -10,7 +10,6 @@ modification, are permitted provided that the following conditions are met:
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -125,6 +124,34 @@ function saveToDrafts(drafts, domainModel, vm) {
     });
 }
 
+/** Update the view model from the domain model changes. */
+function updateViewModel($scope, time, domainModel, vm, permissions) {
+
+  vm.form = {
+    text: domainModel.text,
+    tags: viewModelTagsFromDomainModelTags(domainModel.tags),
+  };
+  vm.annotationURI = new URL('/a/' + domainModel.id, vm.serviceUrl).href;
+  vm.isPrivate = permissions.isPrivate(
+    domainModel.permissions, domainModel.user);
+
+  function updateTimestamp() {
+    vm.relativeTimestamp = time.toFuzzyString(domainModel.updated);
+    vm.absoluteTimestamp = dateUtil.format(new Date(domainModel.updated));
+  }
+
+  if (domainModel.updated) {
+    if (vm.cancelTimestampRefresh) {
+      vm.cancelTimestampRefresh();
+    }
+    vm.cancelTimestampRefresh =
+     time.decayingInterval(domainModel.updated, function () {
+       $scope.$apply(updateTimestamp);
+     });
+    updateTimestamp();
+  }
+}
+
 /** Return a vm tags array from the given domainModel tags array.
  *
  * domainModel.tags and vm.form.tags use different formats.  This
@@ -166,6 +193,7 @@ function AnnotationController(
     * can call the methods.
     */
   function init() {
+    console.log("in annotran");
     /** The currently active action - 'view', 'create' or 'edit'. */
     vm.action = 'view';
 
@@ -256,7 +284,10 @@ function AnnotationController(
     // received from the server) have some fields missing. Add them.
     domainModel.user = domainModel.user || session.state.userid;
     domainModel.group = domainModel.group || groups.focused().id;
-    domainModel.language = domainModel.language || languages.focused().id;
+    //TODO: check this once lanugage is loaded by default
+    if (domainModel.language || languages.focused()) {
+      domainModel.language = domainModel.language || languages.focused().id;
+    }
     if (!domainModel.permissions) {
       domainModel.permissions = permissions['default'](domainModel.group);
     }
@@ -718,7 +749,7 @@ function annotation($document) {
   return {
     controller: AnnotationController,
     controllerAs: 'vm',
-    link: link,
+    link: a.link,
     require: ['annotation', '?^thread', '?^threadFilter', '?^deepCount'],
     scope: {
       annotationGet: '&annotation',
