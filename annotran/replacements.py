@@ -197,7 +197,7 @@ def get_group(request):
         raise exc.HTTPNotFound()
     return group
 
-
+#h.client.render_app_html
 def render_app_html(webassets_env,
                     service_url,
                     api_url,
