@@ -91,6 +91,8 @@ def main(global_config, **settings):
     config.include('annotran.languages')
     config.include(__name__)
 
+    config.add_static_view(name='annotran_images', path='static/images')
+
     #overwritten functions from h
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(4, 'language_list')
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.insert(5, 'user_list')
