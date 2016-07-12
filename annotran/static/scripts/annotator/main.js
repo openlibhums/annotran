@@ -33,7 +33,7 @@ if (g.wgxpath) {
 
 // Applications
 Annotator.Guest = require('./guest');
-Annotator.Host = require('./host');
+Annotator.Host = require('../../../../../h/h/static/scripts/annotator/host');
 Annotator.Sidebar = require('./sidebar');
 Annotator.PdfSidebar = require('../../../../../h/h/static/scripts/annotator/pdf-sidebar');
 
