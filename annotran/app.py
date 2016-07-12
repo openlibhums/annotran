@@ -52,18 +52,9 @@ import json
 def includeme(config):
     config.registry.settings.setdefault('webassets.bundles', 'annotran:assets.yaml')
     config.include('pyramid_webassets')
-    config.override_asset(
-        to_override='h:templates/old-home.html.jinja2',
-        override_with='annotran:templates/home.html.jinja2')
-    config.override_asset(
-        to_override='h:templates/client/top_bar.html',
-        override_with='annotran:templates/client/top_bar.html')
-    config.override_asset(
-        to_override='h:templates/app.html.jinja2',
-        override_with='annotran:templates/app.html.jinja2')
 
-    #config.add_webasset()
     config.commit()
+
 
 def get_settings(global_config, **settings):
     result = {}
