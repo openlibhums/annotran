@@ -11,5 +11,9 @@ class GuestExt extends Guest
         </div>
       '''
 
+    anchor: (annotation) ->
+      # disable anchoring pip display in sidebar
+      null
+
 
 module.exports = GuestExt
