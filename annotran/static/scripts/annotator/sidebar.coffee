@@ -26,7 +26,7 @@ extend = require('extend')
 raf = require('raf')
 Hammer = require('hammerjs')
 
-Host = require('../../../../../h/h/static/scripts/annotator/host')
+Host = require('./host')
 
 # Minimum width to which the frame can be resized.
 MIN_RESIZE = 280

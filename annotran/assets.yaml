@@ -138,7 +138,6 @@ app_js:
           depends:
             - h:static/scripts/*.coffee
             - h:static/scripts/annotation-mapper.js
-            - h:static/scripts/annotation-mapper.js
             - h:static/scripts/auth.js
             - h:static/scripts/features.js
             - h:static/scripts/groups.js
@@ -194,7 +193,11 @@ inject_js:
           - h:static/scripts/annotation-sync.coffee
           - h:static/scripts/bridge.coffee
           - h:static/scripts/discovery.coffee
-          - h:static/scripts/annotator/*.coffee
+          - annotran:static/scripts/annotator/guest.coffee
+          - h:static/scripts/annotator/highlighter.coffee
+          - annotran:static/scripts/annotator/host.coffee
+          - h:static/scripts/annotator/pdf-sidebar.coffee
+          - h:static/scripts/annotator/sidebar.coffee
           - h:static/scripts/annotator/*.js
           - h:static/scripts/annotator/anchoring/*.coffee
           - h:static/scripts/annotator/plugin/*.coffee
