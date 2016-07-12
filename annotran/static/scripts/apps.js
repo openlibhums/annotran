@@ -5,6 +5,7 @@
 require('../../../../h/h/static/scripts/app.coffee');
 
 require('./directive/language-list.js');
+require('./events.js');
 var app = angular.module("h");
 
 app.controller('AppController', require('./app-controller'))
