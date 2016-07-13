@@ -16,7 +16,7 @@ app.controller('AppController', require('./app-controller'))
 
 .service('languages', require('./languages'))
 .service('groups', require('./groups'))
-
+.service('session', require('./session'))
 
 app.factory('langListFactory', require('./directive/language-service').factory)
 
