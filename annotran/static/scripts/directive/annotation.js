@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var dateUtil = require('../../../../../h/h/static/scripts/date-util');
 var events = require('../../../../../h/h/static/scripts/events.js');
 var a = require('../../../../../h/h/static/scripts/directive/annotation.js');
+var eventsa = require('../events');
 
 
 /** Return a domainModel tags array from the given vm tags array.
@@ -275,7 +276,7 @@ function AnnotationController(
     $scope.$on(events.GROUP_FOCUSED, onGroupFocused);
 
     // Call `onLanguageFocused()` whenever the currently-focused langauge changes.
-    $scope.$on(events.LANGUAGE_FOCUSED, onLanguageFocused);
+    $scope.$on(eventsa.LANGUAGE_FOCUSED, onLanguageFocused);
 
     // Call `onUserChanged()` whenever the user logs in or out.
     $scope.$on(events.USER_CHANGED, onUserChanged);
