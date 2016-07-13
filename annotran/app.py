@@ -109,6 +109,7 @@ def override_hypothesis_includeme(config):
         asset_request=True
     )
 
+#TODO - rewrite this in a way that json is just extended and not the entire one is copied
 ANNOTATION_MAPPING_EXT = {
     '_id': {'path': 'id'},
     '_source': {'excludes': ['id']},

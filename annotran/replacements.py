@@ -140,7 +140,6 @@ def set_group_if_reply(annotation):
 
     if 'group' in top_level_annotation:
         annotation['group'] = top_level_annotation['group']
-        annotation['group2'] = top_level_annotation['group']
         annotation['language'] = top_level_annotation['language']
     else:
         if 'group' in annotation:
@@ -248,7 +247,6 @@ def set_group_if_reply(annotation):
 
     if 'group' in top_level_annotation:
         annotation['group'] = top_level_annotation['group']
-        annotation['group2'] = top_level_annotation['group']
         annotation['language'] = top_level_annotation['language']
     else:
         if 'group' in annotation:
@@ -275,7 +273,7 @@ schema = {
                     'type': 'array',
                     'items': {
                         'type': 'string',
-                        'pattern': '^(acct:|group:|group2:|language:).+$',
+                        'pattern': '^(acct:|group:|language:).+$',
                     },
                 }
             },
@@ -283,6 +281,7 @@ schema = {
     },
 }
 
+#TODO - rewrite this in a way that json is just extended and not the entire one is copied
 #annotran's version of h.api.search
 ANNOTATION_MAPPING = {
     '_id': {'path': 'id'},
@@ -372,9 +371,6 @@ ANNOTATION_MAPPING = {
             'analyzer': 'thread'
         },
         'group': {
-            'type': 'string',
-        },
-        'group2': {
             'type': 'string',
         },
         'language': {
