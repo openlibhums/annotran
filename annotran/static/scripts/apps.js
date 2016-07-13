@@ -9,6 +9,7 @@ require('./events.js');
 var app = angular.module("h");
 
 app.controller('AppController', require('./app-controller'))
+    .controller('WidgetController', require('./widget-controller'))
     .directive('languageList', require('./directive/language-list').directive)
     .directive('userList', require('./directive/user-list').directive)
     .directive('annotation', require('./directive/annotation').directive)
@@ -26,6 +27,7 @@ app.controller("languageController", ['$scope', 'langListFactory',
     $scope.languages = langListFactory.getLanguages();
     $scope.language = null;
 }]);
+
 
 app.decorator(
             "annotationDirective",
