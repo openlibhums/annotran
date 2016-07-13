@@ -26,6 +26,7 @@ class GuestExt extends Guest
           # startOffset: annotation.target[0].selector[1].startOffset
           # endContainer: annotation.target[0].selector[1].endContainer
           # endOffset: annotation.target[0].selector[1].endOffset
-          alert(annotation.target[0].selector[1].startContainer)
+          #alert(annotation.target[0].selector[1].startContainer)
+          return null
 
 module.exports = GuestExt
