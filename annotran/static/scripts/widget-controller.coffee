@@ -92,7 +92,7 @@ class WidgetControllerExt extends widgetcontroller
       loaded = []
       loadAnnotations crossframe.frames
 
-    $scope.$on events.LANGUAGE_FOCUSED, ->
+    $scope.$on eventsa.LANGUAGE_FOCUSED, ->
       _resetAnnotations(annotationMapper, drafts, threading)
       loaded = []
       loadAnnotations crossframe.frames
