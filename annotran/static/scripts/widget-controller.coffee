@@ -33,6 +33,7 @@ angular = require('angular')
 eventsa = require('./events')
 events = require('../../../../h/h/static/scripts/events.js');
 
+substitution = require('./annotator/scripts/substitution)
 
 widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.coffee');
 
@@ -74,6 +75,7 @@ class WidgetControllerExt extends widgetcontroller
         if offset < total
           _loadAnnotationsFrom query, offset
 
+        substitution.multipleSubstitution(results.rows)
         annotationMapper.loadAnnotations(results.rows, results.replies)
 
     loadAnnotations = (frames) ->
