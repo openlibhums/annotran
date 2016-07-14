@@ -9,42 +9,8 @@ module.exports = class Substitution extends Annotator.Plugin
 
   pluginInit: ->
   # Register the event handlers required for creating a selection
-
-    ###
-    $(document).bind({
-      "click": @makeSubstitution
-    })
-    ###
-
-
-    this.original_document = ""
-    this.continue_action = ""
-    this.continue_data = null
-
-    # here we setup a DOM Mutation Observer to allow continued execution after we modify the body tag
-    `
-    var target = document.body;
-
-    var observer = new MutationObserver(this.handle_state_continuity);
-    var config = { attributes: true, childList: true, characterData: true };
-
-    observer.observe(target, config);
-    `
-
-    null
-
-  ###
-  destroy: ->
-    $(document).unbind({
-      "click": @makeSubstitution
-    })
     super
-  ###
-  handle_state_continuity: (mutation = null) =>
-    if this.continue_action == "multipleSubstitution"
-      console.log("Annotran: Starting substitution via state machine.")
-      this.multipleSubstitution(null)
-    this.continue_action = ""
+    null
 
   clearDOM: (event = {}) =>
     if this.original_document == ""
@@ -57,66 +23,7 @@ module.exports = class Substitution extends Annotator.Plugin
       `
       return null
 
-
-# This is called when the mouse is clicked on a DOM element.
-# It sets up a dummy annotation and fires it
-#
-# event - The event triggered this. Usually it's a click Event
-#
-# Returns nothing.
-  makeSubstitution: (event = {}) =>
-
-    annotations = []
-
-    first_package = {}
-
-    start_xpath = "/html[1]/body[1]/div[2]/h2[1]"
-    end_xpath = "/html[1]/body[1]/div[2]/div[5]/p[2]"
-
-    data = {
-      start: start_xpath
-      startOffset: 0
-      end: end_xpath
-      endOffset: 2428
-    }
-
-    first_package.data = data
-    first_package.substituteText = "This is a replacement"
-
-    second_package = {}
-
-    start_xpath = "/html[1]/body[1]/div[2]/div[5]/p[2]"
-    end_xpath = "/html[1]/body[1]/div[2]/div[5]/p[2]"
-
-    second_data = {
-      start: start_xpath
-      startOffset: 2430
-      end: end_xpath
-      endOffset: 2432
-    }
-
-    second_package.data = second_data
-    second_package.substituteText = "Another replacement"
-
-    annotations.push(first_package)
-    annotations.push(second_package)
-
-    this.continue_action = "multiple_substitute"
-    this.continue_data = annotations
-
-    # clear the DOM back to its original state
-    # NB this may mean that the state machine will re-call this function via the DOM Mutation Observer
-    this.clearDOM()
-
-    this.multipleSubstitution(annotations)
-
-    return
-
   multipleSubstitution: (annotations = []) =>
-    # reset state machine variables if this script is executing
-    this.continue_action = ""
-    this.continue_data = null
-
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
     for data in annotations.reverse()
