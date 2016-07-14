@@ -50,6 +50,7 @@ function groups(localStorage, session, settings, $rootScope, $http) {
   // that belong to this group, and any new annotations that the user creates
   // will be created in this group.
   var focusedGroup;
+  var eventBroadcasted = false;
 
   function all() {
     return session.state.groups || [];
@@ -88,13 +89,26 @@ function groups(localStorage, session, settings, $rootScope, $http) {
    * a previous session. Lastly, we fall back to the first group available.
    */
   function focused() {
+    //events.GROUP_FOCUSED boradcasting for the first time - not the best way currently
     if (focusedGroup) {
+      if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
       return focusedGroup;
     }
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
     if (fromStorage) {
       focusedGroup = fromStorage;
+      if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
       return focusedGroup;
+    }
+    if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id);
     }
     return all()[0];
   }
