@@ -52,7 +52,8 @@ import json
 def includeme(config):
     config.registry.settings.setdefault('webassets.bundles', 'annotran:assets.yaml')
     config.include('pyramid_webassets')
-
+    config.override_asset(to_override = 'h:templates/old-home.html.jinja2',
+                        override_with = 'annotran:templates/home.html.jinja2')
     config.commit()
 
 
@@ -95,6 +96,7 @@ def main(global_config, **settings):
     h.groups.views._read_group = replacements._read_group
     h.api.groups.set_group_if_reply = replacements.set_group_if_reply
     h.client.render_app_html = replacements.render_app_html
+    #h.api.search.query.GroupFilter = replacements.GroupFilter
 
     #ANNOTATION_MAPPING_EXT = json.loads(h.config.ANNOTATION_MAPPING)
     h.config.ANNOTATION_MAPPING = ANNOTATION_MAPPING_EXT
