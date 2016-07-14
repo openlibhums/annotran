@@ -78,7 +78,6 @@ class WidgetControllerExt extends widgetcontroller
         if offset < total
           _loadAnnotationsFrom query, offset, crossframe
 
-        console.log("Passing annotations to substitution function via 'passAnnotations' event")
         crossframe.call "passAnnotations", results.rows
         annotationMapper.loadAnnotations(results.rows, results.replies)
 
