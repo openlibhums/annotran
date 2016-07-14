@@ -120,11 +120,20 @@ module.exports = class Substitution extends Annotator.Plugin
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
     for data in annotations.reverse()
-      this.singleSubstitution(data.target[0].selector[1], data.text)
+
+      packager = {
+        start: data.target[0].selector[1].startContainer
+        startOffset: data.target[0].selector[1].startOffset
+        end: data.target[0].selector[1].endContainer
+        endOffset: data.target[0].selector[1].endOffset
+      }
+
+      this.singleSubstitution(packager, data.text)
 
   singleSubstitution: (data = {}, substituteText = '') =>
+
     # resolve the passed xpath
-    full_range = new xpathRange.SerializedRange(data).normalize(document)
+    full_range = new xpathRange.SerializedRange(data).normalize(document.body)
 
     # map the start and end points
     start = full_range.start

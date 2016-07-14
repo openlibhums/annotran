@@ -50,6 +50,8 @@ class WidgetControllerExt extends widgetcontroller
     $scope.threadRoot = threading.root
     $scope.sortOptions = ['Newest', 'Oldest', 'Location']
 
+    this.crossframe = crossframe
+
     @chunkSize = 200
     loaded = []
 
@@ -59,7 +61,7 @@ class WidgetControllerExt extends widgetcontroller
       # Reload all the drafts
       threading.thread(drafts.unsaved())
 
-    _loadAnnotationsFrom = (query, offset) =>
+    _loadAnnotationsFrom = (query, offset, crossframe) =>
       queryCore =
         limit: @chunkSize
         offset: offset
@@ -74,11 +76,9 @@ class WidgetControllerExt extends widgetcontroller
         total = results.total
         offset += results.rows.length
         if offset < total
-          _loadAnnotationsFrom query, offset
+          _loadAnnotationsFrom query, offset, crossframe
 
-        Annotator = require('annotator')
-
-        Annotator._instances[0].plugins.Substitution.multipleSubstitution(results.rows)
+        crossframe.call "passAnnotations", results.rows
         annotationMapper.loadAnnotations(results.rows, results.replies)
 
     loadAnnotations = (frames) ->
@@ -86,11 +86,12 @@ class WidgetControllerExt extends widgetcontroller
         if f.uri in loaded
           continue
         loaded.push(f.uri)
-        _loadAnnotationsFrom({uri: f.uri}, 0)
+        _loadAnnotationsFrom({uri: f.uri}, 0, crossframe)
 
       if loaded.length > 0
         streamFilter.resetFilter().addClause('/uri', 'one_of', loaded)
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
+
 
     $scope.$on events.GROUP_FOCUSED, ->
       _resetAnnotations(annotationMapper, drafts, threading)
