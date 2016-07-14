@@ -100,7 +100,7 @@ function groups(localStorage, session, settings, $rootScope, $http) {
 
       return focusedGroup;
     }
-    
+
     return all()[0];
   }
 

@@ -2,18 +2,19 @@ Annotator = require('annotator')
 $ = Annotator.$
 xpathRange = Annotator.Range
 Util = Annotator.Util
-original_document = ''
 
 # This plugin implements the UI code for selecting sentences by clicking
 module.exports = class Substitution extends Annotator.Plugin
 
   pluginInit: ->
   # Register the event handlers required for creating a selection
+    this.original_document = ""
     super
     null
 
   clearDOM: (event = {}) =>
     if this.original_document == ""
+      console.log("Annotran: Saving original DOM state")
       this.original_document = `$("body").html()`
 
     if this.original_document != `$("body").html()`
@@ -26,6 +27,7 @@ module.exports = class Substitution extends Annotator.Plugin
   multipleSubstitution: (annotations = []) =>
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
+    console.log("Initializing substitution")
     for data in annotations.reverse()
 
       packager = {

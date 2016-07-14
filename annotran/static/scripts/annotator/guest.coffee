@@ -27,10 +27,10 @@ class GuestExt extends Guest
 
       crossframe.on 'passAnnotations', (annotations) =>
         Annotator = require('annotator')
-        Annotator._instances[0].plugins.Substitution.continue_action = "multiple_substitute"
-        Annotator._instances[0].plugins.Substitution.continue_data = annotations
         Annotator._instances[0].plugins.Substitution.clearDOM()
-        Annotator._instances[0].plugins.Substitution.multipleSubstitution(annotations)
+
+        if annotations.length > 0
+          Annotator._instances[0].plugins.Substitution.multipleSubstitution(annotations)
 
       this.subscribe 'annotationsLoaded', (annotations) =>
         for annotation in annotations
