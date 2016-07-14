@@ -163,7 +163,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupubid) {
     //load languages for selected group
     $rootScope.groupPubid = groupubid;
-    focused();
+    //focused();
      /*
     var lid;
     if (focusedLanguage)

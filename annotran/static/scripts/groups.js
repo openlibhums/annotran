@@ -42,7 +42,6 @@ var STORAGE_KEY = 'hypothesis.groups.focus';
 // this assumes that h is stored in the same root directory as annotran
 var events = require('../../../../h/h/static/scripts/events.js');
 
-
 // @ngInject
 function groups(localStorage, session, settings, $rootScope, $http) {
   // The currently focused group. This is the group that's shown as selected in
@@ -91,25 +90,27 @@ function groups(localStorage, session, settings, $rootScope, $http) {
   function focused() {
     //events.GROUP_FOCUSED boradcasting for the first time - not the best way currently
     if (focusedGroup) {
-      if (!eventBroadcasted) {
-        eventBroadcasted = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
-      }
+      if ($rootScope.firstLoad == undefined) {
+        $rootScope.firstLoad = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id)
+      };
       return focusedGroup;
     }
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
     if (fromStorage) {
       focusedGroup = fromStorage;
-      if (!eventBroadcasted) {
-        eventBroadcasted = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
-      }
+      if ($rootScope.firstLoad == undefined) {
+        $rootScope.firstLoad = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id)
+      };
       return focusedGroup;
     }
-    if (!eventBroadcasted) {
-        eventBroadcasted = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id);
-    }
+
+    if ($rootScope.firstLoad == undefined) {
+      $rootScope.firstLoad = true;
+      $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id)
+    };
+
     return all()[0];
   }
 
