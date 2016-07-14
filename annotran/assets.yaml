@@ -151,6 +151,7 @@ app_js:
             - annotran:static/scripts/directive/*.js
             - annotran:static/scripts/*.js
             - annotran:static/scripts/directive/*.coffee
+            - annotran:static/scripts/*.coffee
     - config
 
 app_css:
