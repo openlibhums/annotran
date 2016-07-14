@@ -120,7 +120,7 @@ module.exports = class Substitution extends Annotator.Plugin
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
     for data in annotations.reverse()
-      this.singleSubstitution(data.data, data.substituteText)
+      this.singleSubstitution(data.target[0].selector[1], data.text)
 
   singleSubstitution: (data = {}, substituteText = '') =>
     # resolve the passed xpath

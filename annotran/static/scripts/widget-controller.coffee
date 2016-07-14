@@ -31,11 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 angular = require('angular')
 
 eventsa = require('./events')
-events = require('../../../../h/h/static/scripts/events.js');
+events = require('../../../../h/h/static/scripts/events.js')
 
-substitution = require('./annotator/scripts/substitution)
+substitution = require('./annotator/plugin/substitution')
 
-widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.coffee');
+widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.coffee')
+
 
 class WidgetControllerExt extends widgetcontroller
   this.$inject = [
@@ -75,7 +76,9 @@ class WidgetControllerExt extends widgetcontroller
         if offset < total
           _loadAnnotationsFrom query, offset
 
-        substitution.multipleSubstitution(results.rows)
+        Annotator = require('annotator')
+
+        Annotator._instances[0].plugins.Substitution.multipleSubstitution(results.rows)
         annotationMapper.loadAnnotations(results.rows, results.replies)
 
     loadAnnotations = (frames) ->
