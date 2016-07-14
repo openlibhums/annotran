@@ -91,16 +91,25 @@ function groups(localStorage, session, settings, $rootScope, $http) {
   function focused() {
     //events.GROUP_FOCUSED boradcasting for the first time - not the best way currently
     if (focusedGroup) {
-
+      if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
       return focusedGroup;
     }
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
     if (fromStorage) {
       focusedGroup = fromStorage;
-
+      if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
       return focusedGroup;
     }
-
+    if (!eventBroadcasted) {
+        eventBroadcasted = true;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id);
+    }
     return all()[0];
   }
 
