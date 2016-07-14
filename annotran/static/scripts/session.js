@@ -32,9 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var assign = require('core-js/library/fn/object/assign');
 var angular = require('angular');
 
+var eventsa = require('./events')
 var events = require('../../../../h/h/static/scripts//events.js');
 var retryUtil = require('../../../../h/h/static/scripts//retry-util');
-
 
 var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -182,7 +182,7 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
     }
 
     if (languagesChanged) {
-      $rootScope.$broadcast(events.LANGUAGES_CHANGED, {
+      $rootScope.$broadcast(eventsa.LANGUAGES_CHANGED, {
         initialLoad: isInitialLoad,
       });
     }
