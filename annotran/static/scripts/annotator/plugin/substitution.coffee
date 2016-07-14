@@ -28,6 +28,7 @@ module.exports = class Substitution extends Annotator.Plugin
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
     console.log("Initializing substitution")
+    return
     for data in annotations.reverse()
 
       packager = {

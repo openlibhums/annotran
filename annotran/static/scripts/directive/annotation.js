@@ -194,7 +194,6 @@ function AnnotationController(
     * can call the methods.
     */
   function init() {
-    console.log("in annotran");
     /** The currently active action - 'view', 'create' or 'edit'. */
     vm.action = 'view';
 
