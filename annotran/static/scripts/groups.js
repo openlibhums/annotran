@@ -108,7 +108,7 @@ function groups(localStorage, session, settings, $rootScope, $http) {
     }
     if (!eventBroadcasted) {
         eventBroadcasted = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+        $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id);
     }
     return all()[0];
   }
