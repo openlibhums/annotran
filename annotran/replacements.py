@@ -98,7 +98,7 @@ def _angular_template_context_ext(name):
     """
     jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
     jinja_env = h.client.jinja_env
-    if (name == 'user_list' or name == 'language_list' or name == 'top_bar' or name == 'annotation'):
+    if (name == 'user_list' or name == 'language_list' or name == 'top_bar' or name == 'annotation' or name == 'sidebar_tutorial'):
         angular_template_path = 'client/{}.html'.format(name)
         content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
                                                     angular_template_path)
