@@ -12,6 +12,8 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       "click": @makeSentenceSelection
     })
 
+    this.operational = false
+
     null
 
   destroy: ->
@@ -19,6 +21,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       "click": @makeSentenceSelection
     })
     super
+
+  toggleOperation: () ->
+    this.operational = not this.operational
 
   # This is called when the mouse is clicked on a DOM element.
   # Checks to see if there is a sentence that we can select, if so
@@ -29,8 +34,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   # Returns nothing.
   makeSentenceSelection: (event = {}) =>
 
-    # disabled for now
-    return
+    if this.operational == false
+      # we are not in sentence selection mode
+      return
 
     # Get the currently selected ranges.
 
