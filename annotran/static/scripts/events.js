@@ -34,4 +34,8 @@ module.exports = {
   LANGUAGE_FOCUSED: 'languageFocused',
   /** Broadcast when the list of groups changes */
   LANGUAGES_CHANGED: 'languagesChanged',
+       /** Broadcast when the list of users is loaded*/
+  USERS_LOADED: 'usersLoaded',
+          /** Broadcast when the currently selected user changes*/
+  USERS_FOCUSED: 'userFocused',
 };

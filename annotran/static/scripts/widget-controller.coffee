@@ -78,8 +78,26 @@ class WidgetControllerExt extends widgetcontroller
         if offset < total
           _loadAnnotationsFrom query, offset, crossframe
 
+        loadUsers(results.rows)
+        userAnnotations = []
+
+        ##1. show users
+        ##2. on user focus event
+            ##a) eliminate from userAnnotations annotations that do not belong to the current user
+        user = results.rows[0].user #TODO - fill the user with the selected user!
+        for annot in results.rows when annot.user == user
+          userAnnotations.push annot
+        
+            ##b) call two lines below only on user focus event
+
         crossframe.call "passAnnotations", results.rows
         annotationMapper.loadAnnotations(results.rows, results.replies)
+    
+    loadUsers = (annotations) ->      
+      userList = []
+      for annot in annotations when annot.group == groups.focused().id and annot.language == languages.focused().id
+        userList = new Set()
+        userList.add annot.user
 
     loadAnnotations = (frames) ->
       for f in frames
