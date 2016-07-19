@@ -128,10 +128,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
    * a previous session. Lastly, we fall back to the first language available.
    */
   function focused() {
-    if ($rootScope.firstLoad == undefined) {
-      $rootScope.firstLoad = true;
-      $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusedLanguage.id)
-    };
 
     if (focusedLanguage && focusedLanguage.groupubid == $rootScope.groupPubid) {
       if (containsValue($rootScope.groupPubid, focusedLanguage)) {
