@@ -70,7 +70,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   function all() {
     var i;
-
+    var oldPubid = $rootScope.groupPubid;
     // iterate over all languages stored in the session
     for (i = 0; i < session.state.languages.length; i++) {
       $rootScope.groupPubid = session.state.languages[i].groupubid;
@@ -81,6 +81,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       // add the session state languages variable to the root scope
       $rootScope.map[$rootScope.groupPubid].push(session.state.languages[i]);
     }
+
+    $rootScope.groupPubid = oldPubid;
     return $rootScope.map || [];
   };
   
@@ -163,6 +165,11 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   };
 
+  function updateRootScopeAndReturnLanguageList(groupPubid) {
+    $rootScope.groupPubid = groupPubid;
+    return getLanguageList();
+  }
+
   // reset the focused language if the user leaves it
   $rootScope.$on(eventsa.LANGUAGES_CHANGED, function () {
     if (focusedLanguage) {
@@ -173,13 +180,14 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   });
 
-
-  $rootScope.$on(events.GROUP_FOCUSED, function (event, groupubid) {
+  $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
-    $rootScope.groupPubid = groupubid;
-    
+    return updateRootScopeAndReturnLanguageList(groupPubid);
+  });
 
-    return getLanguageList();
+  $rootScope.$on(events.LANGUAGE_FOCUSED, function (event, groupPubid) {
+    //load languages for selected group
+    return updateRootScopeAndReturnLanguageList(groupPubid);
   });
   
   return {

@@ -128,15 +128,17 @@ function groups(localStorage, session, settings, $rootScope, $http) {
 
   // reset the focused group if the user leaves it
   $rootScope.$on(events.GROUPS_CHANGED, function () {
-
     if (focusedGroup) {
       focusedGroup = get(focusedGroup.id);
       $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusedGroup.id);
       if (!focusedGroup) {
         var focusResult = focused();
-
-        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focused());
+        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusResult.id);
       }
+    }
+    else {
+      var focusResult = focused();
+      $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusResult);
     }
   });
 

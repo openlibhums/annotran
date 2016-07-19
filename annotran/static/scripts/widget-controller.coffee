@@ -87,7 +87,7 @@ class WidgetControllerExt extends widgetcontroller
         ##1. show users
         ##2. on user focus event
             ##a) eliminate from userAnnotations annotations that do not belong to the current user
-        user = results.rows[0].user #TODO - fill the user with the selected user!
+        #user = results.rows[0].user #TODO - fill the user with the selected user!
         for annot in results.rows when annot.user == user
           userAnnotations.push annot
         
