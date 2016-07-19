@@ -60,9 +60,10 @@ class Language(Base):
                                   backref='languages',
                                   secondary='group_language')
 
-    def __init__(self, name, group):
+    def __init__(self, name, group=None):
         self.name = name
-        self.members.append(group)
+        if group:
+            self.members.append(group)
 
     @sa.orm.validates('name')
     def validate_name(self, key, name):
@@ -76,6 +77,11 @@ class Language(Base):
     def get_by_pubid(cls, pubid):
         """Return the language with the given pubid, or None."""
         return cls.query.filter(cls.pubid == pubid).first()
+
+    @classmethod
+    def get_public(cls):
+        """Return all public languages"""
+        return cls.query.filter(cls.members == None).all()
 
     @classmethod
     def get_by_id(cls, id_):

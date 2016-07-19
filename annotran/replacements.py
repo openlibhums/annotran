@@ -185,6 +185,17 @@ def _current_languages(request):
                                          pubid=language.pubid, groupubid=group.pubid),
             })
 
+    public_languages = models.Language.get_public()
+
+    for language in public_languages:
+        languages.append({
+            'groupubid': '__world__',
+            'name': language.name,
+            'id': language.pubid,
+            'url': request.route_url('language_read',
+                                     pubid=language.pubid, groupubid=group.pubid),
+        })
+
     return languages
 
 def get_group(request):

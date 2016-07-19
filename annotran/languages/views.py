@@ -57,8 +57,13 @@ def addLanguage(request):
 
     language = request.matchdict["language"]
     groupubid = request.matchdict["groupubid"]
+    group = h.groups.models.Group.get_by_pubid(groupubid)
 
-    language = models.Language(name=language, group = h.groups.models.Group.get_by_pubid(groupubid))
+    if group:
+        language = models.Language(name=language, group=h.groups.models.Group.get_by_pubid(groupubid))
+    else:
+        language = models.Language(name=language)
+
     request.db.add(language)
 
     # We need to flush the db session here so that language.id will be generated.
@@ -76,7 +81,8 @@ def read(request):
     language = models.Language.get_by_pubid(pubid)
     group = h.groups.models.Group.get_by_pubid(groupubid)
     if group is None:
-        raise exc.HTTPNotFound()
+        # this is the public group
+        return replacements._read_group(request, group, language)
     if not request.authenticated_userid:
         return None
     else:
