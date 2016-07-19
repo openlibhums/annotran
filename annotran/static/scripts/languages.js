@@ -76,10 +76,15 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       $rootScope.groupPubid = session.state.languages[i].groupubid;
 
       // if an item for this group pub ID doesn't exist, then create a blank array
-      $rootScope.map[$rootScope.groupPubid] = [];
+      if (!$rootScope.map[$rootScope.groupPubid])
+      {
+        $rootScope.map[$rootScope.groupPubid] = [];
+      }
 
       // add the session state languages variable to the root scope
-      $rootScope.map[$rootScope.groupPubid].push(session.state.languages[i]);
+      if($rootScope.map[$rootScope.groupPubid].indexOf(session.state.languages[i]) == -1) {
+        $rootScope.map[$rootScope.groupPubid].push(session.state.languages[i]);
+      }
     }
 
     $rootScope.groupPubid = oldPubid;
