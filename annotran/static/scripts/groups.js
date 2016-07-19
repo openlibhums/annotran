@@ -88,30 +88,32 @@ function groups(localStorage, session, settings, $rootScope, $http) {
    * a previous session. Lastly, we fall back to the first group available.
    */
   function focused() {
-    //events.GROUP_FOCUSED boradcasting for the first time - not the best way currently
     if (focusedGroup) {
       if ($rootScope.firstLoad == undefined) {
         $rootScope.firstLoad = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id)
-      };
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
       return focusedGroup;
     }
+
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
+
     if (fromStorage) {
       focusedGroup = fromStorage;
+
       if ($rootScope.firstLoad == undefined) {
         $rootScope.firstLoad = true;
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id)
-      };
-      return focusedGroup;
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup.id);
+      }
+
+      return focusedGroup.id;
     }
 
     if ($rootScope.firstLoad == undefined) {
       $rootScope.firstLoad = true;
-      $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id)
-    };
-
-    return all()[0];
+      $rootScope.$broadcast(events.GROUP_FOCUSED, all()[0].id);
+    }
+    return all()[0].id;
   }
 
   /** Set the group with the passed id as the currently focused group. */
@@ -126,10 +128,14 @@ function groups(localStorage, session, settings, $rootScope, $http) {
 
   // reset the focused group if the user leaves it
   $rootScope.$on(events.GROUPS_CHANGED, function () {
+
     if (focusedGroup) {
       focusedGroup = get(focusedGroup.id);
+      $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusedGroup.id);
       if (!focusedGroup) {
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focused());
+        var focusResult = focused();
+
+        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focused());
       }
     }
   });

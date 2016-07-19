@@ -62,6 +62,9 @@ class WidgetControllerExt extends widgetcontroller
       threading.thread(drafts.unsaved())
 
     _loadAnnotationsFrom = (query, offset, crossframe) =>
+      if languages.focused() == undefined
+        return
+
       queryCore =
         limit: @chunkSize
         offset: offset
