@@ -40,15 +40,16 @@ widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.co
 
 class WidgetControllerExt extends widgetcontroller
   this.$inject = [
-    '$scope', 'annotationUI', 'crossframe', 'annotationMapper', 'drafts', 'groups', 'languages'
+    '$scope', 'annotationUI', 'crossframe', 'annotationMapper', 'drafts', 'groups', 'languages', 'session',
     'streamer', 'streamFilter', 'store', 'threading'
   ]
   constructor:   (
-     $scope,   annotationUI,   crossframe,   annotationMapper,  drafts,    groups, languages,
+     $scope,   annotationUI,  crossframe,   annotationMapper,  drafts, groups, languages, session,
      streamer,   streamFilter,   store,   threading
   ) ->
     $scope.threadRoot = threading.root
     $scope.sortOptions = ['Newest', 'Oldest', 'Location']
+    $scope.currentUser = session.state.userid
 
     this.crossframe = crossframe
 
@@ -81,26 +82,41 @@ class WidgetControllerExt extends widgetcontroller
         if offset < total
           _loadAnnotationsFrom query, offset, crossframe
 
-        loadUsers(results.rows)
+        userList = loadUsers(results.rows)
+
+        # note: selectedUser is set in user-list.js directive
+        selectedUser = $scope.$root.selectedUser
+
+        if selectedUser == "self"
+          selectedUser = $scope.currentUser
+
+        console.log("Loading annotations for user: " + selectedUser)
+
         userAnnotations = []
 
         ##1. show users
         ##2. on user focus event
             ##a) eliminate from userAnnotations annotations that do not belong to the current user
         #user = results.rows[0].user #TODO - fill the user with the selected user!
-        for annot in results.rows when annot.user == user
+        for annot in results.rows when annot.user == selectedUser
           userAnnotations.push annot
         
-            ##b) call two lines below only on user focus event
+        ##b) call two lines below only on user focus event
 
-        crossframe.call "passAnnotations", results.rows
-        annotationMapper.loadAnnotations(results.rows, results.replies)
+        crossframe.call "passAnnotations", userAnnotations
+        annotationMapper.loadAnnotations(userAnnotations, null)
     
     loadUsers = (annotations) ->      
       userList = []
+
+      console.log("Returning users in group: " + groups.focused().id)
+      console.log("Returning users in language: " + languages.focused().id)
+
       for annot in annotations when annot.group == groups.focused().id and annot.language == languages.focused().id
         userList = new Set()
         userList.add annot.user
+
+      return userList
 
     loadAnnotations = (frames) ->
       for f in frames

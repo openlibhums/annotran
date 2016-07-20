@@ -274,7 +274,7 @@ function AnnotationController(
     // Call `onGroupFocused()` whenever the currently-focused group changes.
     $scope.$on(events.GROUP_FOCUSED, onGroupFocused);
 
-    // Call `onLanguageFocused()` whenever the currently-focused langauge changes.
+    // Call `onLanguageFocused()` whenever the currently-focused language changes.
     $scope.$on(eventsa.LANGUAGE_FOCUSED, onLanguageFocused);
 
     // Call `onUserChanged()` whenever the user logs in or out.
