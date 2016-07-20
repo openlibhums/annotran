@@ -44,7 +44,7 @@ var STORAGE_KEY = 'annotran.languages.focus';
 
 // this assumes that h is stored in the same root directory as annotran
 var events = require('../../../../h/h/static/scripts/events.js');
-var eventsa =  require('./events')
+var eventsa =  require('./events');
 
 // @ngInject
 function languages(localStorage, session, settings, $rootScope, $http) {
@@ -85,7 +85,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       if($rootScope.map[$rootScope.groupPubid].indexOf(session.state.languages[i]) == -1) {
         $rootScope.map[$rootScope.groupPubid].push(session.state.languages[i]);
       }
-      
+
     }
 
     $rootScope.groupPubid = oldPubid;

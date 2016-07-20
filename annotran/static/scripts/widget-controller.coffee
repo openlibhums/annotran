@@ -49,7 +49,7 @@ class WidgetControllerExt extends widgetcontroller
   ) ->
     $scope.threadRoot = threading.root
     $scope.sortOptions = ['Newest', 'Oldest', 'Location']
-    $scope.currentUser = session.state.userid
+    $scope.$root.currentUser = session.state.userid
 
     this.crossframe = crossframe
 
@@ -88,7 +88,7 @@ class WidgetControllerExt extends widgetcontroller
         selectedUser = $scope.$root.selectedUser
 
         if selectedUser == "self"
-          selectedUser = $scope.currentUser
+          selectedUser = $scope.$root.currentUser
 
         console.log("Loading annotations for user: " + selectedUser)
 
@@ -103,14 +103,12 @@ class WidgetControllerExt extends widgetcontroller
         
         ##b) call two lines below only on user focus event
 
+        $scope.$root.userAnnotations = userAnnotations
         crossframe.call "passAnnotations", userAnnotations
         annotationMapper.loadAnnotations(userAnnotations, null)
     
     loadUsers = (annotations) ->      
       userList = []
-
-      console.log("Returning users in group: " + groups.focused().id)
-      console.log("Returning users in language: " + languages.focused().id)
 
       for annot in annotations when annot.group == groups.focused().id and annot.language == languages.focused().id
         userList = new Set()

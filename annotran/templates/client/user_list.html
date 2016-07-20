@@ -9,7 +9,12 @@
     </ul>
     <div class="tab-content">
       <p>Select the user to view their translations. Or <a href="#" ng-click="setUser('self')">start, edit, or view your own translation</a>.</p>
-      <p></p>
+      <p>{{user.auth.username}}</p>
+      <ul class="user-list">
+        <li class="user-item" ng-repeat="user in $root.list_of_users">
+        <a href="#">{{user}}</a>
+      </li>
+    </ul>
     </div>
   </div>
 </div>

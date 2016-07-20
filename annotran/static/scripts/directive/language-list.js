@@ -1,6 +1,5 @@
 'use strict';
 
-//TODO - resolve this path
 var events = require('../../../../../h/h/static/scripts/events.js');
 
 // @ngInject
@@ -19,6 +18,7 @@ function LanguageListController($scope, $window, languages) {
 
   $scope.showUserList = function () {
     $scope.$parent.userList.visible = true;
+    $scope.$root.updateUserList();
   }
   
 }
