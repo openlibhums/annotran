@@ -16,6 +16,10 @@ function LanguageListController($scope, $window, languages) {
   $scope.focusLanguage = function (languageId) {
     languages.focus(languageId);
   }
+
+  $scope.showUserList = function () {
+    $scope.$parent.userList.visible = !$scope.$parent.userList.visible;
+  }
 }
 
 /**
@@ -34,7 +38,8 @@ function languageList( $window, languages, settings) {
     restrict: 'E',
     scope: {
       auth: '=',
-      userList: '='
+      userList: '=',
+      showUserList: '='
     },
     templateUrl: 'language_list.html'
   };

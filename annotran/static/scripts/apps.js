@@ -13,6 +13,8 @@ app.controller('AppController', require('./app-controller'))
     .directive('languageList', require('./directive/language-list').directive)
     .directive('userList', require('./directive/user-list').directive)
     .directive('annotation', require('./directive/annotation').directive)
+    .directive('topBar', require('./directive/top-bar').directive)
+
 
 
 .service('languages', require('./languages'))
@@ -29,10 +31,18 @@ app.controller("languageController", ['$scope', 'langListFactory',
 }]);
 
 
+// these decorators override hypothes.is's decorators
+
 app.decorator(
             "annotationDirective",
             function annotationDirectiveDecorator( $delegate ) {
-                console.log( "There are %s matching directives.", $delegate.length );                
+                return( [ $delegate[1] ] );
+            }
+        );
+
+app.decorator(
+            "topBarDirective",
+            function topBarDirectiveDecorator( $delegate ) {
                 return( [ $delegate[1] ] );
             }
         );

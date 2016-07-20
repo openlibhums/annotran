@@ -56,6 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-login="login()"
       on-logout="logout()"
       account-dialog="accountDialog"
+      user-list="userList"
       share-dialog="shareDialog"
       is-sidebar="::isSidebar"
       search-controller="search"
@@ -77,6 +78,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 on-close="accountDialog.visible=false"></login-form>
       <sidebar-tutorial ng-if="isSidebar"></sidebar-tutorial>
       <share-dialog ng-show="shareDialog.visible"></share-dialog>
+      <user-list ng-if="userList.visible" on-close="userList.visible=false"></user-list>
+
       <main ng-view=""></main>
     </div>
 

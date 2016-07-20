@@ -10,6 +10,13 @@ class AppControllerExt extends appcontroller
     super    
     $scope.userList = visible: false
 
+    # Start the user-list flow. This will present the user with the user-list.
+
+    $scope.showUserList = ->
+      alert("Running")
+      $scope.userList.visible = true
+      
+
 
 module.exports = AppControllerExt
 
