@@ -72,7 +72,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     var i;
     var oldPubid = $rootScope.groupPubid;
     // iterate over all languages stored in the session
-    console.log(session.state.languages);
     for (i = 0; i < session.state.languages.length; i++) {
       $rootScope.groupPubid = session.state.languages[i].groupubid;
 
@@ -86,8 +85,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       if($rootScope.map[$rootScope.groupPubid].indexOf(session.state.languages[i]) == -1) {
         $rootScope.map[$rootScope.groupPubid].push(session.state.languages[i]);
       }
-
-      console.log($rootScope.map);
+      
     }
 
     $rootScope.groupPubid = oldPubid;

@@ -9,7 +9,13 @@ function Controller($scope, flash, session, formRespond, settings) {
     $scope.model = {};
   }
 
+  $scope.hideUserList = function () {
+    $scope.$parent.userList.visible = false;
+  }
 
+  $scope.setUser = function (id) {
+    this.$root.selectedUser = id;
+  }
   
 }
 
@@ -21,6 +27,7 @@ module.exports = {
       controllerAs: 'userListController',
       restrict: 'E',
       scope: {
+        auth: '=',
         onClose: '&',
         showUserList: '='
       },

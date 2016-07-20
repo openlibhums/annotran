@@ -2,13 +2,13 @@
   <i class="close h-icon-close"
      role="button"
      title="Close"
-     ng-click="vm.onClose()"></i>
+     ng-click="hideUserList()"></i>
   <div class="form-vertical">
     <ul class="nav nav-tabs">
       <li class="active"><a href="">User</a></li>
     </ul>
     <div class="tab-content">
-      <p>Select the user to view their translations.</p>
+      <p>Select the user to view their translations. Or <a href="#" ng-click="setUser('self')">start, edit, or view your own translation</a>.</p>
       <p></p>
     </div>
   </div>

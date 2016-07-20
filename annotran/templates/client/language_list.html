@@ -65,16 +65,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           <div class="language-name-container">
             <a class="language-name-link"
                href=""
+               ng-click="showUserList()"
                title="{{ language.public ? 'Show public translations' : 'Show and create translations in ' + language.name }}">
                {{language.name}}
             </a>
           </div>
         </div>
       </div>
-      <a ng-click="showUserList()"
-         title="View users">
-         <i class="h-icon-share"></i>
-      </a>
     </li>
     <li class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
       <div class="language-item">
