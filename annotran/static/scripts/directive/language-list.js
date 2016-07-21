@@ -17,7 +17,7 @@ function LanguageListController($scope, $window, languages) {
   }
 
   $scope.showUserList = function () {
-    $scope.$parent.userList.visible = true;
+    $scope.$root.userListvisible = true;
     $scope.$root.updateUserList();
   }
   

@@ -53,7 +53,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // will be created for this language.
   var focusedLanguage;
   var focusedGroup;
-  var groupPubid;
+  var groupPubidp
   
  //var map;
 
@@ -98,9 +98,13 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       if (!$rootScope.map) {
         $rootScope.map = new Object();
         $rootScope.map = all();
+      } else {
+        console.log("rootScope.map already exists");
       }
       result = $rootScope.map[$rootScope.groupPubid];
       return result;
+    } else {
+      console.log("No groupPubID");
     }
   };
 
@@ -178,18 +182,26 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
         $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, focused());
+        $rootScope.userListvisible = true;
+        $rootScope.updateUserList();
       }
     }
   });
 
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
-    return updateRootScopeAndReturnLanguageList(groupPubid);
+    var lang_list = updateRootScopeAndReturnLanguageList(groupPubid);
+    $rootScope.userListvisible = true;
+    $rootScope.updateUserList();
+    return lang_list;
   });
 
   $rootScope.$on(events.LANGUAGE_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
-    return updateRootScopeAndReturnLanguageList(groupPubid);
+    var lang_list = updateRootScopeAndReturnLanguageList(groupPubid);
+    $rootScope.userListvisible = true;
+    $rootScope.updateUserList();
+    return lang_list;
   });
   
   return {

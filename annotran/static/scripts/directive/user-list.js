@@ -12,7 +12,7 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
   }
 
   $scope.hideUserList = function () {
-    $scope.$parent.userList.visible = false;
+    $scope.$root.userListvisible = false;
   };
 
   $scope.setUser = function (id) {
