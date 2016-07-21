@@ -65,7 +65,8 @@ module.exports = class Sidebar extends Host
   _setupDocumentEvents: ->
     @element.on 'click', (event) =>
       if !@selectedTargets?.length
-        this.hide()
+        # don't hide sidebar
+        return this
     return this
 
   _setupSidebarEvents: ->
