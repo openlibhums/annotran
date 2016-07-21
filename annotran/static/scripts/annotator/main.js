@@ -40,6 +40,7 @@ Annotator.PdfSidebar = require('../../../../../h/h/static/scripts/annotator/pdf-
 // UI plugins
 Annotator.Plugin.BucketBar = require('../../../../../h/h/static/scripts/annotator/plugin/bucket-bar');
 Annotator.Plugin.Toolbar = require('./plugin/toolbar');
+Annotator.Plugin.CSSModify = require('./plugin/cssmodify');
 
 // Document type plugins
 Annotator.Plugin.PDF = require('../../../../../h/h/static/scripts/annotator/plugin/pdf');

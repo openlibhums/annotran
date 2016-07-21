@@ -26,10 +26,12 @@ class GuestExt extends Guest
       crossframe.on 'resetDOM', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()
+        Annotator._instances[0].plugins.CSSModify.showAdder()
 
       crossframe.on 'passAnnotations', (annotations) =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()
+        Annotator._instances[0].plugins.CSSModify.hideAdder()
 
         if annotations.length > 0
           Annotator._instances[0].plugins.Substitution.multipleSubstitution(annotations)

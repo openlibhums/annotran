@@ -38,6 +38,7 @@ module.exports = class Sidebar extends Host
     TextSelection: {}
     SentenceSelection: {}
     Substitution: {}
+    CSSModify: {}
     BucketBar:
       container: '.annotator-frame'
     Toolbar:
