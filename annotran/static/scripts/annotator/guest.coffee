@@ -6,10 +6,7 @@ $ = Annotator.$
 class GuestExt extends Guest
     constructor: (element, options) ->
       super
-      #$body = angular.element('body')
-      #$rootScope = $body.scope().$root
 
-      #alert($rootScope)
 
     html: extend {}, Annotator::html,
       adder: '''
