@@ -96,20 +96,11 @@ class WidgetControllerExt extends widgetcontroller
 
         userAnnotations = []
 
-        ##1. show users
-        ##2. on user focus event
-            ##a) eliminate from userAnnotations annotations that do not belong to the current user
-        #user = results.rows[0].user #TODO - fill the user with the selected user!
-
         if selectedUser != undefined
-          console.log("Using filtered set")
           for annot in results.rows when annot.user == selectedUser
             userAnnotations.push annot
         else
-          console.log("Using results.rows")
           userAnnotations = results.rows
-        
-        ##b) call two lines below only on user focus event
 
         $scope.$root.userAnnotations = userAnnotations
         $scope.$root.updateUserList()

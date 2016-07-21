@@ -419,6 +419,11 @@ function AnnotationController(
     // performance bottleneck and we would need to get the id token into the
     // session, which we should probably do anyway (and move to opaque bearer
     // tokens for the access token).
+
+    if(!$scope.$root.editOnly){
+        return false;
+    }
+
     return permissions.permits(action, domainModel, session.state.userid);
   };
 
