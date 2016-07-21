@@ -5,11 +5,11 @@
      ng-click="hideUserList()"></i>
   <div class="form-vertical">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="">User</a></li>
+      <li class="active"><a href="">Users who have translated this page</a></li>
     </ul>
     <div class="tab-content">
-      <p>Select the user to view their translation. Or <a href="#" ng-click="setUserForEdit()">start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</p>
-      <p>{{user.auth.username}}</p>
+      <p>Select the user to view their translation. Or <a href="#" ng-click="setUserForEdit()">start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation. You can also go back to <a href="#" ng-click="setUserForEdit()">view the original document</a>.</p>
+      <p>Users who have written translations of this page:</p>
       <ul class="user-list">
         <li class="user-item" ng-repeat="user in $root.list_of_users">
         <a href="#" ng-click="setUser(user)">{{user.username}}</a>
