@@ -421,6 +421,9 @@ function AnnotationController(
     // tokens for the access token).
 
     if(!$scope.$root.editOnly){
+        // we always return false if the user has selected to view a translation
+        // this is because the DOM substitution will have already taken place and the XPATHs
+        // won't match the original DOM state
         return false;
     }
 
