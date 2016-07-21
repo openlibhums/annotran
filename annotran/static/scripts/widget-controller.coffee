@@ -89,7 +89,7 @@ class WidgetControllerExt extends widgetcontroller
 
         if selectedUser == "self"
           selectedUser = $scope.$root.currentUser
-        else if selectedUser != undefined 
+        else if selectedUser != undefined
           selectedUser = "acct:" + selectedUser.username + "@" + selectedUser.provider
 
         console.log("Loading annotations for user: " + selectedUser)
@@ -115,7 +115,11 @@ class WidgetControllerExt extends widgetcontroller
         $scope.$root.updateUserList()
 
         if selectedUser != undefined
-          crossframe.call "passAnnotations", userAnnotations
+          if !$scope.$root.editOnly
+            crossframe.call "passAnnotations", userAnnotations
+          else
+            crossframe.call "resetDOM"
+
           annotationMapper.loadAnnotations(userAnnotations, null)
     
     loadUsers = (annotations) ->      

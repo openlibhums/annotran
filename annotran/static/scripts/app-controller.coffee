@@ -9,7 +9,8 @@ class AppControllerExt extends appcontroller
      identity,   session
    ) ->
     super    
-    $scope.userList = visible: false
+    $scope.$root.userListvisible = false
+    $scope.$root.editOnly = false
     $scope.$root.list_of_users = []
     $scope.$root.userAnnotations = []
 

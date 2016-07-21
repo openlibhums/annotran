@@ -17,12 +17,17 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
     $scope.$root.userListvisible = false;
   };
 
+  $scope.setUserForEdit = function () {
+    this.$root.selectedUser = "self";
+    this.$root.editOnly = true;
+
+    $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
+
+  };
+
   $scope.setUser = function (id) {
     this.$root.selectedUser = id;
-
-    if (this.$root.selectedUser == "self"){
-      this.$root.selectedUser = this.$root.currentUser;
-    }
+    this.$root.editOnly = false;
 
     $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
 

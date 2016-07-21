@@ -26,6 +26,10 @@ class GuestExt extends Guest
     _connectAnnotationSync: (crossframe) =>
       super
 
+      crossframe.on 'resetDOM', () =>
+        Annotator = require('annotator')
+        Annotator._instances[0].plugins.Substitution.clearDOM()
+
       crossframe.on 'passAnnotations', (annotations) =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()

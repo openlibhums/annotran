@@ -98,8 +98,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       if (!$rootScope.map) {
         $rootScope.map = new Object();
         $rootScope.map = all();
-      } else {
-        console.log("rootScope.map already exists");
       }
       result = $rootScope.map[$rootScope.groupPubid];
       return result;

@@ -8,7 +8,7 @@
       <li class="active"><a href="">User</a></li>
     </ul>
     <div class="tab-content">
-      <p>Select the user to view their translations. Or <a href="#" ng-click="setUser('self')">start, edit, or view your own translation</a>.</p>
+      <p>Select the user to view their translation. Or <a href="#" ng-click="setUserForEdit()">start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</p>
       <p>{{user.auth.username}}</p>
       <ul class="user-list">
         <li class="user-item" ng-repeat="user in $root.list_of_users">
