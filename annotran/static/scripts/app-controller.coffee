@@ -17,12 +17,15 @@ class AppControllerExt extends appcontroller
       # clear the array
       $scope.$root.list_of_users.length = 0
 
+      dupeCheck = []
+
       if $scope.$root.userAnnotations.length > 0
         for entry in $scope.$root.userAnnotations
           parsed = persona.parseAccountID(entry.user)
 
-          if $scope.$root.list_of_users.indexOf(parsed.username) == -1
-            $scope.$root.list_of_users.push parsed.username
+          if dupeCheck.indexOf(entry.user) == -1
+            $scope.$root.list_of_users.push parsed
+            dupeCheck.push entry.user
 
       return $scope.$root.list_of_users
 

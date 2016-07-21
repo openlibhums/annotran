@@ -12,7 +12,7 @@
       <p>{{user.auth.username}}</p>
       <ul class="user-list">
         <li class="user-item" ng-repeat="user in $root.list_of_users">
-        <a href="#">{{user}}</a>
+        <a href="#" ng-click="setUser(user)">{{user.username}}</a>
       </li>
     </ul>
     </div>

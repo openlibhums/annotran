@@ -13,6 +13,7 @@ function LanguageListController($scope, $window, languages) {
   }
  
   $scope.focusLanguage = function (languageId) {
+    $scope.$root.selectedUser = undefined;
     languages.focus(languageId);
   }
 

@@ -89,6 +89,8 @@ class WidgetControllerExt extends widgetcontroller
 
         if selectedUser == "self"
           selectedUser = $scope.$root.currentUser
+        else if selectedUser != undefined 
+          selectedUser = "acct:" + selectedUser.username + "@" + selectedUser.provider
 
         console.log("Loading annotations for user: " + selectedUser)
 
@@ -98,14 +100,23 @@ class WidgetControllerExt extends widgetcontroller
         ##2. on user focus event
             ##a) eliminate from userAnnotations annotations that do not belong to the current user
         #user = results.rows[0].user #TODO - fill the user with the selected user!
-        for annot in results.rows when annot.user == selectedUser
-          userAnnotations.push annot
+
+        if selectedUser != undefined
+          console.log("Using filtered set")
+          for annot in results.rows when annot.user == selectedUser
+            userAnnotations.push annot
+        else
+          console.log("Using results.rows")
+          userAnnotations = results.rows
         
         ##b) call two lines below only on user focus event
 
         $scope.$root.userAnnotations = userAnnotations
-        crossframe.call "passAnnotations", userAnnotations
-        annotationMapper.loadAnnotations(userAnnotations, null)
+        $scope.$root.updateUserList()
+
+        if selectedUser != undefined
+          crossframe.call "passAnnotations", userAnnotations
+          annotationMapper.loadAnnotations(userAnnotations, null)
     
     loadUsers = (annotations) ->      
       userList = []

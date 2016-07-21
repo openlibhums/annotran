@@ -182,26 +182,20 @@ function languages(localStorage, session, settings, $rootScope, $http) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
         $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, focused());
-        $rootScope.userListvisible = true;
-        $rootScope.updateUserList();
       }
     }
   });
 
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
-    var lang_list = updateRootScopeAndReturnLanguageList(groupPubid);
     $rootScope.userListvisible = true;
-    $rootScope.updateUserList();
-    return lang_list;
+    return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
   $rootScope.$on(events.LANGUAGE_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
-    var lang_list = updateRootScopeAndReturnLanguageList(groupPubid);
     $rootScope.userListvisible = true;
-    $rootScope.updateUserList();
-    return lang_list;
+    return updateRootScopeAndReturnLanguageList(groupPubid);
   });
   
   return {

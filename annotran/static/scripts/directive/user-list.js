@@ -1,5 +1,7 @@
 'use strict';
-var persona = require('../../../../../h/h/static/scripts/filter/persona.js')
+var persona = require('../../../../../h/h/static/scripts/filter/persona.js');
+var events = require('../../../../../h/h/static/scripts/events.js');
+var eventsa =  require('../events');
 
 // @ngInject
 function Controller($scope, flash, session, formRespond, settings, auth, languages, groups) {
@@ -22,7 +24,8 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
       this.$root.selectedUser = this.$root.currentUser;
     }
 
-    this.userList();
+    $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
+
   };
 
   $scope.userList = function () {
