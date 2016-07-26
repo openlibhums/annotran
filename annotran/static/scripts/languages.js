@@ -71,27 +71,29 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   function all() {
     var i;
     // iterate over all languages stored in the session
-    for (i = 0; i < session.state.languages.length; i++) {
-      $rootScope.groupPubid = session.state.languages[i].groupubid;
+    if (session.state.languages != undefined) {
+      for (i = 0; i < session.state.languages.length; i++) {
+        // if an item for this group pub ID doesn't exist, then create a blank array
+        if (!$rootScope.map[session.state.languages[i].groupubid]) {
+          $rootScope.map[session.state.languages[i].groupubid] = [];
+        }
 
-      // if an item for this group pub ID doesn't exist, then create a blank array
-      if (!$rootScope.map[session.state.languages[i].groupubid])
-      {
-        $rootScope.map[session.state.languages[i].groupubid] = [];
+        // add the session state languages variable to the root scope
+        if ($rootScope.map[session.state.languages[i].groupubid].indexOf(session.state.languages[i]) == -1) {
+          $rootScope.map[session.state.languages[i].groupubid].push(session.state.languages[i]);
+        }
+
       }
-
-      // add the session state languages variable to the root scope
-      if($rootScope.map[session.state.languages[i].groupubid].indexOf(session.state.languages[i]) == -1) {
-        $rootScope.map[session.state.languages[i].groupubid].push(session.state.languages[i]);
-      }
-
     }
-
     return $rootScope.map || [];
   };
   
   function getLanguageList() {
     var result;
+    if ($rootScope.groupPubid == undefined) {
+      $rootScope.groupPubid = "__world__";
+    }
+
     if ($rootScope.groupPubid) {
       if (!$rootScope.map || $rootScope.map.length == 0) {
         $rootScope.map = [];
@@ -140,6 +142,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
         return focusedLanguage;
       }
     }
+
     var fromStorage = get(localStorage.getItem(STORAGE_KEY));
     if (fromStorage && fromStorage.groupubid == $rootScope.groupPubid) {
       focusedLanguage = fromStorage;
@@ -150,9 +153,10 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
     if (languageList) {
       return languageList[0];
+    } else {
+      return [];
     }
 
-    //return all()[0];
   }
 
   /** Set the language with the passed id as the currently focused language. */
@@ -168,21 +172,33 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   };
 
   function updateRootScopeAndReturnLanguageList(groupPubid) {
-    $rootScope.groupPubid = groupPubid;
-    return getLanguageList();
-  }
 
-  function updateRootScope(groupPubid) {
-    $rootScope.groupPubid = groupPubid;
+    // because multiple events fire and call this function with different arguments the following
+    // if block identifies the type of object passed (annotation, group, groupid, null) and assigns the rootScope
+    // variable correctly to handle focus
+
+    if (groupPubid != undefined && groupPubid.groupubid != undefined) {
+      $rootScope.groupPubid = groupPubid.groupubid;
+    }
+    else if (groupPubid != undefined && groupPubid.id != undefined) {
+      $rootScope.groupPubid = groupPubid.id;
+    } else if (groupPubid != undefined) {
+      $rootScope.groupPubid = groupPubid;
+    } else {
+      $rootScope.groupPubid = "__world__";
+    }
+
+    var ret = getLanguageList();
+    $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, focused());
+    return ret;
   }
 
   // reset the focused language if the user leaves it
   $rootScope.$on(eventsa.LANGUAGES_CHANGED, function (data, keyData) {
-    console.log(keyData);
     if (focusedLanguage) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
-        $rootScope.$broadcast(events.GROUP_FOCUSED, focused());
+        $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, focused());
       }
     }
   });
@@ -193,11 +209,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
-  $rootScope.$on(events.LANGUAGE_FOCUSED, function (event, groupPubid) {
-    //load languages for selected group
-    $rootScope.userListvisible = true;
-    return updateRootScope(groupPubid);
-  });
   
   return {
     getLanguageList: getLanguageList,
