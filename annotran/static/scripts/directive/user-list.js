@@ -26,8 +26,15 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
   };
 
   $scope.setUser = function (id) {
-    this.$root.selectedUser = id;
-    this.$root.editOnly = false;
+    var selectedUser = "acct:" + id.username + "@" + id.provider
+
+    if (selectedUser == this.$root.currentUser) {
+      this.$root.selectedUser = "self";
+      this.$root.editOnly = true;
+    } else {
+      this.$root.selectedUser = id;
+      this.$root.editOnly = false;
+    }
 
     $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
 
