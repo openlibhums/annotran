@@ -85,6 +85,9 @@ class WidgetControllerExt extends widgetcontroller
         userList = loadUsers(results.rows)
 
         # note: selectedUser is set in user-list.js directive
+        if $scope.$root == undefined or $scope.$root == null or $scope.$root.selectedUser == undefined
+          return
+
         selectedUser = $scope.$root.selectedUser
 
         if selectedUser == "self"
@@ -118,6 +121,9 @@ class WidgetControllerExt extends widgetcontroller
     loadUsers = (annotations) ->      
       userList = []
 
+      if groups.focused() == undefined or languages.focused() == undefined
+        return userList
+
       for annot in annotations when annot.group == groups.focused().id and annot.language == languages.focused().id
         userList = new Set()
         userList.add annot.user
@@ -135,6 +141,11 @@ class WidgetControllerExt extends widgetcontroller
         streamFilter.resetFilter().addClause('/uri', 'one_of', loaded)
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
 
+
+    $scope.$on events.USER_CHANGED, ->
+      _resetAnnotations(annotationMapper, drafts, threading)
+      loaded = []
+      loadAnnotations crossframe.frames
 
     $scope.$on events.GROUP_FOCUSED, ->
       _resetAnnotations(annotationMapper, drafts, threading)

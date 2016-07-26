@@ -117,15 +117,15 @@ function groups(localStorage, session, settings, $rootScope, $http) {
   $rootScope.$on(events.GROUPS_CHANGED, function () {
     if (focusedGroup) {
       focusedGroup = get(focusedGroup.id);
-      $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusedGroup);
+      $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup);
       if (!focusedGroup) {
         var focusResult = focused();
-        $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusResult);
+        $rootScope.$broadcast(events.GROUP_FOCUSED, focusResult);
       }
     }
     else {
       var focusResult = focused();
-      $rootScope.$broadcast(events.LANGUAGE_FOCUSED, focusResult);
+      $rootScope.$broadcast(events.GROUP_FOCUSED, focusResult);
     }
   });
 
