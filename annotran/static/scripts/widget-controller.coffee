@@ -86,9 +86,9 @@ class WidgetControllerExt extends widgetcontroller
 
         # note: selectedUser is set in user-list.js directive
         if $scope.$root == undefined or $scope.$root == null or $scope.$root.selectedUser == undefined
-          $scope.$root.selectedUser = undefined
-
-        selectedUser = $scope.$root.selectedUser
+          selectedUser = undefined
+        else
+          selectedUser = $scope.$root.selectedUser
 
         if selectedUser == "self"
           selectedUser = $scope.$root.currentUser
