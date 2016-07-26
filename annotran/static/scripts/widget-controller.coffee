@@ -109,10 +109,10 @@ class WidgetControllerExt extends widgetcontroller
           if !$scope.$root.editOnly
             $scope.$root.cleanDOM = false
             crossframe.call "passAnnotations", userAnnotations
-            annotationMapper.loadAnnotations(userAnnotations, null)
           else
             $scope.$root.cleanDOM = true
             crossframe.call "resetDOM"
+            annotationMapper.loadAnnotations(userAnnotations, null)
 
     
     loadUsers = (annotations) ->      
