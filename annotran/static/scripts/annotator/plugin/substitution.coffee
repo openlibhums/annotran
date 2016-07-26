@@ -1,7 +1,6 @@
 Annotator = require('annotator')
 $ = Annotator.$
 xpathRange = Annotator.Range
-Util = Annotator.Util
 
 # This plugin implements the UI code for selecting sentences by clicking
 module.exports = class Substitution extends Annotator.Plugin
