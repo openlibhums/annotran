@@ -186,6 +186,7 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
     if (languagesChanged) {
       $rootScope.$broadcast(eventsa.LANGUAGES_CHANGED, {
         initialLoad: isInitialLoad,
+        languages: model,
       });
     }
 

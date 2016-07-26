@@ -169,8 +169,21 @@ def _current_languages(request):
 
     languages = []
     userid = request.authenticated_userid
+
+    public_languages = models.Language.get_public()
+
+    for language in public_languages:
+        languages.append({
+            'groupubid': '__world__',
+            'name': language.name,
+            'id': language.pubid,
+            'url': request.route_url('language_read',
+                                     pubid=language.pubid, groupubid='__world__'),
+        })
+
     if userid is None:
         return languages
+
     user = request.authenticated_user
     # if user is None or get_group(request) is None:
     #   return languages
@@ -185,16 +198,6 @@ def _current_languages(request):
                                          pubid=language.pubid, groupubid=group.pubid),
             })
 
-    public_languages = models.Language.get_public()
-
-    for language in public_languages:
-        languages.append({
-            'groupubid': '__world__',
-            'name': language.name,
-            'id': language.pubid,
-            'url': request.route_url('language_read',
-                                     pubid=language.pubid, groupubid='__world__'),
-        })
 
     return languages
 

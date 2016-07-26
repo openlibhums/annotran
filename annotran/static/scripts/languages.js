@@ -177,7 +177,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   }
 
   // reset the focused language if the user leaves it
-  $rootScope.$on(eventsa.LANGUAGES_CHANGED, function () {
+  $rootScope.$on(eventsa.LANGUAGES_CHANGED, function (data, keyData) {
+    console.log(keyData);
     if (focusedLanguage) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
