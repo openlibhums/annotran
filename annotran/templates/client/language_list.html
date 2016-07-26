@@ -27,13 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <!--this is a drop-down list for language, and it is created by adapting the original file
  from hypothes.is project: group-list.html-->
 
-<span ng-if="auth.status === 'signed-out'"
-      ng-switch on="languages.focused().public">
-  <i class="language-list-label__icon h-icon-public" ng-switch-when="true"></i><!-- nospace
-  !--><i class="language-list-label__icon h-icon-language" ng-switch-default></i>
-  <span class="language-list-label__label">{{languages.focused().name}}</span>
-</span>
-
 <div class="pull-right"
      dropdown
      keyboard-nav>
