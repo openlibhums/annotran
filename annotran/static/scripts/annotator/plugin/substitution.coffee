@@ -63,10 +63,21 @@ module.exports = class Substitution extends Annotator.Plugin
 
       this.singleSubstitution(packager, data.text)
 
-  createSubstitutionElement: (originalText, substituteText) ->
+  createSubstitutionElement: (originalText, substituteText, ele) ->
     newEle = $('<span class="annotation-hover"></span>')
     newEle.text(substituteText)
-    newEle.css({"background-color" : "#F5F5F5"})
+
+    newEle.css({
+      "background-color" : "#F5F5F5",
+      "display": "inline-block"
+    })
+
+    ele.before(newEle)
+
+    width = newEle.width() + "px"
+    newEle.css({
+        "width": width
+    })
 
     newEle.mouseover (event) ->
       newEle.text(originalText)
@@ -87,8 +98,7 @@ module.exports = class Substitution extends Annotator.Plugin
 
     removeArray = []
 
-    newEle = this.createSubstitutionElement(start.textContent, substituteText)
-    $(start).before(newEle)
+    newEle = this.createSubstitutionElement(start.textContent, substituteText, $(start))
 
     start.textContent = ""
 
