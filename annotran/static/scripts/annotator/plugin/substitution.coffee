@@ -78,6 +78,18 @@ module.exports = class Substitution extends Annotator.Plugin
 
       this.singleSubstitution(packager, data.text)
 
+  createSubstitutionElement: (originalText, substituteText) ->
+    newEle = $('<span class="annotation-hover"></span>')
+    newEle.text(substituteText)
+
+    newEle.mouseover (event) ->
+      newEle.text(originalText)
+
+    newEle.mouseleave (event) ->
+      newEle.text(substituteText)
+
+    return newEle
+
   singleSubstitution: (data = {}, substituteText = '') =>
 
     # resolve the passed xpath
@@ -89,7 +101,10 @@ module.exports = class Substitution extends Annotator.Plugin
 
     removeArray = []
 
-    start.textContent = substituteText
+    newEle = this.createSubstitutionElement(start.textContent, substituteText)
+    $(start).before(newEle)
+
+    start.textContent = ""
 
     if start != end
       nextElement = start.nextSibling
