@@ -193,7 +193,7 @@ def _current_languages(request):
             'name': language.name,
             'id': language.pubid,
             'url': request.route_url('language_read',
-                                     pubid=language.pubid, groupubid=group.pubid),
+                                     pubid=language.pubid, groupubid='__world__'),
         })
 
     return languages
