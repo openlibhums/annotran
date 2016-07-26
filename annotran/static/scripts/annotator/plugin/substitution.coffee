@@ -66,6 +66,7 @@ module.exports = class Substitution extends Annotator.Plugin
   createSubstitutionElement: (originalText, substituteText) ->
     newEle = $('<span class="annotation-hover"></span>')
     newEle.text(substituteText)
+    newEle.css({"background-color" : "#F5F5F5"})
 
     newEle.mouseover (event) ->
       newEle.text(originalText)
