@@ -105,19 +105,21 @@ class WidgetControllerExt extends widgetcontroller
         else
           userAnnotations = results.rows
 
-        $scope.$root.userAnnotations = userAnnotations
-        $scope.$root.updateUserList()
+        if $scope.$root != undefined and $scope.$root != null
+          $scope.$root.userAnnotations = userAnnotations
+          $scope.$root.updateUserList()
 
         if selectedUser != undefined
           if !$scope.$root.editOnly
             $scope.$root.cleanDOM = false
             crossframe.call "passAnnotations", userAnnotations
           else
-            $scope.$root.cleanDOM = true
+            if $scope.$root != undefined and $scope.$root != null
+              $scope.$root.cleanDOM = true
             crossframe.call "resetDOM"
             annotationMapper.loadAnnotations(userAnnotations, null)
 
-    
+
     loadUsers = (annotations) ->      
       userList = []
 
