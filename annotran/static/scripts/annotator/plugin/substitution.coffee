@@ -19,44 +19,31 @@ module.exports = class Substitution extends Annotator.Plugin
 
     # save the DOM
     if this.original_document == ""
-      console.log("Annotran: Saving original DOM state")
       this.original_document = $("body").clone()
 
     if this.state == "clean"
-      console.log("Document is clean, not performing any reset.")
       return
 
     this.state = "clean"
 
     # blank the DOM
     if this.original_document != $("body")
-      console.log("Annotran: blanking DOM but preserving iframe.")
 
       for ele in $("body").children()
         if ele.nodeName != undefined and ele.nodeName != "IFRAME" and ele.nodeName != "SCRIPT" and ele.nodeName != "DIV"
-          console.log("Removing: " + ele.nodeName)
           ele.remove()
         else
           if $(ele).hasClass("annotator-notice") or $(ele).hasClass("annotator-frame") or $(ele).hasClass("annotator-adder")
-            console.log("Saving: " + ele.nodeName)
             annotatorComponents.push ele
           else if ele.nodeName != "SCRIPT"
-            console.log("Removing: " + ele.nodeName)
             ele.remove()
-
-      # restore the DOM
-      console.log("Annotran: restoring all of DOM except iframe.")
-      console.log($(this.original_document).children().length + " items to process.")
 
       for ele in $(this.original_document).children()
         if ele.nodeName != undefined and ele.nodeName != "IFRAME" and ele.nodeName != "SCRIPT" and ele.nodeName != "DIV"
-          console.log("Re-adding: " + ele.nodeName)
           $(annotatorComponents[0]).before($(ele).clone())
         else
           if $(ele).hasClass("annotator-notice") or $(ele).hasClass("annotator-frame") or $(ele).hasClass("annotator-adder")
-            console.log("Not re-adding: " + ele.nodeName)
           else if ele.nodeName != "SCRIPT"
-            console.log("Re-adding: " + ele.nodeName)
             $(annotatorComponents[0]).before($(ele).clone())
 
       return null
@@ -64,7 +51,6 @@ module.exports = class Substitution extends Annotator.Plugin
   multipleSubstitution: (annotations = []) =>
     # iterate over the annotations _in reverse order_ so that all the XPATHs still work
     # in other words, this function takes a list of annotations in top to bottom order and works from the end upwards
-    console.log("Initializing substitution")
     this.state = "dirty"
 
     for data in annotations.reverse()
