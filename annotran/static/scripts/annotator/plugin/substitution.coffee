@@ -68,16 +68,10 @@ module.exports = class Substitution extends Annotator.Plugin
     newEle.text(substituteText)
 
     newEle.css({
-      "background-color" : "#F5F5F5",
-      "display": "inline-block"
+      "background-color" : "#F5F5F5"
     })
 
     ele.before(newEle)
-
-    width = newEle.width() + "px"
-    newEle.css({
-        "width": width
-    })
 
     newEle.mouseover (event) ->
       newEle.text(originalText)
