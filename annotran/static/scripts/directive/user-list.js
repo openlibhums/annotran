@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, flash, session, formRespond, settings, auth, languages, groups) {
+function Controller($scope, flash, session, formRespond, settings, auth, languages, groups, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
 
@@ -38,6 +38,10 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
 
     $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
 
+  };
+
+  $scope.toggleSentence = function () {
+    crossframe.call("toggleSentenceSelection");
   };
 
   $scope.userList = function () {
