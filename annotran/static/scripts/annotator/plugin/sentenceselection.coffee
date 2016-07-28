@@ -60,8 +60,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       endOffset: offset_to_use + desiredText.length + this.currentIndex + 1
     }
 
-    console.log(data)
-
     return data
 
   secondaryJump: (target) ->
@@ -134,11 +132,38 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentIndex = 0
     this.selectSentence event.target
 
-  moveToNextSentence: () ->
+    selection = Annotator.Util.getGlobal().getSelection()
+    ranges = for i in [0...selection.rangeCount]
+      r = selection.getRangeAt(0)
+      if r.collapsed then continue else r
+
+    if ranges.length
+      event.ranges = ranges
+      @annotator.onSuccessfulSelection event
+
+      # in H's guest.coffee, createAnnotation -> getSelectors is NOT correctly describing the selection made here
+      # it's missing a TextQuoteSelector -- need to work out how to create this and inject it.
+      @annotator.createAnnotation()
+
+    return null
+
+
+  moveToNextSentence: (event) ->
     this.currentIndex = this.currentIndex + 1
     currentSelection = window.getSelection()
 
     this.selectSentence(currentSelection.baseNode.parentElement)
+
+    selection = Annotator.Util.getGlobal().getSelection()
+    ranges = for i in [0...selection.rangeCount]
+      r = selection.getRangeAt(0)
+      if r.collapsed then continue else r
+
+    if ranges.length
+      event.ranges = ranges
+      @annotator.onSuccessfulSelection event, true
+    else
+      @annotator.onFailedSelection event
 
     return null
 
@@ -149,4 +174,4 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     if event.which == 13
       # handle the enter key
-      this.moveToNextSentence()
+      this.moveToNextSentence(event)
