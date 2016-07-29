@@ -9,8 +9,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   pluginInit: ->
     # Register the event handlers required for creating a selection
     $(document).bind({
-      "click": @makeSentenceSelection,
-      "keypress": @keyPressHandler
+      "click": @makeSentenceSelection
     })
 
     this.operational = false
@@ -21,7 +20,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   destroy: ->
     $(document).unbind({
       "click": @makeSentenceSelection,
-      "keypress": @keyPressHandler
     })
     super
 
@@ -153,6 +151,10 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
 
   moveToNextSentence: (event) ->
+    if this.operational == false
+      # we are not in sentence selection mode
+      return
+
     this.currentIndex = this.currentIndex + 1
     currentSelection = window.getSelection()
 
@@ -170,12 +172,3 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       @annotator.onFailedSelection event
 
     return null
-
-  keyPressHandler: (event = {}) =>
-    if this.operational == false
-      # we are not in sentence selection mode
-      return
-
-    if event.which == 13
-      # handle the enter key
-      this.moveToNextSentence(event)

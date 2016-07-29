@@ -27,6 +27,11 @@ class GuestExt extends Guest
         Annotator = require('annotator')
         Annotator._instances[0].plugins.SentenceSelection.toggleOperation()
 
+      crossframe.on 'moveToNextSentence', () =>
+        Annotator = require('annotator')
+        # TODO: this needs to pass a false event object so that the annotation is correctly created
+        Annotator._instances[0].plugins.SentenceSelection.moveToNextSentence()
+
       crossframe.on 'resetDOM', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()

@@ -36,6 +36,7 @@ var dateUtil = require('../../../../../h/h/static/scripts/date-util');
 var events = require('../../../../../h/h/static/scripts/events.js');
 var a = require('../../../../../h/h/static/scripts/directive/annotation.js');
 var eventsa = require('../events');
+var Annotator = require('annotator');
 
 
 /** Return a domainModel tags array from the given vm tags array.
@@ -175,7 +176,7 @@ function viewModelTagsFromDomainModelTags(domainModelTags) {
 function AnnotationController(
   $document, $q, $rootScope, $scope, $timeout, $window, annotationUI,
   annotationMapper, drafts, flash, features, groups, permissions, session,
-  settings, tags, time, languages) {
+  settings, tags, time, languages, crossframe) {
 
   var vm = this;
   var domainModel;
@@ -556,6 +557,7 @@ function AnnotationController(
     if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
       vm.save();
+      crossframe.call("moveToNextSentence");
     }
   };
 
