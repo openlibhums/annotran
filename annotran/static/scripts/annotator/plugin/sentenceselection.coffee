@@ -141,8 +141,12 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       event.ranges = ranges
       @annotator.onSuccessfulSelection event
 
-      # in H's guest.coffee, createAnnotation -> getSelectors is NOT correctly describing the selection made here
+      #TODO:  in H's guest.coffee, createAnnotation -> getSelectors is NOT correctly describing the selection made here
       # it's missing a TextQuoteSelector -- need to work out how to create this and inject it.
+
+      # Bug lies in HTML.coffee and the way that ranges are described.
+      # Need to set the startContainer and endContainer to text objects, or to re-write the anchoring description
+      # function
       @annotator.createAnnotation()
 
     return null
