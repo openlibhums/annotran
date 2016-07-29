@@ -32,6 +32,7 @@ from h.api import uri
 from pyramid import renderers
 import collections
 import h
+import os.path
 from pyramid import httpexceptions as exc
 from h.api import transform
 from jinja2 import Environment, PackageLoader
@@ -98,12 +99,15 @@ def _angular_template_context_ext(name):
     """
     jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
     jinja_env = h.client.jinja_env
-    if (name == 'user_list' or name == 'language_list' or name == 'top_bar' or name == 'annotation' or name == 'sidebar_tutorial'):
-        angular_template_path = 'client/{}.html'.format(name)
+
+    # first look if there is a local copy in annotran that we should use
+    angular_template_path = 'client/{}.html'.format(name)
+    BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+
+    if os.path.isfile('{0}/templates/{1}'.format(BASE_DIR, angular_template_path)):
         content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
                                                     angular_template_path)
     else:
-        angular_template_path = 'client/{}.html'.format(name)
         content, _, _ = jinja_env.loader.get_source(jinja_env,
                                                 angular_template_path)
     return {'name': '{}.html'.format(name), 'content': content}
