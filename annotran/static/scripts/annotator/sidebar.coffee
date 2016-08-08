@@ -31,7 +31,6 @@ Host = require('./host')
 # Minimum width to which the frame can be resized.
 MIN_RESIZE = 280
 
-
 module.exports = class Sidebar extends Host
   options:
     Document: {}
@@ -181,6 +180,7 @@ module.exports = class Sidebar extends Host
   createAnnotation: (annotation = {}) ->
     super
     this.show() unless annotation.$highlight
+    @frame.find("textarea.form-input.form-textarea.js-markdown-input").focus()
 
   showAnnotations: (annotations) ->
     super
