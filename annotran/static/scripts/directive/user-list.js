@@ -7,6 +7,7 @@ var eventsa =  require('../events');
 function Controller($scope, flash, session, formRespond, settings, auth, languages, groups, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
+  $scope.sentenceMode = "on";
 
 
   if ($scope.model == null) {
@@ -41,6 +42,13 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
   };
 
   $scope.toggleSentence = function () {
+    if($scope.sentenceMode == "on")
+    {
+      $scope.sentenceMode = "off";
+    } else {
+      $scope.sentenceMode = "on";
+    }
+
     crossframe.call("toggleSentenceSelection");
   };
 
