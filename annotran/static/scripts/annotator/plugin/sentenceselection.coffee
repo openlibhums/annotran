@@ -75,6 +75,12 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       this.selectSentence nextSibling
 
   selectSentence: (target) ->
+
+    if tagName = $(target).prop("tagName") == undefined
+      console.log("We appear to have reached the end of the document.")
+      window.getSelection().removeAllRanges()
+      return
+
      # Get the currently selected ranges.
     tagName = $(target).prop("tagName").toLowerCase()
 
