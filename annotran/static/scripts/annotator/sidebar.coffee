@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extend = require('extend')
 raf = require('raf')
 Hammer = require('hammerjs')
+Annotator = require('annotator')
+xpathRange = Annotator.Range
 
 Host = require('./host')
 
@@ -43,6 +45,7 @@ module.exports = class Sidebar extends Host
     Toolbar:
       container: '.annotator-frame'
 
+  loadedAnnotations: []
   renderFrame: null
   gestureState: null
 
@@ -177,10 +180,115 @@ module.exports = class Sidebar extends Host
       .removeClass('h-icon-chevron-right')
       .addClass('h-icon-chevron-left')
 
+  checkChildren: (eleToCheck, elementsClaimed) ->
+    for ele in eleToCheck.childNodes
+      elementsClaimed.push(ele)
+      this.checkChildren(ele, elementsClaimed)
+
+  checkChildrenClaimed: (eleToCheck, elementsClaimed) ->
+    if eleToCheck in elementsClaimed
+      return true
+
+    for ele in eleToCheck.childNodes
+      if ele in elementsClaimed
+        return true
+
+      if this.checkChildrenClaimed(ele, elementsClaimed)
+        return true
+
+      return false
+
   createAnnotation: (annotation = {}) ->
-    super
-    this.show() unless annotation.$highlight
-    @frame.find("textarea.form-input.form-textarea.js-markdown-input").focus()
+
+    elementsClaimed = []
+
+    # iterate over all ranges in this.loadedAnnotations
+    for annotation in this.loadedAnnotations
+
+      # first, package up the target selector into a form we can understand
+      for target_selector in annotation.target[0].selector
+        if target_selector.type == "RangeSelector"
+          packager = {
+            start: target_selector.startContainer
+            startOffset: target_selector.startOffset
+            end: target_selector.endContainer
+            endOffset: target_selector.endOffset
+          }
+
+      # convert this to a range in the current document and extract the start and end points
+      range = new xpathRange.SerializedRange(packager).normalize(document.body)
+
+      start = range.start
+      end = range.end
+
+      # traverse the DOM stack
+      elementsClaimed.push(start)
+      this.checkChildren(start, elementsClaimed)
+
+      if start != end
+        nextElement = start.nextSibling
+
+        while nextElement != end
+          this.checkChildren(nextElement, elementsClaimed)
+          elementsClaimed.push(nextElement)
+
+          if nextElement == null
+            nextElement = start.parentNode
+            start = nextElement
+
+          if nextElement.nextSibling != null
+            nextElement = nextElement.nextSibling
+          else
+            nextElement = nextElement.parentNode.nextSibling
+
+    selection = Annotator.Util.getGlobal().getSelection()
+    ranges = for i in [0...selection.rangeCount]
+      r = selection.getRangeAt(0)
+      if r.collapsed then continue else r
+
+    for r in ranges
+      packager = {
+        start: r.startContainer
+        startOffset: r.startOffset
+        end: r.endContainer
+        endOffset: r.endOffset
+      }
+
+    # convert this to a range in the current document and extract the start and end points
+    range = new xpathRange.NormalizedRange(packager)
+
+    start = range.start
+    end = range.end
+
+    isClaimed = false
+
+    # traverse the DOM stack
+    isClaimed = this.checkChildrenClaimed(start, elementsClaimed)
+
+    if start != end and isClaimed == false
+      nextElement = start.nextSibling
+
+      while nextElement != end
+        isClaimed = this.checkChildrenClaimed(nextElement, elementsClaimed)
+        elementsClaimed.push(nextElement)
+
+        if nextElement == null
+          nextElement = start.parentNode
+          start = nextElement
+
+        if nextElement.nextSibling != null
+          nextElement = nextElement.nextSibling
+        else
+          nextElement = nextElement.parentNode.nextSibling
+
+    if isClaimed
+      console.log("Selection overlaps")
+      alert("You cannot create a new translation here since the currently selected region is already translated by you. Please edit or delete your existing translation instead.")
+    else
+      console.log("Selection does not overlap")
+      super
+      this.show() unless annotation.$highlight
+      @frame.find("textarea.form-input.form-textarea.js-markdown-input").focus()
 
   showAnnotations: (annotations) ->
     super

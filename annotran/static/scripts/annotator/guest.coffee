@@ -28,13 +28,17 @@ class GuestExt extends Guest
 
       crossframe.on 'moveToNextSentence', () =>
         Annotator = require('annotator')
-        # TODO: this needs to pass a false event object so that the annotation is correctly created
         Annotator._instances[0].plugins.SentenceSelection.moveToNextSentence()
+        Annotator._instances[0].plugins.CSSModify.hideAdder()
 
       crossframe.on 'resetDOM', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()
         Annotator._instances[0].plugins.CSSModify.showAdder()
+
+      crossframe.on 'stashAnnotations', (annotations) =>
+        console.log("Stashing annotations")
+        Annotator._instances[0].loadedAnnotations = annotations
 
       crossframe.on 'passAnnotations', (annotations) =>
         Annotator = require('annotator')
