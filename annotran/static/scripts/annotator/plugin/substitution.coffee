@@ -53,15 +53,16 @@ module.exports = class Substitution extends Annotator.Plugin
     this.state = "dirty"
 
     for data in annotations.reverse()
+      for target_selector in data.target[0].selector
+        if target_selector.type == "RangeSelector"
+          packager = {
+            start: target_selector.startContainer
+            startOffset: target_selector.startOffset
+            end: target_selector.endContainer
+            endOffset: target_selector.endOffset
+          }
 
-      packager = {
-        start: data.target[0].selector[1].startContainer
-        startOffset: data.target[0].selector[1].startOffset
-        end: data.target[0].selector[1].endContainer
-        endOffset: data.target[0].selector[1].endOffset
-      }
-
-      this.singleSubstitution(packager, data.text)
+          this.singleSubstitution(packager, data.text)
 
   createSubstitutionElement: (originalText, substituteText, ele) ->
     newEle = $('<span class="annotation-hover"></span>')
