@@ -14,6 +14,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     this.operational = false
     this.currentIndex = 0
+    this.storedEvent = null
 
     null
 
@@ -89,6 +90,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
       window.getSelection().removeAllRanges()
       window.getSelection().addRange(anchor.toRange())
+
     catch error
       console.log("Jumping siblings")
       # if we get here the most likely thing is that the next sentence is beyond the range, so we can just pass a call
@@ -122,10 +124,11 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   #
   # Returns nothing.
   makeSentenceSelection: (event = {}) =>
-
     if this.operational == false
       # we are not in sentence selection mode
       return
+
+    this.storedEvent = event
 
     this.currentIndex = 0
     this.selectSentence event.target
@@ -138,13 +141,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     if ranges.length
       event.ranges = ranges
       @annotator.onSuccessfulSelection event
-
-      #TODO:  in H's guest.coffee, createAnnotation -> getSelectors is NOT correctly describing the selection made here
-      # it's missing a TextQuoteSelector -- need to work out how to create this and inject it.
-
-      # Bug lies in HTML.coffee and the way that ranges are described.
-      # Need to set the startContainer and endContainer to text objects, or to re-write the anchoring description
-      # function
       @annotator.createAnnotation()
 
     return null
@@ -165,10 +161,14 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       r = selection.getRangeAt(0)
       if r.collapsed then continue else r
 
+    if event == undefined
+      # load the initial click event and use this as the default "base" event
+      # this is needed so that the range is accurately described
+      event = this.storedEvent
+
     if ranges.length
       event.ranges = ranges
-      @annotator.onSuccessfulSelection event, true
-    else
-      @annotator.onFailedSelection event
+      @annotator.onSuccessfulSelection event
+      @annotator.createAnnotation()
 
     return null
