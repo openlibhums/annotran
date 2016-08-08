@@ -12,7 +12,6 @@ class GuestExt extends Guest
       adder: '''
         <div class="annotator-adder">
           <button class="h-icon-insert-comment" data-action="comment" title="New Translation"></button>
-          <button class="h-icon-move" data-action="lockit" title="Sentence-by-Sentence Lock Mode"></button>
         </div>
       '''
 
@@ -50,8 +49,6 @@ class GuestExt extends Guest
       event.stopPropagation?()
       @adder.hide()
       switch $(event.target).data('action')
-        when 'lockit'
-          this.plugins.SentenceSelection.toggleOperation()
         when 'comment'
           this.createAnnotation()
       Annotator.Util.getGlobal().getSelection().removeAllRanges()
