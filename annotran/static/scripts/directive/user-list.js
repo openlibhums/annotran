@@ -27,7 +27,7 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
   };
 
   $scope.setUser = function (id) {
-    var selectedUser = "acct:" + id.username + "@" + id.provider
+    var selectedUser = "acct:" + id.username + "@" + id.provider;
 
     if (selectedUser == this.$root.currentUser) {
       this.$root.selectedUser = "self";

@@ -4,6 +4,7 @@ Annotator = require('annotator')
 $ = Annotator.$
 
 class GuestExt extends Guest
+
     constructor: (element, options) ->
       super
 
