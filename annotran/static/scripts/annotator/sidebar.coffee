@@ -49,6 +49,7 @@ module.exports = class Sidebar extends Host
   renderFrame: null
   gestureState: null
 
+
   constructor: (element, options) ->
     super
     this.hide()
@@ -233,7 +234,6 @@ module.exports = class Sidebar extends Host
     else
       super
       this.show() unless annotation.$highlight
-      @frame.find("textarea.form-input.form-textarea.js-markdown-input").focus()
 
   showAnnotations: (annotations) ->
     super

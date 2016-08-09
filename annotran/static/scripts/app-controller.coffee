@@ -8,7 +8,7 @@ class AppControllerExt extends appcontroller
      $window,   annotationUI,   auth,   drafts,   features,   groups,
      identity,   session
    ) ->
-    super    
+    super
     $scope.$root.userListvisible = true
     $scope.$root.editOnly = false
     $scope.$root.list_of_users = []
