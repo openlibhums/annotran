@@ -180,28 +180,6 @@ module.exports = class Sidebar extends Host
       .removeClass('h-icon-chevron-right')
       .addClass('h-icon-chevron-left')
 
-  checkChildren: (eleToCheck, elementsClaimed) ->
-    elementsClaimed.push(eleToCheck)
-    for ele in eleToCheck.childNodes
-      elementsClaimed.push(ele)
-      this.checkChildren(ele, elementsClaimed)
-
-  checkChildrenClaimed: (eleToCheck, elementsClaimed) ->
-    if eleToCheck in elementsClaimed
-      return true
-
-    if eleToCheck != null
-      for ele in eleToCheck.childNodes
-        console.log("Checking child")
-        console.log(ele)
-        if ele in elementsClaimed
-          return true
-
-        if this.checkChildrenClaimed(ele, elementsClaimed)
-          return true
-
-    return false
-
   createAnnotation: (annotation = {}) ->
 
     elementsClaimed = []
@@ -221,30 +199,8 @@ module.exports = class Sidebar extends Host
 
       # convert this to a range in the current document and extract the start and end points
       range = new xpathRange.SerializedRange(packager).normalize(document.body)
-      console.log(range.toRange().getBoundingClientRect())
+      elementsClaimed.push(range.toRange().getBoundingClientRect())
 
-      start = range.start
-      end = range.end
-
-      # traverse the DOM stack
-      elementsClaimed.push(start)
-      this.checkChildren(start, elementsClaimed)
-
-      if start != end
-        nextElement = start.nextSibling
-
-        while nextElement != end
-          this.checkChildren(nextElement, elementsClaimed)
-          elementsClaimed.push(nextElement)
-
-          if nextElement == null
-            nextElement = start.parentNode
-            start = nextElement
-
-          if nextElement.nextSibling != null
-            nextElement = nextElement.nextSibling
-          else
-            nextElement = nextElement.parentNode.nextSibling
 
     selection = Annotator.Util.getGlobal().getSelection()
     ranges = for i in [0...selection.rangeCount]
@@ -261,44 +217,20 @@ module.exports = class Sidebar extends Host
 
     # convert this to a range in the current document and extract the start and end points
     range = new xpathRange.NormalizedRange(packager)
+    selection_box = range.toRange().getBoundingClientRect()
 
-    start = range.start
-    end = range.end
+    for claimed in elementsClaimed
+      isClaimed = !(claimed.right < selection_box.left ||
+                  claimed.left > selection_box.right ||
+                  claimed.bottom < selection_box.top ||
+                  claimed.top > selection_box.bottom)
 
-    isClaimed = false
-
-    # traverse the DOM stack looking for matches
-    isClaimed = this.checkChildrenClaimed(start, elementsClaimed)
-
-    if start != end and isClaimed == false
-      nextElement = start.nextSibling
-
-      while nextElement != end
-        isClaimed = this.checkChildrenClaimed(nextElement, elementsClaimed)
-
-        if nextElement == null
-          nextElement = start.parentNode
-          start = nextElement
-
-        if nextElement.nextSibling != null
-          console.log("Next sibling not null")
-          console.log(nextElement.nextSibling)
-          nextElement = nextElement.nextSibling
-        else
-          if nextElement.parentNode != null
-            console.log("Next sibling null")
-            console.log(nextElement.parentNode.nextSibling)
-            nextElement = nextElement.parentNode.nextSibling
-          else
-            break
-
-      console.log(start != end)
+      if isClaimed
+        break
 
     if isClaimed
-      console.log("Selection overlaps")
       alert("You cannot create a new translation here since the currently selected region is already translated by you. Please edit or delete your existing translation instead.")
     else
-      console.log("Selection does not overlap")
       super
       this.show() unless annotation.$highlight
       @frame.find("textarea.form-input.form-textarea.js-markdown-input").focus()

@@ -37,7 +37,6 @@ class GuestExt extends Guest
         Annotator._instances[0].plugins.CSSModify.showAdder()
 
       crossframe.on 'stashAnnotations', (annotations) =>
-        console.log("Stashing annotations")
         Annotator._instances[0].loadedAnnotations = annotations
 
       crossframe.on 'passAnnotations', (annotations) =>
