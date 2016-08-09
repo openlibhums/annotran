@@ -13,6 +13,7 @@ class AppControllerExt extends appcontroller
     $scope.$root.editOnly = false
     $scope.$root.list_of_users = []
     $scope.$root.userAnnotations = []
+    $scope.$root.pageid = window.location.href
 
     $scope.$root.updateUserList = ->
       # clear the array
