@@ -82,6 +82,7 @@ def main(global_config, **settings):
     config.include('h.app')
     config.scan('h.client')
     config.include('annotran.languages')
+    config.include('annotran.pages')
     config.include(__name__)
 
     config.add_static_view(name='annotran_images', path='static/images')

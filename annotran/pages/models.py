@@ -30,13 +30,11 @@ import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.orm import exc
-import slugify
 
 from h.db import Base
-from h import pubid
 
 
-class Language(Base):
+class Page(Base):
     __tablename__ = 'page'
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
@@ -52,10 +50,10 @@ class Language(Base):
                                   backref='pages',
                                   secondary='language_page')
 
-    def __init__(self, name, group=None):
-        self.name = name
-        if group:
-            self.members.append(group)
+    def __init__(self, uri, language=None):
+        self.uri = uri
+        if language:
+            self.members.append(language)
 
     @classmethod
     def get_by_uri(cls, pubid):
@@ -71,7 +69,7 @@ class Language(Base):
         except exc.NoResultFound:
             return None
 
-GROUP_LANGUAGE_TABLE = sa.Table(
+LANGUAGE_PAGE_TABLE = sa.Table(
     'language_page', Base.metadata,
     sa.Column('language_id',
               sa.Integer,

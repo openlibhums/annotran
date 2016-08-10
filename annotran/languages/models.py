@@ -30,7 +30,6 @@ import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.orm import exc
-import slugify
 
 from h.db import Base
 from h import pubid
@@ -49,7 +48,7 @@ class Language(Base):
                       default=pubid.generate,
                       unique=True,
                       nullable=False)
-    name = sa.Column(sa.UnicodeText(), nullable=False)
+    name = sa.Column(sa.UnicodeText(), nullable=False, unique=True)
     created = sa.Column(sa.DateTime,
                         default=datetime.datetime.utcnow,
                         server_default=sa.func.now(),

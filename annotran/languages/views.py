@@ -27,26 +27,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # -*- coding: utf-8 -*-
 
-import collections
-
-import deform
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
-from pyramid import renderers
-
 
 from h import i18n
 import models
-from h import presenters
-from h.api import search
-from h.api import uri
-from annotran.languages import schemas
 import h
 from annotran import replacements
+import annotran
 
 _ = i18n.TranslationString
-
-
 
 
 @view_config(route_name='language_add',
@@ -57,6 +47,8 @@ def addLanguage(request):
 
     language = request.matchdict["language"]
     groupubid = request.matchdict["groupubid"]
+    pageid = request.matchdict["pageid"]
+
     group = h.groups.models.Group.get_by_pubid(groupubid)
 
     if group:
@@ -66,13 +58,16 @@ def addLanguage(request):
 
     request.db.add(language)
 
-    # We need to flush the db session here so that language.id will be generated.
+     # We need to flush the db session here so that language.id will be generated.
+    request.db.flush()
+
+    page = annotran.pages.models.Page(uri = pageid, language = models.Language.get_by_pubid(language.pubid))
+
+    request.db.add(page)
     request.db.flush()
 
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)
-
-
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
@@ -91,10 +86,7 @@ def read(request):
         else:
             return None
 
-
-
-
 def includeme(config):
-    config.add_route('language_add', 'languages/{language}/{groupubid}/addLanguage')
+    config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
     config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)

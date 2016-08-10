@@ -52,11 +52,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // and any new translations that the user creates
   // will be created for this language.
   var focusedLanguage;
-  var focusedGroup;
-  var groupPubidp
-  
- //var map;
 
+  var pageid = $rootScope.pageid;
 
   function containsValue(groupubid, language) {
     var i=0, langs = $rootScope.map[groupubid];
@@ -82,13 +79,13 @@ function languages(localStorage, session, settings, $rootScope, $http) {
         if ($rootScope.map[session.state.languages[i].groupubid].indexOf(session.state.languages[i]) == -1) {
           $rootScope.map[session.state.languages[i].groupubid].push(session.state.languages[i]);
         }
-
       }
     }
     return $rootScope.map || [];
   };
   
   function getLanguageList() {
+
     var result;
     if ($rootScope.groupPubid == undefined) {
       $rootScope.groupPubid = "__world__";
@@ -121,7 +118,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   function addLanguage(language) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/addLanguage',
+      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/' + pageid + '/' + 'addLanguage',
     });
 
     // the language list will be updated in response to a session state
@@ -130,6 +127,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
     return response;
   };
+
+
 
   /** Return the currently focused language. If no language is explicitly focused we
    * will check localStorage to see if we have persisted a focused language from
@@ -213,8 +212,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   return {
     getLanguageList: getLanguageList,
     get: get,
-    addLanguage: addLanguage,
 
+    addLanguage: addLanguage,
     focused: focused,
     focus: focus,
   };
