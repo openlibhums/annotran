@@ -22,7 +22,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
-#monkey patching of hypothesis methods
+# monkey patching of hypothesis methods
 
 from jinja2 import Environment, PackageLoader
 from annotran.languages import models
@@ -36,9 +36,11 @@ import os.path
 from pyramid import httpexceptions as exc
 from h.api import transform
 from jinja2 import Environment, PackageLoader
+
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
-#annotran's version of h.groups.views._read_group
+
+# annotran's version of h.groups.views._read_group
 def _read_group(request, group, language=None):
     """Return the rendered "Share this group" page.
 
@@ -48,8 +50,7 @@ def _read_group(request, group, language=None):
     """
     url = request.route_url('group_read', pubid=group.pubid, slug=group.slug)
 
-
-    #language = models.Language.get_by_groupubid(group.pubid)
+    # language = models.Language.get_by_groupubid(group.pubid)
 
     result = search.search(request,
                            private=False,
@@ -78,7 +79,8 @@ def _read_group(request, group, language=None):
         renderer_name='h:templates/groups/share.html.jinja2',
         value=template_data, request=request)
 
-#annotran's version of h.session.model
+
+# annotran's version of h.session.model
 def model(request):
     session = {}
     session['csrf'] = request.session.get_csrf_token()
@@ -92,7 +94,8 @@ def model(request):
         session['preferences']['show_sidebar_tutorial'] = True
     return session
 
-#annotran's version of h.client._angular_template_context
+
+# annotran's version of h.client._angular_template_context
 def _angular_template_context_ext(name):
     """Return the context for rendering a 'text/ng-template' <script>
        tag for an Angular directive.
@@ -106,13 +109,14 @@ def _angular_template_context_ext(name):
 
     if os.path.isfile('{0}/templates/{1}'.format(BASE_DIR, angular_template_path)):
         content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
-                                                    angular_template_path)
+                                                        angular_template_path)
     else:
         content, _, _ = jinja_env.loader.get_source(jinja_env,
-                                                angular_template_path)
+                                                    angular_template_path)
     return {'name': '{}.html'.format(name), 'content': content}
 
-#annotran's version of h.api.groups.set_group_if_reply
+
+# annotran's version of h.api.groups.set_group_if_reply
 def set_group_if_reply(annotation):
     """If the annotation is a reply set its group to that of its parent.
 
@@ -122,6 +126,7 @@ def set_group_if_reply(annotation):
     just overwrite it!
 
     """
+
     def is_reply(annotation):
         """Return True if this annotation is a reply."""
         if annotation.get('references'):
@@ -149,6 +154,7 @@ def set_group_if_reply(annotation):
         if 'group' in annotation:
             del annotation['group']
 
+
 def _language_sort_key(language):
     """Sort private languages for the session model list"""
 
@@ -156,6 +162,7 @@ def _language_sort_key(language):
     # so that multiple languages with the same name are displayed
     # in a consistent order in clients
     return (language.name.lower(), language.pubid)
+
 
 def _current_languages(request):
     """Return a list of the groups the current user is a member of.
@@ -202,8 +209,8 @@ def _current_languages(request):
                                          pubid=language.pubid, groupubid=group.pubid),
             })
 
-
     return languages
+
 
 def get_group(request):
     if request.matchdict.get('pubid') is None:
@@ -214,7 +221,8 @@ def get_group(request):
         raise exc.HTTPNotFound()
     return group
 
-#h.client.render_app_html
+
+# h.client.render_app_html
 def render_app_html(webassets_env,
                     service_url,
                     api_url,
@@ -222,18 +230,17 @@ def render_app_html(webassets_env,
                     ga_tracking_id=None,
                     websocket_url=None,
                     extra={}):
-
     template = jinja_env.get_template('app.html.jinja2')
     assets_dict = h.client._app_html_context(api_url=api_url,
-                                    service_url=service_url,
-                                    ga_tracking_id=ga_tracking_id,
-                                    sentry_public_dsn=sentry_public_dsn,
-                                    webassets_env=webassets_env,
-                                    websocket_url=websocket_url)
+                                             service_url=service_url,
+                                             ga_tracking_id=ga_tracking_id,
+                                             sentry_public_dsn=sentry_public_dsn,
+                                             webassets_env=webassets_env,
+                                             websocket_url=websocket_url)
     return template.render(h.client._merge(assets_dict, extra))
 
 
-#annotran's version of h.api.groups.set_group_if_reply
+# annotran's version of h.api.groups.set_group_if_reply
 def set_group_if_reply(annotation):
     """If the annotation is a reply set its group to that of its parent.
 
@@ -243,6 +250,7 @@ def set_group_if_reply(annotation):
     just overwrite it!
 
     """
+
     def is_reply(annotation):
         """Return True if this annotation is a reply."""
         if annotation.get('references'):
@@ -269,4 +277,3 @@ def set_group_if_reply(annotation):
     else:
         if 'group' in annotation:
             del annotation['group']
-
