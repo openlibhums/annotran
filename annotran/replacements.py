@@ -270,31 +270,3 @@ def set_group_if_reply(annotation):
         if 'group' in annotation:
             del annotation['group']
 
-#annotran's version of h.api.schemas.schema
-schema = {
-    'type': 'object',
-    'properties': {
-        'document': {
-            'type': 'object',
-            'properties': {
-                'link': {
-                    'type': 'array',
-                },
-            },
-        },
-        'permissions': {
-            'title': 'Permissions',
-            'description': 'Annotation action access control list',
-            'type': 'object',
-            'patternProperties': {
-                '^(admin|delete|read|update)$': {
-                    'type': 'array',
-                    'items': {
-                        'type': 'string',
-                        'pattern': '^(acct:|group:|language:).+$',
-                    },
-                }
-            },
-        },
-    },
-}
