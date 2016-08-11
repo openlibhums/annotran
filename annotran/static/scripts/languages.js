@@ -141,10 +141,10 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return response;
   };
 
-  function retrieveLanguageList() {
+  function retrieveLanguageList(groupPubid) {
     var response = $http({
       method: 'GET',
-      url: settings.serviceUrl + 'languages/' + pageid + '/' + 'retrieveLanguageList',
+      url: settings.serviceUrl + 'languages/' + pageid + '/' + groupPubid + '/retrieveLanguageList',
     });
   }
 
@@ -223,7 +223,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
     $rootScope.userListvisible = true;
-    retrieveLanguageList();
+    //retrieveLanguageList(groupPubid);
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 

@@ -60,10 +60,12 @@ def addLanguage(request):
      # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
 
-    page = annotran.pages.models.Page(uri = pageid, language = models.Language.get_by_pubid(language.pubid))
+    page = annotran.pages.models.Page.get_by_uri(pageid)
 
-    request.db.add(page)
-    request.db.flush()
+    if not page:
+        page = annotran.pages.models.Page(uri = pageid, language = models.Language.get_by_pubid(language.pubid))
+        request.db.add(page)
+        request.db.flush()
 
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)
@@ -99,6 +101,6 @@ def retrieveLanguageList(request):
 
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
-    config.add_route('languages_read', '/languages/{pageid}/retrieveLanguageList')
+    config.add_route('languages_read', '/languages/{pageid}/{groupubid}/retrieveLanguageList')
     config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)
