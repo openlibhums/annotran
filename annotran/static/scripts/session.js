@@ -36,8 +36,8 @@ var eventsa = require('./events')
 var events = require('../../../../h/h/static/scripts//events.js');
 var retryUtil = require('../../../../h/h/static/scripts//retry-util');
 
-//var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-var CACHE_TTL = 1; // 0 minutes
+var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+//var CACHE_TTL = 1; // 0 minutes
 
 function sessionActions(options) {
   var actions = {
@@ -128,6 +128,19 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
       });
     }
 
+    return lastLoad;
+  }
+
+  resource.reload = function () {
+      lastLoad = retryUtil.retryPromiseOperation(function () {
+        return resource._load().$promise;
+      }).then(function (session) {
+        lastLoadTime = Date.now();
+        return session;
+      }).catch(function (err) {
+        lastLoadTime = null;
+        throw err;
+      });
     return lastLoad;
   }
 

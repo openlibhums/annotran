@@ -228,7 +228,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   });
 
   $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, groupPubid) {
-    session.update();
+    session.reload();
   });
 
   
