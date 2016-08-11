@@ -39,7 +39,7 @@ module.exports = class Host extends Guest
     # enable media in annotations to be shown fullscreen
     .attr('allowfullscreen', '')
     .attr('seamless', '')
-    .attr('src', options.app)
+    .attr('src', options.app + "?url=" + encodeURIComponent(window.location.href))
 
     @frame = $('<div></div>')
     .css('display', 'none')

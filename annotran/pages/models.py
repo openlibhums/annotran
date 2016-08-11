@@ -56,9 +56,9 @@ class Page(Base):
             self.members.append(language)
 
     @classmethod
-    def get_by_uri(cls, pubid):
+    def get_by_uri(cls, uri):
         """Return the page with the given uri, or None."""
-        return cls.query.filter(cls.pubid == pubid).first()
+        return cls.query.filter(cls.uri == uri).first()
 
     @classmethod
     def get_by_id(cls, id_):
