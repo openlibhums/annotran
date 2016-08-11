@@ -97,12 +97,19 @@ def main(global_config, **settings):
     h.groups.views._read_group = replacements._read_group
     h.api.groups.set_group_if_reply = replacements.set_group_if_reply
     h.client.render_app_html = replacements.render_app_html
-    #h.api.search.query.GroupFilter = replacements.GroupFilter
 
-    #ANNOTATION_MAPPING_EXT = json.loads(h.config.ANNOTATION_MAPPING)
-    h.config.ANNOTATION_MAPPING = ANNOTATION_MAPPING_EXT
+    h.config.ANNOTATION_MAPPING['properties']['language'] = {}
+    h.config.ANNOTATION_MAPPING['properties']['language']['type'] = 'string'
+
     return config.make_wsgi_app()
 
+def recursivelyAddDictionary(dict):
+    if "iteritems" in dict:
+        for key, val in dict.iteritems():
+            if "iteritems" in dict[key]:
+                recursivelyAddDictionary(dict[key])
+            else:
+                dict[key] = val
 
 def override_hypothesis_includeme(config):
     # this method is an override of hypothes.is's default includeme. It fires instead and handles CORS.k
@@ -113,99 +120,3 @@ def override_hypothesis_includeme(config):
         asset_request=True
     )
 
-#TODO - rewrite this in a way that json is just extended and not the entire one is copied
-ANNOTATION_MAPPING_EXT = {
-    '_id': {'path': 'id'},
-    '_source': {'excludes': ['id']},
-    'analyzer': 'keyword',
-    'properties': {
-        'annotator_schema_version': {'type': 'string'},
-        'created': {'type': 'date'},
-        'updated': {'type': 'date'},
-        'quote': {'type': 'string', 'analyzer': 'uni_normalizer'},
-        'tags': {'type': 'string', 'analyzer': 'uni_normalizer'},
-        'text': {'type': 'string', 'analyzer': 'uni_normalizer'},
-        'deleted': {'type': 'boolean'},
-        'uri': {
-            'type': 'string',
-            'index_analyzer': 'uri',
-            'search_analyzer': 'uri',
-            'fields': {
-                'parts': {
-                    'type': 'string',
-                    'index_analyzer': 'uri_parts',
-                    'search_analyzer': 'uri_parts',
-                },
-            },
-        },
-        'user': {'type': 'string', 'index': 'analyzed', 'analyzer': 'user'},
-        'target': {
-            'properties': {
-                'source': {
-                    'type': 'string',
-                    'index_analyzer': 'uri',
-                    'search_analyzer': 'uri',
-                    'copy_to': ['uri'],
-                },
-                # We store the 'scope' unanalyzed and only do term filters
-                # against this field.
-                'scope': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
-                'selector': {
-                    'properties': {
-                        'type': {'type': 'string', 'index': 'no'},
-
-                        # Annotator XPath+offset selector
-                        'startContainer': {'type': 'string', 'index': 'no'},
-                        'startOffset': {'type': 'long', 'index': 'no'},
-                        'endContainer': {'type': 'string', 'index': 'no'},
-                        'endOffset': {'type': 'long', 'index': 'no'},
-
-                        # Open Annotation TextQuoteSelector
-                        'exact': {
-                            'path': 'just_name',
-                            'type': 'string',
-                            'fields': {
-                                'quote': {
-                                    'type': 'string',
-                                    'analyzer': 'uni_normalizer',
-                                },
-                            },
-                        },
-                        'prefix': {'type': 'string'},
-                        'suffix': {'type': 'string'},
-
-                        # Open Annotation (Data|Text)PositionSelector
-                        'start': {'type': 'long'},
-                        'end':   {'type': 'long'},
-                    }
-                }
-            }
-        },
-        'permissions': {
-            'index_name': 'permission',
-            'properties': {
-                'read': {'type': 'string'},
-                'update': {'type': 'string'},
-                'delete': {'type': 'string'},
-                'admin': {'type': 'string'}
-            }
-        },
-        'references': {'type': 'string'},
-        'document': {
-            'enabled': False,  # indexed explicitly by the save function
-        },
-        'thread': {
-            'type': 'string',
-            'analyzer': 'thread'
-        },
-        'group': {
-            'type': 'string',
-        },
-        'language': {
-            'type': 'string',
-        }
-    }
-}

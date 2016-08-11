@@ -1,14 +1,16 @@
 'use strict';
 
 var events = require('../../../../../h/h/static/scripts/events.js');
+var eventsa =  require('../events');
 
 // @ngInject
-function LanguageListController($scope, $window, languages) {
+function LanguageListController($scope, $window, languages, groups) {
   $scope.addLanguage = function (language) {
     var message = 'Are you sure you want to add new translations for the language "' +
       language.name + '"?';
     if ($window.confirm(message)) {
       languages.addLanguage(language.name);
+      $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, groups.focused().id);
     }
   }
  
