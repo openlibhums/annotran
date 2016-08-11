@@ -105,7 +105,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
 
     if ($rootScope.groupPubid) {
-      if (!$rootScope.map || $rootScope.map.length == 0) {
+      if ($rootScope.map == null || Object.keys($rootScope.map).length == 0) {
         $rootScope.map = [];
         $rootScope.map = all();
       }
@@ -126,7 +126,16 @@ function languages(localStorage, session, settings, $rootScope, $http) {
         }
       } 
     }   
-  };
+  }
+
+  // Return the full object for the last language
+  function getLast() {
+    var gs = getLanguageList();
+
+    if (gs) {
+      return gs[gs.length-1];
+    }
+  }
 
   function addLanguage(language) {
     var response = $http({
@@ -186,7 +195,17 @@ function languages(localStorage, session, settings, $rootScope, $http) {
         $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, g.id);
       }
     }
-  };
+  }
+
+  /** Set the last language to be focused. */
+  function focusLast() {
+    var g = getLast();
+    if (g) {
+      focusedLanguage = g;
+      localStorage.setItem(STORAGE_KEY, g.id);
+      $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, g.id);
+    }
+  }
 
   function updateRootScopeAndReturnLanguageList(groupPubid) {
 
@@ -227,11 +246,15 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
-  $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, groupPubid) {
+  $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, languageName) {
     session.reload();
   });
 
-  
+  $rootScope.$on(eventsa.SESSION_RELOADED, function (event) {
+    $rootScope.map = null;
+    focusLast();
+  });
+
   return {
     getLanguageList: getLanguageList,
     get: get,

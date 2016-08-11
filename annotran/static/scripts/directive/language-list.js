@@ -10,7 +10,7 @@ function LanguageListController($scope, $window, languages, groups) {
       language.name + '"?';
     if ($window.confirm(message)) {
       languages.addLanguage(language.name);
-      $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, groups.focused().id);
+      $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
     }
   }
  

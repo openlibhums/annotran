@@ -131,17 +131,18 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
     return lastLoad;
   }
 
-  resource.reload = function () {
+  resource.reload = function (language_name) {
       lastLoad = retryUtil.retryPromiseOperation(function () {
         return resource._load().$promise;
       }).then(function (session) {
         lastLoadTime = Date.now();
+        $rootScope.$broadcast(eventsa.SESSION_RELOADED)
         return session;
       }).catch(function (err) {
         lastLoadTime = null;
         throw err;
       });
-    return lastLoad;
+
   }
 
   /**
