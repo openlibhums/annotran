@@ -25,13 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #a lot of code here has been reused from hypothesis
 
-import collections
 
 from pyramid.config import Configurator
-from pyramid import renderers
-from pyramid import httpexceptions as exc
-
-from jinja2 import Environment, PackageLoader
 
 import h.app
 import h.client
@@ -40,12 +35,6 @@ from h.assets import *
 from h.config import settings_from_environment
 
 from annotran import replacements
-from annotran import languages
-
-import json
-
-
-
 
 
 
