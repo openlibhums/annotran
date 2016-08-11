@@ -98,9 +98,6 @@ def main(global_config, **settings):
     h.api.groups.set_group_if_reply = replacements.set_group_if_reply
     h.client.render_app_html = replacements.render_app_html
 
-    if "ANNOTATION_MAPPING" not in h.config:
-        h.config.ANNOTATION_MAPPING = {}
-
     h.config.ANNOTATION_MAPPING['properties']['language'] = {}
     h.config.ANNOTATION_MAPPING['properties']['language']['type'] = 'string'
 
