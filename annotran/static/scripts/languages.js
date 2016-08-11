@@ -55,7 +55,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   var pageid = $rootScope.pageid;
   pageid = decodeURIComponent(pageid);
-  pageid = encodeURIComponent(getParameterByName("url", pageid));
+  pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", pageid)));
 
   function getParameterByName(name, url) {
     if (!url) url = pageid;
