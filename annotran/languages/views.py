@@ -38,7 +38,6 @@ import annotran
 
 _ = i18n.TranslationString
 
-
 @view_config(route_name='language_add',
              request_method='POST')
 def addLanguage(request):
@@ -86,7 +85,20 @@ def read(request):
         else:
             return None
 
+@view_config(route_name='languages_read', request_method='GET')
+def retrieveLanguageList(request):
+    pageid = request.matchdict["pageid"]
+    page = annotran.pages.models.Page.get_by_uri(pageid)
+
+    replacements.model(request)
+
+    if not request.authenticated_userid:
+        return None
+    else:
+        return None # TODO
+
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
+    config.add_route('languages_read', '/languages/{pageid}/retrieveLanguageList')
     config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)

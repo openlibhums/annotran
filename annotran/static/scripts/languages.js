@@ -54,6 +54,19 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   var focusedLanguage;
 
   var pageid = $rootScope.pageid;
+  pageid = decodeURIComponent(pageid);
+  pageid = encodeURIComponent(getParameterByName("url", pageid));
+
+  function getParameterByName(name, url) {
+    if (!url) url = pageid;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return results[2];
+    //return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
 
   function containsValue(groupubid, language) {
     var i=0, langs = $rootScope.map[groupubid];
@@ -128,7 +141,12 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return response;
   };
 
-
+  function retrieveLanguageList() {
+    var response = $http({
+      method: 'GET',
+      url: settings.serviceUrl + 'languages/' + pageid + '/' + 'retrieveLanguageList',
+    });
+  }
 
   /** Return the currently focused language. If no language is explicitly focused we
    * will check localStorage to see if we have persisted a focused language from
@@ -205,6 +223,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
     $rootScope.userListvisible = true;
+    retrieveLanguageList();
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
@@ -213,6 +232,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     getLanguageList: getLanguageList,
     get: get,
 
+    retrieveLanguageList: retrieveLanguageList,
     addLanguage: addLanguage,
     focused: focused,
     focus: focus,
