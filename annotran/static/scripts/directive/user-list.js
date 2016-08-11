@@ -53,8 +53,10 @@ function Controller($scope, settings, languages, crossframe) {
     if($scope.sentenceMode == "on")
     {
       $scope.sentenceMode = "off";
+      $scope.setUserForEdit();
     } else {
       $scope.sentenceMode = "on";
+      $scope.setUserForReset();
     }
 
     crossframe.call("toggleSentenceSelection");
