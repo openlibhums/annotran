@@ -65,7 +65,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </div>
       </div>
     </li>
-    <li class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
+    <li ng-if="auth.status === 'signed-in'" class="dropdown-menu__row dropdown-menu__row--unpadded new-language-btn">
       <div class="language-item">
         <div class="language-icon-container"><i class="h-icon-add"></i></div>
         <div class="language-details" ng-controller="languageController">

@@ -50,6 +50,7 @@ class WidgetControllerExt extends widgetcontroller
     $scope.threadRoot = threading.root
     $scope.sortOptions = ['Newest', 'Oldest', 'Location']
     $scope.$root.currentUser = session.state.userid
+    $scope.session = session
 
     this.crossframe = crossframe
 
@@ -150,6 +151,9 @@ class WidgetControllerExt extends widgetcontroller
       _resetAnnotations(annotationMapper, drafts, threading)
       loaded = []
       loadAnnotations crossframe.frames
+      if $scope.session.state.groups.length == 1
+        # move focus to world when the user can only see the public group
+        groups.focus("__world__")
 
     $scope.$on events.GROUP_FOCUSED, ->
       $scope.$root.selectedUser = undefined
