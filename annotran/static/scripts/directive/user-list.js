@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, flash, session, formRespond, settings, auth, languages, groups, crossframe) {
+function Controller($scope, settings, languages, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
@@ -70,23 +70,23 @@ function Controller($scope, flash, session, formRespond, settings, auth, languag
   
 }
 
+function userList () {
+  return {
+    controller: Controller,
+    bindToController: true,
+    controllerAs: 'vm',
+    restrict: 'E',
+    scope: {
+      auth: '=',
+      session: '=',
+      onClose: '&',
+      showUserList: '='
+    },
+    templateUrl: 'user_list.html'
+  };
+  }
+
 module.exports = {
-  directive: function () {
-    return {
-      bindToController: true,
-      controller: Controller,
-      controllerAs: 'userListController',
-      restrict: 'E',
-      scope: {
-        auth: '=',
-        session: '=',
-        languages: '=',
-        groups: '=',
-        onClose: '&',
-        showUserList: '='
-      },
-      templateUrl: 'user_list.html',
-    };
-  },
-  Controller: Controller,
+  directive: userList,
+  Controller: Controller
 };

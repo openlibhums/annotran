@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <div class="pull-right"
      dropdown
-     keyboard-nav>
+     keyboard-nav
+     ng-if="languages.getLanguageList().length > 0 || auth.status === 'signed-in'">
   <div class="dropdown-toggle"
         dropdown-toggle
         data-toggle="dropdown"
