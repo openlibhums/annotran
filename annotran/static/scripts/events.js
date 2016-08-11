@@ -30,12 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * on $rootScope and defined in the same module in h
  */
 module.exports = {
-     /** Broadcast when the currently selected language changes */
-  LANGUAGE_FOCUSED: 'languageFocused',
-  /** Broadcast when the list of groups changes */
-  LANGUAGES_CHANGED: 'languagesChanged',
-       /** Broadcast when the list of users is loaded*/
-  USERS_LOADED: 'usersLoaded',
-          /** Broadcast when the currently selected user changes*/
-  USERS_FOCUSED: 'userFocused',
+    /** Broadcast when a language is added */
+    LANGUAGE_ADDED: 'languageAdded',
+    /** Broadcast when the currently selected language changes */
+    LANGUAGE_FOCUSED: 'languageFocused',
+    /** Broadcast when the list of groups changes */
+    LANGUAGES_CHANGED: 'languagesChanged',
+    /** Broadcast when the list of users is loaded*/
+    USERS_LOADED: 'usersLoaded',
+    /** Broadcast when the currently selected user changes*/
+    USERS_FOCUSED: 'userFocused',
 };
