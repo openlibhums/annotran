@@ -32,6 +32,7 @@ from h.api import uri
 from pyramid import renderers
 import collections
 import h
+import annotran
 import os.path
 from pyramid import httpexceptions as exc
 from h.api import transform
@@ -170,14 +171,6 @@ def _current_languages(request):
     This list is meant to be returned to the client in the "session" model.
 
     """
-    '''        'group': group, 'group_url': url, 'document_links': document_links}
-
-        group = {'name': 'Public', 'id': '__world__', 'public': True}
-        return None
-    else:
-        group = h.groups.models.Group.get_by_pubid(groupubid)
-    '''
-
     languages = []
     userid = request.authenticated_userid
 
@@ -191,6 +184,7 @@ def _current_languages(request):
             'url': request.route_url('language_read',
                                      pubid=language.pubid, groupubid='__world__'),
         })
+
 
     if userid is None:
         return languages
@@ -208,8 +202,8 @@ def _current_languages(request):
                 'url': request.route_url('language_read',
                                          pubid=language.pubid, groupubid=group.pubid),
             })
-
     return languages
+
 
 
 def get_group(request):
