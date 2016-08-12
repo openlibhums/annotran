@@ -243,6 +243,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     //load languages for selected group
     $rootScope.userListvisible = true;
     //retrieveLanguageList(groupPubid);
+    //session.reload();
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 

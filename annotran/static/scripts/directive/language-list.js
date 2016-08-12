@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function LanguageListController($scope, $window, languages, groups) {
+function LanguageListController($scope, $window, languages, groups, pages) {
   $scope.addLanguage = function (language) {
     var message = 'Are you sure you want to add new translations for the language "' +
       language.name + '"?';
@@ -33,7 +33,7 @@ function LanguageListController($scope, $window, languages, groups) {
  * @description Displays a list of available languages
  */
 // @ngInject
-function languageList( $window, languages, settings) {
+function languageList($window, languages, settings) {
   return {
     controller: LanguageListController,
     link: function ($scope, elem, attrs) {

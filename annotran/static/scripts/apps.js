@@ -18,6 +18,7 @@ app.controller('AppController', require('./app-controller'))
 
 
 .service('languages', require('./languages'))
+.service('pages', require('./pages'))
 .service('groups', require('./groups'))
 .service('session', require('./session'))
 

@@ -38,6 +38,41 @@ import annotran
 
 _ = i18n.TranslationString
 
+
+def _page_languages(request):
+    languages = []
+    userid = request.authenticated_userid
+    public_languages = models.Language.get_public()
+
+    for language in public_languages:
+        languages.append({
+            'groupubid': '__world__',
+            'name': language.name,
+            'id': language.pubid,
+            'url': request.route_url('language_read',
+                                     pubid=language.pubid, groupubid='__world__'),
+        })
+    if userid is None:
+        return languages
+
+    page = None
+    if 'pageid' in request.matchdict and 'groupubid' in request.matchdict:
+       pageid = request.matchdict["pageid"]
+       page = annotran.pages.models.Page.get_by_uri(pageid)
+    user = request.authenticated_user
+    for group in user.groups:
+        for language in group.languages:
+            if not page and page in language.pages:
+                languages.append({
+                    'groupubid': group.pubid,
+                    'name': language.name,
+                    'id': language.pubid,
+                    'url': request.route_url('language_read',
+                                             pubid=language.pubid, groupubid=group.pubid),
+                })
+    return languages
+
+
 @view_config(route_name='language_add',
              request_method='POST')
 def addLanguage(request):
@@ -62,23 +97,32 @@ def addLanguage(request):
     request.db.add(language)
     # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
+    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
+    return exc.HTTPSeeOther(url)
 
-    '''
+@view_config(route_name='language_retrieve', request_method='GET')
+def retrieveLanguageList(request):
+    pageid = request.matchdict["pageid"]
     page = annotran.pages.models.Page.get_by_uri(pageid)
-    if not page:
-        page = annotran.pages.models.Page(uri = pageid, language = language)
-        request.db.add(page)
-        request.db.flush()
-    '''
+
+    groupubid = request.matchdict["groupubid"]
+    group=h.groups.models.Group.get_by_pubid(groupubid)
+
+    language = models.Language.get_by_id(30)
+
+    #replacements.model(request) populates the session on first load
+    #update session with _page_languages
+
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
     pubid = request.matchdict["pubid"]
-    groupubid = request.matchdict["groupubid"]
     language = models.Language.get_by_pubid(pubid)
+    groupubid = request.matchdict["groupubid"]
     group = h.groups.models.Group.get_by_pubid(groupubid)
+
     if group is None:
         # this is the public group
         return replacements._read_group(request, group, language)
@@ -90,20 +134,8 @@ def read(request):
         else:
             return None
 
-@view_config(route_name='languages_read', request_method='GET')
-def retrieveLanguageList(request):
-    pageid = request.matchdict["pageid"]
-    page = annotran.pages.models.Page.get_by_uri(pageid)
-
-    #replacements.model(request)
-
-    if not request.authenticated_userid:
-        return None
-    else:
-        return None # TODO
-
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
-    config.add_route('languages_read', '/languages/{pageid}/{groupubid}/retrieveLanguageList')
+    config.add_route('language_retrieve', '/languages/{pageid}/{groupubid}/retrieveLanguageList')
     config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)

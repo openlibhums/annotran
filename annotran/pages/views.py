@@ -27,22 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # -*- coding: utf-8 -*-
 
-import collections
-
-import deform
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
-from pyramid import renderers
-
-
 from h import i18n
+
 import models
-from h import presenters
-from h.api import search
-from h.api import uri
-from annotran.languages import schemas
-import h
-from annotran import replacements
+import annotran
+
 
 _ = i18n.TranslationString
 
@@ -50,15 +41,26 @@ _ = i18n.TranslationString
 @view_config(route_name='page_add',
              request_method='POST')
 def addPage(request):
-    return None
+    if request.authenticated_userid is None:
+        raise exc.HTTPNotFound()
 
+    name = request.matchdict["languageName"]
+    pageid = request.matchdict["pageId"]
+    groupubid = request.matchdict["groupubid"]
 
-@view_config(route_name='page_read', request_method='GET')
-def read(request):
-    return None
+    language = annotran.languages.models.Language.get_by_name(name)
 
+    page = annotran.pages.models.Page.get_by_uri(pageid)
+    if not page:
+        page = annotran.pages.models.Page(uri = pageid, language = language)
+        request.db.add(page)
+        request.db.flush()
+    else:
+        page.members.append(language)
+
+    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
+    return exc.HTTPSeeOther(url)
 
 def includeme(config):
-    config.add_route('page_add', 'pages/{page}/{uri}/addPage')
-    config.add_route('page_read', '/pages/{uri}/{languageid}')
+    config.add_route('page_add', 'pages/{languageName}/{pageId}/{groupubid}/addPage')
     config.scan(__name__)
