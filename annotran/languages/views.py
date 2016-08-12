@@ -44,29 +44,32 @@ def addLanguage(request):
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
-    language = request.matchdict["language"]
+    name = request.matchdict["language"]
     groupubid = request.matchdict["groupubid"]
     pageid = request.matchdict["pageid"]
 
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    group = h.groups.models.Group.get_by_pubid(groupubid) # just add public group handling, and the group will always be available
+    language = models.Language.get_by_name(name)
 
-    if group:
-        language = models.Language(name=language, group=h.groups.models.Group.get_by_pubid(groupubid))
+    if not language:
+        if group:
+            language = models.Language(name=name, group=h.groups.models.Group.get_by_pubid(groupubid))
+        else:
+            language = models.Language(name=name)
     else:
-        language = models.Language(name=language)
+        language.members.append(group)
 
     request.db.add(language)
-
-     # We need to flush the db session here so that language.id will be generated.
+    # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
 
+    '''
     page = annotran.pages.models.Page.get_by_uri(pageid)
-
     if not page:
-        page = annotran.pages.models.Page(uri = pageid, language = models.Language.get_by_pubid(language.pubid))
+        page = annotran.pages.models.Page(uri = pageid, language = language)
         request.db.add(page)
         request.db.flush()
-
+    '''
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)
 
@@ -92,7 +95,7 @@ def retrieveLanguageList(request):
     pageid = request.matchdict["pageid"]
     page = annotran.pages.models.Page.get_by_uri(pageid)
 
-    replacements.model(request)
+    #replacements.model(request)
 
     if not request.authenticated_userid:
         return None
