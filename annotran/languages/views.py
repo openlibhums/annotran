@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #this is a code reused from hypothesis, adapted and extended to be used for languages
 
 # -*- coding: utf-8 -*-
+import urllib
 
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
@@ -68,8 +69,14 @@ def addLanguage(request):
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
+    try:
+        url = urllib.unquote(urllib.unquote(request.url.split('?')[1].replace('url=', '')).split('?')[1].replace('url=', ''))
+    except:
+        url = ''
+
+    page = annotran.pages.models.Page.get_by_uri(url)
     pubid = request.matchdict["pubid"]
-    language = models.Language.get_by_pubid(pubid)
+    language = models.Language.get_by_pubid(pubid, page)
     groupubid = request.matchdict["groupubid"]
     group = h.groups.models.Group.get_by_pubid(groupubid)
 

@@ -96,7 +96,6 @@ def model(request):
         session['preferences']['show_sidebar_tutorial'] = True
     return session
 
-
 # annotran's version of h.client._angular_template_context
 def _angular_template_context_ext(name):
     """Return the context for rendering a 'text/ng-template' <script>
@@ -180,18 +179,17 @@ def _current_languages(request):
     languages = []
     userid = request.authenticated_userid
 
-    public_languages = models.Language.get_public()
     page = annotran.pages.models.Page.get_by_uri(url)
+    public_languages = models.Language.get_public(page)
 
     for language in public_languages:
-        if page and page in language.pages:
-            languages.append({
-                'groupubid': '__world__',
-                'name': language.name,
-                'id': language.pubid,
-                'url': request.route_url('language_read',
-                                         pubid=language.pubid, groupubid='__world__'),
-            })
+        languages.append({
+            'groupubid': '__world__',
+            'name': language.name,
+            'id': language.pubid,
+            'url': request.route_url('language_read',
+                                     pubid=language.pubid, groupubid='__world__'),
+        })
 
 
     if userid is None:
@@ -203,9 +201,14 @@ def _current_languages(request):
     # if user is None or get_group(request) is None:
     #   return languages
     # return languages for all groups for that particular user
+
+    languages_for_page = models.Language.get_by_page(page)
+
     for group in user.groups:
-        for language in group.languages:
-            if page and page in language.pages:
+        # list of languages for a group
+        # this needs to also filter by grouppubid
+        for language in languages_for_page:
+            if group in language.members:
                 languages.append({
                     'groupubid': group.pubid,
                     'name': language.name,
@@ -217,6 +220,7 @@ def _current_languages(request):
 
 
 def get_group(request):
+
     if request.matchdict.get('pubid') is None:
         return None
     pubid = request.matchdict["pubid"]

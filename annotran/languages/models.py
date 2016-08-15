@@ -56,8 +56,9 @@ class Language(Base):
 
     # we only need a relationship table between a language and a group
     members = sa.orm.relationship('Group',
-                                  backref='languages',
-                                  secondary='group_language')
+                                  backref=sa.orm.backref('languages', lazy='dynamic'),
+                                  secondary='group_language',
+                                  lazy='dynamic')
 
     def __init__(self, name, group=None):
         self.name = name
@@ -73,14 +74,21 @@ class Language(Base):
         return name
 
     @classmethod
-    def get_by_pubid(cls, pubid):
+    def get_by_pubid(cls, pubid, page):
         """Return the language with the given pubid, or None."""
-        return cls.query.filter(cls.pubid == pubid).first()
+        return cls.query.filter(cls.pubid == pubid, cls.pages.contains(page)).first()
 
     @classmethod
-    def get_public(cls):
+    def get_by_page(cls, page):
+        """Return the language with the given pubid, or None."""
+        return cls.query.filter(cls.pages.contains(page)).all()
+
+    @classmethod
+    def get_public(cls, page):
         """Return all public languages"""
-        return cls.query.filter(cls.members == None).all()
+        # get the current page object from the database
+        # filter by page object
+        return cls.query.filter(cls.members == None, cls.pages.contains(page)).all()
 
     @classmethod
     def get_by_id(cls, id_):
