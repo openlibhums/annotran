@@ -88,7 +88,7 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
     transformResponse: process,
     withCredentials: true
   });
-  var endpoint = new URL('/app/:path', settings.serviceUrl).href;
+  var endpoint = new URL('/app?url=' + encodeURIComponent(window.location) + ":path", settings.serviceUrl).href;
   var resource = $resource(endpoint, {}, actions);
 
   // Blank initial model state
