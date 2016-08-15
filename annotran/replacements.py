@@ -172,7 +172,7 @@ def _current_languages(request):
     This list is meant to be returned to the client in the "session" model.
 
     """
-    url = urllib.unquote(request.url.split('?')[1].replace('url=', ''))
+    url = urllib.unquote(urllib.unquote(request.url.split('?')[1].replace('url=', '')).split('?')[1].replace('url=', ''))
     languages = []
     userid = request.authenticated_userid
 
