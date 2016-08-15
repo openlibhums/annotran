@@ -136,7 +136,7 @@ function session($http, $resource, $rootScope, flash, raven, settings) {
         return resource._load().$promise;
       }).then(function (session) {
         lastLoadTime = Date.now();
-        $rootScope.$broadcast(eventsa.SESSION_RELOADED)
+        $rootScope.$broadcast(eventsa.SESSION_RELOADED, language_name);
         return session;
       }).catch(function (err) {
         lastLoadTime = null;

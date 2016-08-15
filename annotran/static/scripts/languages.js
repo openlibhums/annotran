@@ -128,6 +128,17 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }   
   }
 
+  function getByName(languageName) {
+    var gs = getLanguageList();
+    if (gs) {
+      for (var i = 0, max = gs.length; i < max; i++) {
+        if (gs[i].name === languageName) {
+          return gs[i];
+        }
+      }
+    }
+  }
+
   // Return the full object for the last language
   function getLast() {
     var gs = getLanguageList();
@@ -197,6 +208,17 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   }
 
+  function focusByName(languageName) {
+    if (languageName) {
+      var g = getByName(languageName);
+      if (g) {
+        focusedLanguage = g;
+        localStorage.setItem(STORAGE_KEY, g.id);
+        $rootScope.$broadcast(eventsa.LANGUAGE_FOCUSED, g.id);
+      }
+    }
+  }
+
   /** Set the last language to be focused. */
   function focusLast() {
     var g = getLast();
@@ -248,12 +270,12 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   });
 
   $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, languageName) {
-    session.reload();
+    session.reload(languageName);
   });
 
-  $rootScope.$on(eventsa.SESSION_RELOADED, function (event) {
+  $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
     $rootScope.map = null;
-    focusLast();
+    focusByName(languageName);
   });
 
   return {
