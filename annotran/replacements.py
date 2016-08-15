@@ -57,7 +57,7 @@ def _read_group(request, group, language=None):
     result = search.search(request,
                            private=False,
                            params={"group": group.pubid, "limit": 1000})
-    annotations = [presenters.AnnotationHTMLPresenter(models.Annotation(a))
+    annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
                    for a in result['rows']]
 
     # Group the annotations by URI.
