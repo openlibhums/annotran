@@ -269,9 +269,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
-  $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, languageName) {
-    session.reload(languageName);
-  });
 
   $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
     $rootScope.map = null;

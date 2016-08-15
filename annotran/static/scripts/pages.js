@@ -33,6 +33,7 @@ function pages(settings, session, $rootScope, $http) {
 
     $rootScope.$on(eventsa.LANGUAGE_ADDED, function (event, languageName) {
         addPage(languageName);
+        session.reload(languageName);
     });
 
   return {
