@@ -39,40 +39,6 @@ import annotran
 _ = i18n.TranslationString
 
 
-def _page_languages(request):
-    languages = []
-    userid = request.authenticated_userid
-    public_languages = models.Language.get_public()
-
-    for language in public_languages:
-        languages.append({
-            'groupubid': '__world__',
-            'name': language.name,
-            'id': language.pubid,
-            'url': request.route_url('language_read',
-                                     pubid=language.pubid, groupubid='__world__'),
-        })
-    if userid is None:
-        return languages
-
-    page = None
-    if 'pageid' in request.matchdict and 'groupubid' in request.matchdict:
-       pageid = request.matchdict["pageid"]
-       page = annotran.pages.models.Page.get_by_uri(pageid)
-    user = request.authenticated_user
-    for group in user.groups:
-        for language in group.languages:
-            if not page and page in language.pages:
-                languages.append({
-                    'groupubid': group.pubid,
-                    'name': language.name,
-                    'id': language.pubid,
-                    'url': request.route_url('language_read',
-                                             pubid=language.pubid, groupubid=group.pubid),
-                })
-    return languages
-
-
 @view_config(route_name='language_add',
              request_method='POST')
 def addLanguage(request):
@@ -109,9 +75,6 @@ def retrieveLanguageList(request):
     group=h.groups.models.Group.get_by_pubid(groupubid)
 
     language = models.Language.get_by_id(30)
-
-    #replacements.model(request) populates the session on first load
-    #update session with _page_languages
 
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)

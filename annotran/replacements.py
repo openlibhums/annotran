@@ -181,35 +181,39 @@ def _current_languages(request):
     userid = request.authenticated_userid
 
     public_languages = models.Language.get_public()
+    page = annotran.pages.models.Page.get_by_uri(url)
 
     for language in public_languages:
-        languages.append({
-            'groupubid': '__world__',
-            'name': language.name,
-            'id': language.pubid,
-            'url': request.route_url('language_read',
-                                     pubid=language.pubid, groupubid='__world__'),
-        })
+        if page and page in language.pages:
+            languages.append({
+                'groupubid': '__world__',
+                'name': language.name,
+                'id': language.pubid,
+                'url': request.route_url('language_read',
+                                         pubid=language.pubid, groupubid='__world__'),
+            })
 
 
     if userid is None:
         return languages
 
     user = request.authenticated_user
+    if user is None:
+        return languages
     # if user is None or get_group(request) is None:
     #   return languages
     # return languages for all groups for that particular user
     for group in user.groups:
         for language in group.languages:
-            languages.append({
-                'groupubid': group.pubid,
-                'name': language.name,
-                'id': language.pubid,
-                'url': request.route_url('language_read',
-                                         pubid=language.pubid, groupubid=group.pubid),
-            })
+            if page and page in language.pages:
+                languages.append({
+                    'groupubid': group.pubid,
+                    'name': language.name,
+                    'id': language.pubid,
+                    'url': request.route_url('language_read',
+                                             pubid=language.pubid, groupubid=group.pubid),
+                })
     return languages
-
 
 
 def get_group(request):

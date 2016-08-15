@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #this is a code reused from hypothesis, adapted and extended to be used for languages
 
 # -*- coding: utf-8 -*-
+import urllib
 
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
@@ -50,6 +51,7 @@ def addPage(request):
 
     language = annotran.languages.models.Language.get_by_name(name)
 
+    pageid = urllib.unquote(urllib.unquote(pageid))
     page = annotran.pages.models.Page.get_by_uri(pageid)
     if not page:
         page = annotran.pages.models.Page(uri = pageid, language = language)
