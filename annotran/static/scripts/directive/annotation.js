@@ -639,6 +639,8 @@ function AnnotationController(
     var saved;
     switch (vm.action) {
       case 'create':
+        // add a space before the annotation in order to preserve spacing between sentences
+        vm.form.text = ' ' + vm.form.text;
         a.updateDomainModel(domainModel, vm, permissions);
         saved = domainModel.$create().then(function () {
           $rootScope.$emit('annotationCreated', domainModel);
