@@ -23,6 +23,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 # monkey patching of hypothesis methods
+import urllib
 
 from jinja2 import Environment, PackageLoader
 from annotran.languages import models
@@ -171,6 +172,7 @@ def _current_languages(request):
     This list is meant to be returned to the client in the "session" model.
 
     """
+    url = urllib.unquote(request.url.split('?')[1].replace('url=', ''))
     languages = []
     userid = request.authenticated_userid
 
