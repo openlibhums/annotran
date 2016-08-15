@@ -66,19 +66,6 @@ def addLanguage(request):
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
     return exc.HTTPSeeOther(url)
 
-@view_config(route_name='language_retrieve', request_method='GET')
-def retrieveLanguageList(request):
-    pageid = request.matchdict["pageid"]
-    page = annotran.pages.models.Page.get_by_uri(pageid)
-
-    groupubid = request.matchdict["groupubid"]
-    group=h.groups.models.Group.get_by_pubid(groupubid)
-
-    language = models.Language.get_by_id(30)
-
-    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
-    return exc.HTTPSeeOther(url)
-
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
     pubid = request.matchdict["pubid"]
@@ -99,6 +86,5 @@ def read(request):
 
 def includeme(config):
     config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
-    config.add_route('language_retrieve', '/languages/{pageid}/{groupubid}/retrieveLanguageList')
     config.add_route('language_read', '/languages/{pubid}/{groupubid}')
     config.scan(__name__)

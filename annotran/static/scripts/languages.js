@@ -161,13 +161,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return response;
   };
 
-  function retrieveLanguageList(groupPubid) {
-    var response = $http({
-      method: 'GET',
-      url: settings.serviceUrl + 'languages/' + pageid + '/' + groupPubid + '/retrieveLanguageList',
-    });
-  }
-
   /** Return the currently focused language. If no language is explicitly focused we
    * will check localStorage to see if we have persisted a focused language from
    * a previous session. Lastly, we fall back to the first language available.
@@ -264,8 +257,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
     $rootScope.userListvisible = true;
-    //retrieveLanguageList(groupPubid);
-    //session.reload();
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
@@ -279,7 +270,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     getLanguageList: getLanguageList,
     get: get,
 
-    retrieveLanguageList: retrieveLanguageList,
     addLanguage: addLanguage,
     focused: focused,
     focus: focus,
