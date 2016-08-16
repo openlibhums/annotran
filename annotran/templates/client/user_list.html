@@ -8,12 +8,13 @@
       <li class="active"><a href="">Users who have translated this page</a></li>
     </ul>
     <div class="tab-content">
-      <p>Select the user to view their translation. <span ng-if="vm.auth.status === 'signed-out'">Or sign in to write your own translation.</span><span ng-if="vm.auth.status === 'signed-in'">Or <a href="#" ng-click="setUserForEdit()" id="selfEdit">start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</span> You can also go back to <a href="#" ng-click="setUserForReset()">view the original document</a>.</p>
-      <p ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a>.</p>
-      <p>Users who have written translations of this page:</p>
+      <p><span ng-if="vm.auth.status === 'signed-out'">Sign in to write your own translation.</span><span ng-if="vm.auth.status === 'signed-in'"><a href="#" ng-click="setUserForEdit()" id="selfEdit">Start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</span></p>
+      <p ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or <a href="#" ng-click="setUserForReset()">view the original document</a>.</p>
+      <p>Click a user below to view a translation of this page:</p>
       <ul class="user-list">
         <li class="user-item" ng-repeat="user in $root.list_of_users">
-        <a href="#" ng-click="setUser(user)">{{user.username}}</a>
+        <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a></span>
+        <span ng-if="$root.currentUser == 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser('self')">{{user.username}}</a> [or <a href="#" ng-click="setUser(user)">edit your own translation</a>]</span>
       </li>
     </ul>
     </div>
