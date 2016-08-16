@@ -188,42 +188,44 @@ def _current_languages(request):
     userid = request.authenticated_userid
 
     page = annotran.pages.models.Page.get_by_uri(url)
-    public_languages = models.Language.get_public(page)
 
-    for language in public_languages:
-        languages.append({
-            'groupubid': '__world__',
-            'name': language.name,
-            'id': language.pubid,
-            'url': request.route_url('language_read',
-                                     pubid=language.pubid, groupubid='__world__'),
-        })
+    if page is not None:
+        public_languages = models.Language.get_public(page)
+
+        for language in public_languages:
+            languages.append({
+                'groupubid': '__world__',
+                'name': language.name,
+                'id': language.pubid,
+                'url': request.route_url('language_read',
+                                         pubid=language.pubid, groupubid='__world__'),
+            })
 
 
-    if userid is None:
-        return languages
+        if userid is None:
+            return languages
 
-    user = request.authenticated_user
-    if user is None:
-        return languages
-    # if user is None or get_group(request) is None:
-    #   return languages
-    # return languages for all groups for that particular user
+        user = request.authenticated_user
+        if user is None:
+            return languages
+        # if user is None or get_group(request) is None:
+        #   return languages
+        # return languages for all groups for that particular user
 
-    languages_for_page = models.Language.get_by_page(page)
+        languages_for_page = models.Language.get_by_page(page)
 
-    for group in user.groups:
-        # list of languages for a group
-        # this needs to also filter by grouppubid
-        for language in languages_for_page:
-            if group in language.members:
-                languages.append({
-                    'groupubid': group.pubid,
-                    'name': language.name,
-                    'id': language.pubid,
-                    'url': request.route_url('language_read',
-                                             pubid=language.pubid, groupubid=group.pubid),
-                })
+        for group in user.groups:
+            # list of languages for a group
+            # this needs to also filter by grouppubid
+            for language in languages_for_page:
+                if group in language.members:
+                    languages.append({
+                        'groupubid': group.pubid,
+                        'name': language.name,
+                        'id': language.pubid,
+                        'url': request.route_url('language_read',
+                                                 pubid=language.pubid, groupubid=group.pubid),
+                    })
     return languages
 
 
