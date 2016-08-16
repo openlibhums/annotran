@@ -76,19 +76,28 @@ class Language(Base):
     @classmethod
     def get_by_pubid(cls, pubid, page):
         """Return the language with the given pubid, or None."""
-        return cls.query.filter(cls.pubid == pubid, cls.pages.contains(page)).first()
+        if page is None:
+            return cls.query.filter(cls.pubid == pubid).first()
+        else:
+            return cls.query.filter(cls.pubid == pubid, cls.pages.contains(page)).first()
 
     @classmethod
     def get_by_page(cls, page):
         """Return the language with the given pubid, or None."""
-        return cls.query.filter(cls.pages.contains(page)).all()
+        if page is None:
+            return cls.query.all()
+        else:
+            return cls.query.filter(cls.pages.contains(page)).all()
 
     @classmethod
     def get_public(cls, page):
         """Return all public languages"""
         # get the current page object from the database
         # filter by page object
-        return cls.query.filter(cls.members == None, cls.pages.contains(page)).all()
+        if page is None:
+            return cls.query.filter(cls.members == None).all()
+        else:
+            return cls.query.filter(cls.members == None, cls.pages.contains(page)).all()
 
     @classmethod
     def get_by_id(cls, id_):
