@@ -75,6 +75,7 @@ class Language(Base):
 
     @classmethod
     def get_by_pubid(cls, pubid, page):
+
         """Return the language with the given pubid, or None."""
         if page is None:
             return cls.query.filter(cls.pubid == pubid).first()

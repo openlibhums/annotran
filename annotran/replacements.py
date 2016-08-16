@@ -50,13 +50,21 @@ def _read_group(request, group, language=None):
     group visits the group's URL.
 
     """
-    url = request.route_url('group_read', pubid=group.pubid, slug=group.slug)
+
+    if group is None:
+        pubid = "__world__"
+        slug = "Public"
+    else:
+        pubid = group.pubid
+        slug = group.slug
+
+    url = request.route_url('group_read', pubid=pubid, slug=slug)
 
     # language = models.Language.get_by_groupubid(group.pubid)
 
     result = search.search(request,
                            private=False,
-                           params={"group": group.pubid, "limit": 1000})
+                           params={"group": pubid, "limit": 1000})
     annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
                    for a in result['rows']]
 

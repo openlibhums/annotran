@@ -59,7 +59,8 @@ def addLanguage(request):
         else:
             language = models.Language(name=name)
     else:
-        language.members.append(group)
+        if group:
+            language.members.append(group)
 
     request.db.add(language)
     # We need to flush the db session here so that language.id will be generated.
