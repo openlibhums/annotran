@@ -21,6 +21,7 @@ app.controller('AppController', require('./app-controller'))
 .service('pages', require('./pages'))
 .service('groups', require('./groups'))
 .service('session', require('./session'))
+.service('votes', require('./votes'))
 
 app.factory('langListFactory', require('./directive/language-service').factory)
 

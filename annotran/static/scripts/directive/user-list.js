@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, settings, languages, crossframe) {
+function Controller($scope, settings, languages, votes, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
@@ -62,6 +62,12 @@ function Controller($scope, settings, languages, crossframe) {
     crossframe.call("toggleSentenceSelection");
   };
 
+  $scope.vote = function(id) {
+    //todo: get score form the page
+    var score = 5;
+    return votes.addVote(id.username, languages.focused().id, score);
+  }
+
   $scope.userList = function () {
     return $scope.$root.updateUserList()
   };
@@ -69,7 +75,6 @@ function Controller($scope, settings, languages, crossframe) {
   // for some reason we have to use an array here as NG repeat won't handle it properly otherwise
   $scope.list_of_users = $scope.$root.list_of_users;
   $scope.$root.updateUserList();
-  
 }
 
 function userList () {
