@@ -58,11 +58,10 @@ def addLanguage(request):
             language = models.Language(name=name, group=h.groups.models.Group.get_by_pubid(groupubid))
         else:
             language = models.Language(name=name)
+        request.db.add(language)
     else:
         if group:
             language.members.append(group)
-
-    request.db.add(language)
     # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
