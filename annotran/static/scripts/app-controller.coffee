@@ -13,6 +13,7 @@ class AppControllerExt extends appcontroller
     $scope.$root.editOnly = false
     $scope.$root.list_of_users = []
     $scope.$root.userAnnotations = []
+    $scope.$root.allPageAnnotations = []
     $scope.$root.pageid = window.location.href
 
     $scope.$root.updateUserList = ->
@@ -21,8 +22,8 @@ class AppControllerExt extends appcontroller
 
       dupeCheck = []
 
-      if $scope.$root.userAnnotations.length > 0
-        for entry in $scope.$root.userAnnotations
+      if $scope.$root.allPageAnnotations.length > 0
+        for entry in $scope.$root.allPageAnnotations
           parsed = persona.parseAccountID(entry.user)
 
           if dupeCheck.indexOf(entry.user) == -1
