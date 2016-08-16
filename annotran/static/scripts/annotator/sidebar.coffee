@@ -27,6 +27,8 @@ raf = require('raf')
 Hammer = require('hammerjs')
 Annotator = require('annotator')
 xpathRange = Annotator.Range
+Util = Annotator.Util
+$ = Annotator.$
 
 Host = require('./host')
 
@@ -208,23 +210,45 @@ module.exports = class Sidebar extends Host
       r = selection.getRangeAt(0)
       if r.collapsed then continue else r
 
+    range = null
+
     for r in ranges
-      packager = {
-        start: r.startContainer
-        startOffset: r.startOffset
-        end: r.endContainer
-        endOffset: r.endOffset
-      }
+      range = new xpathRange.sniff(r).normalize(document.body)
+
+    body = document.body
 
     # convert this to a range in the current document and extract the start and end points
-    range = new xpathRange.NormalizedRange(packager)
+    #range = new xpathRange.sniff(packager).normalize(document.body)
     selection_box = range.toRange().getBoundingClientRect()
 
+    scrollTop = window.pageYOffset || selection_box.scrollTop || body.scrollTop
+    scrollLeft = window.pageXOffset || selection_box.scrollLeft || body.scrollLeft
+
+    clientTop = selection_box.clientTop || body.clientTop || 0
+    clientLeft = selection_box.clientLeft || body.clientLeft || 0
+
+    selection_top  = selection_box.top + scrollTop - clientTop
+    selection_left = selection_box.left + scrollLeft - clientLeft
+    selection_right = selection_left + (selection_box.right - selection_box.left)
+    selection_bottom = selection_top + (selection_box.bottom - selection_box.top)
+
     for claimed in elementsClaimed
-      isClaimed = !(claimed.right < selection_box.left ||
-                  claimed.left > selection_box.right ||
-                  claimed.bottom < selection_box.top ||
-                  claimed.top > selection_box.bottom)
+
+      scrollTop = window.pageYOffset || claimed.scrollTop || body.scrollTop
+      scrollLeft = window.pageXOffset || claimed.scrollLeft || body.scrollLeft
+
+      clientTop = claimed.clientTop || body.clientTop || 0
+      clientLeft = claimed.clientLeft || body.clientLeft || 0
+
+      top  = claimed.top + scrollTop - clientTop
+      left = claimed.left + scrollLeft - clientLeft
+      right = left + claimed.width
+      bottom = top + claimed.height
+
+      rightLeftOverlap = (right >= selection_box.left && left <= selection_right)
+      topBottomOverlap = (bottom >= selection_top && top <= selection_bottom)
+
+      isClaimed = rightLeftOverlap && topBottomOverlap
 
       if isClaimed
         break
