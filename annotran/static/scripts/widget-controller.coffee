@@ -97,6 +97,7 @@ class WidgetControllerExt extends widgetcontroller
           selectedUser = "acct:" + selectedUser.username + "@" + selectedUser.provider
 
         userAnnotations = []
+        allPageAnnotations = []
 
         if selectedUser != undefined
           for annot in results.rows when annot.user == selectedUser
@@ -104,8 +105,11 @@ class WidgetControllerExt extends widgetcontroller
         else
           userAnnotations = results.rows
 
+        allPageAnnotations = results.rows
+
         if $scope.$root != undefined and $scope.$root != null
           $scope.$root.userAnnotations = userAnnotations
+          $scope.$root.allPageAnnotations = allPageAnnotations
           $scope.$root.updateUserList()
 
         crossframe.call "resetDOM"
