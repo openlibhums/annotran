@@ -48,7 +48,6 @@ def addLanguage(request):
 
     name = request.matchdict["language"]
     groupubid = request.matchdict["groupubid"]
-    pageid = request.matchdict["pageid"]
 
     group = h.groups.models.Group.get_by_pubid(groupubid) # just add public group handling, and the group will always be available
     language = models.Language.get_by_name(name)
