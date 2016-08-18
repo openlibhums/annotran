@@ -107,7 +107,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
 
     if ($rootScope.groupPubid) {
-      if ($rootScope.map == null || Object.keys($rootScope.map).length == 0) {
+      if ($rootScope.map == null || Object.keys($rootScope.map).length == 0 ||
+          typeof $rootScope.map[0] == 'undefined') {
         $rootScope.map = [];
         $rootScope.map = all();
       }
