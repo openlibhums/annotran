@@ -15,25 +15,30 @@ class Vote(Base):
                       nullable=False)
     # we need a relationship table between a vote and: a user, a langauge and a page
     relUser = sa.orm.relationship('User',
-                                  backref='votes',
-                                  secondary='user_vote')
+                                  backref=sa.orm.backref('votes', lazy='dynamic'),
+                                  secondary='user_vote',
+                                  lazy='dynamic')
 
     relVoter = sa.orm.relationship('User',
-                                  backref='voters',
-                                  secondary='voter_vote')
+                                   backref=sa.orm.backref('voters', lazy='dynamic'),
+                                   secondary='voter_vote',
+                                   lazy='dynamic')
 
     relLanguage = sa.orm.relationship('Language',
-                                  backref='votes',
-                                  secondary='language_vote')
+                                      backref=sa.orm.backref('votes', lazy='dynamic'),
+                                      secondary='language_vote',
+                                      lazy='dynamic')
 
     relPage = sa.orm.relationship('Page',
-                                  backref='votes',
-                                  secondary='page_vote')
+                                  backref=sa.orm.backref('votes', lazy='dynamic'),
+                                  secondary='page_vote',
+                                  lazy='dynamic')
 
-    def __init__(self, vote, user = None, language=None, page = None):
-        self.vote = vote
+    def __init__(self, score, page=None, language=None, user=None, voter=None):
+        self.vote = score
         if user and language and page:
             self.relUser.append(user)
+            self.relVoter.append(voter)
             self.relLanguage.append(language)
             self.relPage.append(page)
 
@@ -53,6 +58,15 @@ class Vote(Base):
             return cls.query.filter(
                 cls.id == id_).one()
         except exc.NoResultFound:
+            return None
+
+    @classmethod
+    def get_by_voter(cls, page, language, user, voter):
+        """Return the language with the given pubid, or None."""
+        if page and language and user and voter:
+            return cls.query.filter(cls.relPage.contains(page), cls.relLanguage.contains(language),
+                                    cls.relUser.contains(user), cls.relVoter.contains(voter)).first()
+        else:
             return None
 
 USER_VOTE_TABLE = sa.Table(
