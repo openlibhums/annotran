@@ -23,21 +23,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 # monkey patching of hypothesis methods
-import urllib
-
-from jinja2 import Environment, PackageLoader
 from annotran.languages import models
 from h import presenters
 from h.api import search
 from h.api import uri
 from pyramid import renderers
+from pyramid import httpexceptions as exc
+from jinja2 import Environment, PackageLoader
+from annotran.util import util
+
 import collections
 import h
 import annotran
 import os.path
-from pyramid import httpexceptions as exc
-from h.api import transform
-from jinja2 import Environment, PackageLoader
+
 
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
@@ -98,6 +97,7 @@ def model(request):
     session['groups'] = h.session._current_groups(request)
     session['features'] = h.session.features.all(request)
     session['languages'] = _current_languages(request)
+    session['votes'] = _current_votes(request)
     session['preferences'] = {}
     user = request.authenticated_user
     if user and not user.sidebar_tutorial_dismissed:
@@ -174,15 +174,12 @@ def _language_sort_key(language):
 
 
 def _current_languages(request):
-    """Return a list of the groups the current user is a member of.
+    """Return a list of languages for a given group and page.
 
     This list is meant to be returned to the client in the "session" model.
 
     """
-    try:
-        url = urllib.unquote(urllib.unquote(request.url.split('?')[1].replace('url=', '')).split('?')[1].replace('url=', ''))
-    except:
-        url = ''
+    url=util.get_url_from_request(request)
 
     languages = []
     userid = request.authenticated_userid
@@ -200,7 +197,6 @@ def _current_languages(request):
                 'url': request.route_url('language_read',
                                          pubid=language.pubid, groupubid='__world__'),
             })
-
 
         if userid is None:
             return languages
@@ -227,6 +223,13 @@ def _current_languages(request):
                                                  pubid=language.pubid, groupubid=group.pubid),
                     })
     return languages
+
+
+def _current_votes(request):
+    """Return votes for all users (authors) who made translations on a given page and for a given language
+
+    This list is meant to be returned to the client in the "session" model
+    """
 
 
 def get_group(request):
