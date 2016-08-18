@@ -30,11 +30,12 @@ import urllib
 
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
-
 from h import i18n
+from annotran import replacements
+from annotran.util import util
+
 import models
 import h
-from annotran import replacements
 import annotran
 
 _ = i18n.TranslationString
@@ -68,10 +69,7 @@ def addLanguage(request):
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
-    try:
-        url = urllib.unquote(urllib.unquote(request.url.split('?')[1].replace('url=', '')).split('?')[1].replace('url=', ''))
-    except:
-        url = ''
+    url=util.get_url_from_request(request)
 
     page = annotran.pages.models.Page.get_by_uri(url)
     pubid = request.matchdict["pubid"]
