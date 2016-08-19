@@ -3,6 +3,7 @@ import urllib
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
 from h import i18n
+from annotran.util import util
 
 import models
 import annotran
@@ -21,7 +22,7 @@ def addVote(request):
 
     voter = request.authenticated_user
     if voter is None:
-        return None
+        raise exc.HTTPNotFound()
 
     languageId = request.matchdict["languageId"]
     pageId = request.matchdict["pageId"]
@@ -48,9 +49,18 @@ def addVote(request):
             vote.relLanguage.append(language)
             vote.relPage.append(page)
 
-    url = request.route_url('language_read', pubid=language.pubid, groupubid='')
+    url = request.route_url('vote_read', userid=userId, languageid=languageId, pageid=request.matchdict["pageId"])
     return exc.HTTPSeeOther(url)
+
+@view_config(route_name='vote_read', request_method='GET')
+def read(request):
+    url=util.get_url_from_request(request)
+    page = annotran.pages.models.Page.get_by_uri(url)
+    if not request.authenticated_userid:
+        return None
+    return None
 
 def includeme(config):
     config.add_route('vote_add', 'votes/{userId}/{languageId}/{pageId}/{score}/addVote')
+    config.add_route('vote_read', '/votes/{userid}/{languageid}/{pageid}')
     config.scan(__name__)

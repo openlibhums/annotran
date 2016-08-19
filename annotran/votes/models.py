@@ -1,4 +1,4 @@
-import datetime
+# -*- coding: utf-8 -*-
 
 import sqlalchemy as sa
 from sqlalchemy.orm import exc
@@ -66,6 +66,14 @@ class Vote(Base):
         if page and language and user and voter:
             return cls.query.filter(cls.relPage.contains(page), cls.relLanguage.contains(language),
                                     cls.relUser.contains(user), cls.relVoter.contains(voter)).first()
+        else:
+            return None
+
+    @classmethod
+    def get_by_language(cls, language):
+        """Return the language with the given pubid, or None."""
+        if language:
+            return cls.query.filter(cls.relLanguage.contains(language))
         else:
             return None
 
