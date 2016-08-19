@@ -230,6 +230,36 @@ def _current_votes(request):
 
     This list is meant to be returned to the client in the "session" model
     """
+    votes = []
+    userid = request.authenticated_userid
+    url=util.get_url_from_request(request)
+
+    page = annotran.pages.models.Page.get_by_uri(url)
+
+    if page is not None:
+        public_languages = models.Language.get_public(page)
+
+        #votes for public languages???
+
+        if userid is None:
+            return votes
+
+        user = request.authenticated_user
+        if user is None:
+            return votes
+
+        languages_for_page = models.Language.get_by_page(page)
+
+        for group in user.groups:
+            for language in languages_for_page:
+                if group in language.members:
+                    for vote in annotran.votes.models.Vote.get_by_language(language):
+                        votes.append({
+                            'score': vote.vote,
+                            'id': vote.id,
+                            'url': request.route_url('vote_read', userid=user.username, languageid=language.pubid, pageid=request.url),
+                        })
+    return votes
 
 
 def get_group(request):
@@ -241,7 +271,6 @@ def get_group(request):
     if group is None:
         raise exc.HTTPNotFound()
     return group
-
 
 # h.client.render_app_html
 def render_app_html(webassets_env,
