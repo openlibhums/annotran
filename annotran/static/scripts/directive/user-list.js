@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, settings, languages, votes, crossframe) {
+function Controller($scope, $window, settings, languages, votes, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
@@ -30,8 +30,12 @@ function Controller($scope, settings, languages, votes, crossframe) {
     this.$root.selectedUser = "self";
     this.$root.editOnly = true;
 
-    $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
-
+    if (languages.focused().id == undefined) {
+      var message = 'Select language.';
+      $window.confirm(message);
+    } else {
+      $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
+    }
   };
 
   $scope.setUser = function (id) {
