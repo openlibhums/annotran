@@ -19,11 +19,6 @@ class Vote(Base):
                                   secondary='user_vote',
                                   lazy='dynamic')
 
-    relVoter = sa.orm.relationship('User',
-                                   backref=sa.orm.backref('voters', lazy='dynamic'),
-                                   secondary='voter_vote',
-                                   lazy='dynamic')
-
     relLanguage = sa.orm.relationship('Language',
                                       backref=sa.orm.backref('votes', lazy='dynamic'),
                                       secondary='language_vote',
@@ -89,17 +84,6 @@ USER_VOTE_TABLE = sa.Table(
               nullable=False)
 )
 
-VOTER_VOTE_TABLE = sa.Table(
-    'voter_vote', Base.metadata,
-    sa.Column('user_id',
-              sa.Integer,
-              sa.ForeignKey('user.id'),
-              nullable=False),
-    sa.Column('vote_id',
-              sa.Integer,
-              sa.ForeignKey('vote.id'),
-              nullable=False)
-)
 
 LANGUAGE_VOTE_TABLE = sa.Table(
     'language_vote', Base.metadata,
@@ -122,5 +106,52 @@ PAGE_VOTE_TABLE = sa.Table(
     sa.Column('vote_id',
               sa.Integer,
               sa.ForeignKey('vote.id'),
+              nullable=False)
+)
+
+
+class UserType(Base):
+    __tablename__ = 'user_type'
+
+    id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
+    type = sa.Column(sa.Text(),
+                      unique=True,
+                      nullable=False)
+    # we need a relationship table between a user_type and a user
+    relUser = sa.orm.relationship('User',
+                                  backref=sa.orm.backref('user_types', lazy='dynamic'),
+                                  secondary='user_type_ref',
+                                  lazy='dynamic')
+
+    def __init__(self, type):
+        self.type = type
+
+    @classmethod
+    def get_by_type(cls, type):
+        """Return the type with the given type value, or None."""
+        try:
+            return cls.query.filter(
+                cls.type == type).one()
+        except exc.NoResultFound:
+            return None
+
+    @classmethod
+    def get_by_id(cls, id_):
+        """Return the type with the given id, or None."""
+        try:
+            return cls.query.filter(
+                cls.id == id_).one()
+        except exc.NoResultFound:
+            return None
+
+USER_TYPE_REF_TABLE = sa.Table(
+    'user_type_ref', Base.metadata,
+    sa.Column('user_id',
+              sa.Integer,
+              sa.ForeignKey('user.id'),
+              nullable=False),
+    sa.Column('type_id',
+              sa.Integer,
+              sa.ForeignKey('user_type.id'),
               nullable=False)
 )
