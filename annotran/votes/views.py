@@ -20,10 +20,6 @@ def addVote(request):
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
-    voter = request.authenticated_user
-    if voter is None:
-        raise exc.HTTPNotFound()
-
     languageId = request.matchdict["languageId"]
     pageId = request.matchdict["pageId"]
     score = request.matchdict["score"]
@@ -32,22 +28,39 @@ def addVote(request):
     pageId = urllib.unquote(urllib.unquote(pageId))
     page = annotran.pages.models.Page.get_by_uri(pageId)
     language = annotran.languages.models.Language.get_by_pubid(languageId, page)
-    user = h.models.User.get_by_username(userId)
+    author = h.models.User.get_by_username(userId)
+    voter = h.models.User.get_by_username(request.authenticated_user.username)
 
-    vote = models.Vote.get_by_voter(page, language, user, voter)
+    vote = models.Vote.get_by_vote(score)
 
-    if not vote:
-        if language and page:
-            vote = models.Vote(score=score, page=page, language=language, user=user, voter=voter)
-        else:
-            vote = models.Vote(vote=score)
+    if language is None or page is None:
+         raise exc.HTTPNotFound()
+
+    voted=None
+    if vote is None:
+        vote = models.Vote(score=score, page=page, language=language, author=author, voter=voter)
         request.db.add(vote)
         request.db.flush()
     else:
-        if voter and language and page:
+        voted = models.Vote.get_by_voter(page, language, author, voter)
+        if voted is None:
+            vote.relUser.append(author)
             vote.relUser.append(voter)
             vote.relLanguage.append(language)
             vote.relPage.append(page)
+            request.db.flush()
+    if voted is None:
+        author_type = models.UserType.get_by_type("author")
+        voter_type = models.UserType.get_by_type("voter")
+        if author_type is None: #it's sufficient to check for one type only
+            author_type = models.UserType(type="author", user=author)
+            voter_type = models.UserType(type="voter", user=voter)
+            request.db.add(author_type)
+            request.db.add(voter_type)
+        else:
+            author_type.relUserType.append(user=author)
+            voter_type.relUserType.append(user=voter)
+        request.db.flush()
 
     url = request.route_url('vote_read', userid=userId, languageid=languageId, pageid=request.matchdict["pageId"])
     return exc.HTTPSeeOther(url)
