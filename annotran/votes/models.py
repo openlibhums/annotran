@@ -29,11 +29,11 @@ class Vote(Base):
                                   secondary='page_vote',
                                   lazy='dynamic')
 
-    def __init__(self, score, page=None, language=None, user=None, voter=None):
+    def __init__(self, score, page=None, language=None, author=None, voter=None):
         self.vote = score
-        if user and language and page:
-            self.relUser.append(user)
-            self.relVoter.append(voter)
+        if author and language and page:
+            self.relUser.append(author)
+            self.relUser.append(voter)
             self.relLanguage.append(language)
             self.relPage.append(page)
 
@@ -123,8 +123,9 @@ class UserType(Base):
                                   secondary='user_type_ref',
                                   lazy='dynamic')
 
-    def __init__(self, type):
+    def __init__(self, type, user=None):
         self.type = type
+        self.relUser.append(user)
 
     @classmethod
     def get_by_type(cls, type):
