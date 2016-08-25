@@ -65,6 +65,16 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return false;
   };
 
+  function containsName(groupubid, languageName) {
+    var i=0, langs = $rootScope.map[groupubid];
+    for (i = 0; i < langs.length; i++) {
+      if (langs[i].name == languageName) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   function all() {
     var i;
     // iterate over all languages stored in the session
@@ -83,7 +93,11 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
     return $rootScope.map || [];
   };
-  
+
+  function hasLanguageAlready(languageToCheck) {
+    return containsName($rootScope.groupPubid, languageToCheck)
+  }
+
   function getLanguageList() {
 
     var result;
@@ -255,6 +269,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   });
 
   return {
+    hasLanguageAlready: hasLanguageAlready,
     getLanguageList: getLanguageList,
     get: get,
 
