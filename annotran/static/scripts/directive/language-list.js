@@ -6,10 +6,15 @@ var eventsa =  require('../events');
 // @ngInject
 function LanguageListController($scope, $window, languages, groups, pages) {
   $scope.addLanguage = function (language) {
-    var message = 'Are you sure you want to add new translations for the language "' +
-      language.name + '"?';
-    if ($window.confirm(message)) {
-      languages.addLanguage(language.name);
+    if (languages.hasLanguageAlready(language.name) == false)
+    {
+      var message = 'Are you sure you want to add new translations for the language "' +
+        language.name + '"?';
+      if ($window.confirm(message)) {
+        languages.addLanguage(language.name);
+        $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
+      }
+    } else {
       $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
     }
   }
