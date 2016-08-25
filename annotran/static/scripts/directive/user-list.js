@@ -81,17 +81,22 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
   $scope.$root.updateUserList();
 }
 
-function userList () {
+// @ngInject
+function userList (languages) {
   return {
     controller: Controller,
     bindToController: true,
     controllerAs: 'vm',
     restrict: 'E',
+    link: function ($scope, elem, attrs) {
+      $scope.languages = languages;
+    },
     scope: {
       auth: '=',
       session: '=',
       onClose: '&',
-      showUserList: '='
+      showUserList: '=',
+      languages: '&',
     },
     templateUrl: 'user_list.html'
   };
