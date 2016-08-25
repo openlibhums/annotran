@@ -160,7 +160,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentIndex = this.currentIndex + 1
     currentSelection = window.getSelection()
 
-    this.selectSentence(currentSelection.baseNode.parentElement)
+    this.selectSentence(currentSelection.anchorNode.parentElement)
 
     selection = Annotator.Util.getGlobal().getSelection()
     ranges = for i in [0...selection.rangeCount]
