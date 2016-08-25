@@ -54,21 +54,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   var focusedLanguage;
 
   var pageid = $rootScope.pageid;
-  pageid = decodeURIComponent(pageid);
-  $rootScope.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", pageid)));
-
-  pageid = $rootScope.pageid;
-
-  function getParameterByName(name, url) {
-    if (!url) url = pageid;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return results[2];
-    //return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
 
   function containsValue(groupubid, language) {
     var i=0, langs = $rootScope.map[groupubid];

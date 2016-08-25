@@ -15,6 +15,8 @@ class AppControllerExt extends appcontroller
     $scope.$root.userAnnotations = []
     $scope.$root.allPageAnnotations = []
     $scope.$root.pageid = window.location.href
+    $scope.$root.pageid = decodeURIComponent($scope.$root.pageid);
+    $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
 
     $scope.$root.updateUserList = ->
       # clear the array
@@ -31,6 +33,19 @@ class AppControllerExt extends appcontroller
             dupeCheck.push entry.user
 
       return $scope.$root.list_of_users
+
+    `
+      function getParameterByName(name, url) {
+      if (!url) url = pageid;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return results[2];
+      //return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    `
 
 module.exports = AppControllerExt
 
