@@ -65,6 +65,11 @@ module.exports = class Substitution extends Annotator.Plugin
           this.singleSubstitution(packager, data.text)
 
   createSubstitutionElement: (originalText, substituteText, ele) ->
+
+    # we don't preserve full formatting but we can at least put some paragraph breaks in
+    originalText = originalText.replace(new RegExp('\n', 'g'), '<br/>')
+    console.log(originalText)
+
     newEle = $('<span class="annotation-hover"></span>')
     newEle.text(substituteText)
 
@@ -75,7 +80,7 @@ module.exports = class Substitution extends Annotator.Plugin
     ele.before(newEle)
 
     newEle.mouseover (event) ->
-      newEle.text(originalText)
+      newEle.html(originalText)
 
     newEle.mouseleave (event) ->
       newEle.text(substituteText)
@@ -93,7 +98,7 @@ module.exports = class Substitution extends Annotator.Plugin
 
     removeArray = []
 
-    newEle = this.createSubstitutionElement(start.textContent, substituteText, $(start))
+    newEle = this.createSubstitutionElement(full_range.text(), substituteText, $(start))
 
     start.textContent = ""
 
