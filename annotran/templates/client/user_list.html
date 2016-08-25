@@ -9,7 +9,7 @@
       </div>
       <div ng-if="languages.getLanguageList().length > 0">
         <p><span ng-if="vm.auth.status === 'signed-out'">Sign in to write your own translation.</span><span ng-if="vm.auth.status === 'signed-in'"><a href="#" ng-click="setUserForEdit()" id="selfEdit">Start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</span></p>
-        <p ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or <a href="#" ng-click="setUserForReset()">view the original document</a>.</p>
+        <p><span ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or </span><a href="#" ng-click="setUserForReset()"><span ng-if="vm.auth.status === 'signed-in'">v</span><span ng-if="vm.auth.status != 'signed-in'">V</span>iew the original document</a>.</p>
         <div ng-if="$root.list_of_users.length > 0">
           <hr/>
           <p><b>Select a user below to view a translation of this page:</b></p>
