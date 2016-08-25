@@ -67,7 +67,7 @@ module.exports = class Substitution extends Annotator.Plugin
   createSubstitutionElement: (originalText, substituteText, ele) ->
 
     # we don't preserve full formatting but we can at least put some paragraph breaks in
-    originalText = originalText.replace(new RegExp('\n', 'g'), '<br/>')
+    originalText = originalText.replace(new RegExp('\n', 'g'), '<br/><br/>')
     substituteText = substituteText.replace(new RegExp('\n', 'g'), '<br/>')
 
     newEle = $('<span class="annotation-hover"></span>')
