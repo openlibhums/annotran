@@ -52,6 +52,12 @@ class WidgetControllerExt extends widgetcontroller
     $scope.$root.currentUser = session.state.userid
     $scope.session = session
 
+    # this fires on first page load and is designed to catch instances where the user has been logged out
+    # sadly, we can't use a hook to on USER_CHANGED here since the session is reloaded before angular is fully up
+    # and running
+    if $scope.$root.currentUser == null
+        groups.focus("__world__")
+
     this.crossframe = crossframe
 
     @chunkSize = 200
@@ -149,8 +155,8 @@ class WidgetControllerExt extends widgetcontroller
         streamFilter.resetFilter().addClause('/uri', 'one_of', loaded)
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
 
-
     $scope.$on events.USER_CHANGED, ->
+      console.log("IN USER_CHANGED")
       $scope.$root.selectedUser = undefined
       _resetAnnotations(annotationMapper, drafts, threading)
       loaded = []
