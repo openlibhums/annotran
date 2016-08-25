@@ -16,6 +16,11 @@
           <ul class="user-list">
             <li class="user-item" ng-repeat="user in $root.list_of_users">
             <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a> <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user)"> <span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span></a></span>
+              <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a>
+               <a ng-repeat="i in [1,2,3,4,5] | filter:voteAuthor:user">
+                  <option>star</option>
+                </a>
+              </span>
             <span ng-if="$root.currentUser == 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser('self')">{{user.username}}</a> [or <a href="#" ng-click="setUser(user)">edit your own translation</a>]</span>
             </li>
           </ul>

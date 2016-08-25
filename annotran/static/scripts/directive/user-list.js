@@ -48,7 +48,6 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
       this.$root.selectedUser = id;
       this.$root.editOnly = false;
     }
-
     $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
 
   };
@@ -66,11 +65,28 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
     crossframe.call("toggleSentenceSelection");
   };
 
-  $scope.vote = function(id) {
+  $scope.vote = function(selUser) {
     //todo: get score form the page
+    $scope.toVote=selUser;
     var score = 5;
-    return votes.addVote(id.username, languages.focused().id, score);
+    return votes.addVote(selUser.username, languages.focused().id, score);
+  };
+
+  $scope.voteAuthor = function(user){
+    if ($scope.toVote == undefined ||  user == undefined)
+        return false;
+
+    if ($scope.toVote ==  user)
+        return true;
+    else
+        return false;
   }
+
+
+  $scope.addVote = function(score) {
+    console.log("adding score of: " + score);
+  };
+
 
   $scope.userList = function () {
     return $scope.$root.updateUserList()

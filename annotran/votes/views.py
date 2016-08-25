@@ -42,7 +42,7 @@ def addVote(request):
         request.db.add(vote)
         request.db.flush()
     else:
-        voted = models.Vote.get_by_voter(page, language, author, voter)
+        voted = models.Vote.get_by_author_voter(page, language, author, voter)
         if voted is None:
             vote.relUser.append(author)
             vote.relUser.append(voter)
@@ -58,8 +58,8 @@ def addVote(request):
             request.db.add(author_type)
             request.db.add(voter_type)
         else:
-            author_type.relUserType.append(user=author)
-            voter_type.relUserType.append(user=voter)
+            author_type.relUserType.append(author)
+            voter_type.relUserType.append(voter)
         request.db.flush()
 
     url = request.route_url('vote_read', userid=userId, languageid=languageId, pageid=request.matchdict["pageId"])
