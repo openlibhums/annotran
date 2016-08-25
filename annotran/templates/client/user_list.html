@@ -5,18 +5,21 @@
      ng-click="hideUserList()"></i>
   <div class="form-vertical">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="">Users who have translated this page</a></li>
+      <li class="active"><a href="">Translation Options</a></li>
     </ul>
-    <di class="tab-content">
+    <div class="tab-content">
       <p><span ng-if="vm.auth.status === 'signed-out'">Sign in to write your own translation.</span><span ng-if="vm.auth.status === 'signed-in'"><a href="#" ng-click="setUserForEdit()" id="selfEdit">Start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.</span></p>
       <p ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or <a href="#" ng-click="setUserForReset()">view the original document</a>.</p>
-      <p>Click a user below to view a translation of this page:</p>
-      <ul class="user-list">
-        <li class="user-item" ng-repeat="user in $root.list_of_users">
-        <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a> <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user)"> <span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span></a></span>
-        <span ng-if="$root.currentUser == 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser('self')">{{user.username}}</a> [or <a href="#" ng-click="setUser(user)">edit your own translation</a>]</span>
-      </li>
-    </ul>
+      <div ng-if="$root.list_of_users.length > 0">
+        <hr/>
+        <p><b>Select a user below to view a translation of this page:</b></p>
+        <ul class="user-list">
+          <li class="user-item" ng-repeat="user in $root.list_of_users">
+          <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a> <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user)"> <span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span></a></span>
+          <span ng-if="$root.currentUser == 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser('self')">{{user.username}}</a> [or <a href="#" ng-click="setUser(user)">edit your own translation</a>]</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
