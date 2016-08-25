@@ -68,10 +68,10 @@ module.exports = class Substitution extends Annotator.Plugin
 
     # we don't preserve full formatting but we can at least put some paragraph breaks in
     originalText = originalText.replace(new RegExp('\n', 'g'), '<br/>')
-    console.log(originalText)
+    substituteText = substituteText.replace(new RegExp('\n', 'g'), '<br/>')
 
     newEle = $('<span class="annotation-hover"></span>')
-    newEle.text(substituteText)
+    newEle.html(substituteText)
 
     newEle.css({
       "background-color" : "#F5F5F5"
@@ -83,7 +83,7 @@ module.exports = class Substitution extends Annotator.Plugin
       newEle.html(originalText)
 
     newEle.mouseleave (event) ->
-      newEle.text(substituteText)
+      newEle.html(substituteText)
 
     return newEle
 
