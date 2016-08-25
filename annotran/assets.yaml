@@ -162,7 +162,7 @@ app_css:
     - ../../node_modules/angular-toastr/dist/angular-toastr.css
     - h:static/styles/vendor/icomoon.css
     - h:static/styles/vendor/katex.min.css
-    - annotran:static/styles/annotran.css
+    - annotran:styles/annotran.css
     - output: styles/app.css
       filters: compass,postcss
       contents:
