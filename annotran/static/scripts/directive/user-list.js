@@ -65,28 +65,25 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
     crossframe.call("toggleSentenceSelection");
   };
 
-  $scope.vote = function(selUser) {
-    //todo: get score form the page
-    $scope.toVote=selUser;
-    var score = 5;
-    return votes.addVote(selUser.username, languages.focused().id, score);
+  $scope.vote = function(author) {
+    $scope.author=author;
   };
 
-  $scope.voteAuthor = function(user){
-    if ($scope.toVote == undefined ||  user == undefined)
-        return false;
+  $scope.addVote = function(author, score) {
+    $scope.author=author;
+    return votes.addVote(author.username, languages.focused().id, score);
+  };
 
-    if ($scope.toVote ==  user)
+  $scope.voteAuthor = function(user) {
+    return function(score) {
+      if ($scope.author == undefined ||  user == undefined)
+        return false;
+      if ($scope.author ==  user)
         return true;
-    else
+      else
         return false;
+    }
   }
-
-
-  $scope.addVote = function(score) {
-    console.log("adding score of: " + score);
-  };
-
 
   $scope.userList = function () {
     return $scope.$root.updateUserList()
