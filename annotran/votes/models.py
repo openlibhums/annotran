@@ -5,7 +5,7 @@ import h
 
 from sqlalchemy.orm import exc
 from h.db import Base
-
+from sqlalchemy.sql import func
 
 class Vote(Base):
     __tablename__ = 'vote'
@@ -58,7 +58,7 @@ class Vote(Base):
 
     @classmethod
     def get_by_author_voter(cls, page, language, user, voter):
-
+        
         q1=h.accounts.models.User.query.filter()\
             .filter(cls.relPage.contains(page), cls.relLanguage.contains(language))\
             .filter(UserType.relUserType.contains(user or voter))
@@ -72,6 +72,30 @@ class Vote(Base):
             return None
         else:
             return q4.all()
+
+
+    @classmethod
+    def get_votes_by_author(cls, author, page, language):
+        """Return votes for author on page for selected language, or None"""
+
+        q1=h.accounts.models.User.query.filter()\
+            .filter(cls.relPage.contains(page), cls.relLanguage.contains(language))\
+            .filter(UserType.relUserType.contains(author))
+
+        q2=UserType.query.filter().filter(UserType.relUserType.contains(author)).subquery()
+        q3=q1.join(q2, q2.columns.type=='author')
+
+        if not q3.all():
+            return None
+        else:
+            return q3.all()
+
+    @classmethod
+    def get_votes_for_authors(cls, page, language):
+        """Return votes per author on page for selected language, or None"""
+
+        #TODO
+        return None
 
 
     @classmethod
