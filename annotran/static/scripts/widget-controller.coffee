@@ -156,7 +156,6 @@ class WidgetControllerExt extends widgetcontroller
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
 
     $scope.$on events.USER_CHANGED, ->
-      console.log("IN USER_CHANGED")
       $scope.$root.selectedUser = undefined
       _resetAnnotations(annotationMapper, drafts, threading)
       loaded = []

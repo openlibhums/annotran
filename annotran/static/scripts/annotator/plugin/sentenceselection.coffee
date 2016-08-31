@@ -35,7 +35,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     counter = 0
 
     if desiredText.length == 1
-      console.log("Current selection does not contain a full stop. Cannot split by sentence.")
       desiredText = []
       desiredText.push $(target).text()
 
@@ -62,22 +61,18 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     return data
 
   secondaryJump: (target) ->
-    console.log("Trying secondary jump")
     this.currentIndex = 0
     nextSibling = $(target).next()
 
     if nextSibling != undefined and nextSibling.length != 0
-      console.log("Using next sibling for jump")
       this.selectSentence nextSibling
     else
       nextSibling = $($(target).parent()).next()
-      console.log("Using parent next sibling for jump")
       this.selectSentence nextSibling
 
   selectSentence: (target) ->
 
     if tagName = $(target).prop("tagName") == undefined
-      console.log("We appear to have reached the end of the document.")
       window.getSelection().removeAllRanges()
       return
 
@@ -98,7 +93,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       window.getSelection().addRange(anchor.toRange())
 
     catch error
-      console.log("Jumping siblings")
       # if we get here the most likely thing is that the next sentence is beyond the range, so we can just pass a call
       # to the first sentence selection function with the target set to the next element
       this.currentIndex = 0
