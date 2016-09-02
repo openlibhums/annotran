@@ -71,6 +71,9 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
 
   $scope.addVote = function(author, score) {
     $scope.author=author;
+
+    votes.showVotes();
+
     return votes.addVote(author.username, languages.focused().id, score);
   };
 

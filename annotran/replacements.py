@@ -36,6 +36,7 @@ import collections
 import h
 import annotran
 import os.path
+import decimal
 
 
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
@@ -224,7 +225,6 @@ def _current_languages(request):
                     })
     return languages
 
-
 def _current_votes(request):
     """Return votes for all users (authors) who made translations on a given page and for a given language
 
@@ -236,28 +236,38 @@ def _current_votes(request):
 
     page = annotran.pages.models.Page.get_by_uri(url)
 
+    if userid is None:
+        return votes
+
+    user = request.authenticated_user
+    if user is None:
+        return votes
+
     if page is not None:
         public_languages = models.Language.get_public(page)
 
-        #votes for public languages???
-
-        if userid is None:
-            return votes
-
-        user = request.authenticated_user
-        if user is None:
-            return votes
+        ''' public language, public group?
+        for language in public_languages:
+            for auth_score in annotran.votes.models.Vote.get_author_scores_plg(page, language):
+                votes.append({
+                    'author_id': auth_score.author_id,
+                    'avg_score': str(decimal.Decimal(auth_score.average)),
+                    'url': request.route_url('vote_read', userid=user.username,
+                                             languageid=language.pubid, pageid=request.url),
+                })
+        '''
 
         languages_for_page = models.Language.get_by_page(page)
 
         for group in user.groups:
             for language in languages_for_page:
                 if group in language.members:
-                    for vote in annotran.votes.models.Vote.get_by_language(language):
+                    for auth_score in annotran.votes.models.Vote.get_author_scores_plg(page, language, group):
                         votes.append({
-                            'score': vote.vote,
-                            'id': vote.id,
-                            'url': request.route_url('vote_read', userid=user.username, languageid=language.pubid, pageid=request.url),
+                            'author_id': auth_score.author_id,
+                            'avg_score': str(decimal.Decimal(auth_score.average)),
+                            'url': request.route_url('vote_read', userid=user.username,
+                                                     languageid=language.pubid, pageid=request.url),
                         })
     return votes
 
