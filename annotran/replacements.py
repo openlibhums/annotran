@@ -264,8 +264,8 @@ def _current_votes(request):
                 if group in language.members:
                     for auth_score in annotran.votes.models.Vote.get_author_scores_plg(page, language, group):
                         votes.append({
-                            'author_id': auth_score.author_id,
-                            'avg_score': str(decimal.Decimal(auth_score.average)),
+                            'author_id': auth_score.username,
+                            'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
                             'url': request.route_url('vote_read', userid=user.username,
                                                      languageid=language.pubid, pageid=request.url),
                         })

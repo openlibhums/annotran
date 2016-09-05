@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import sqlalchemy as sa
+
 import h
 
 from sqlalchemy.orm import exc
 from h.db import Base
-#from sqlalchemy.sql import func
 import sqlalchemy as sa
 import annotran
+from sqlalchemy import *
 
 
 
@@ -60,36 +60,15 @@ class Vote(Base):
     def get_author_scores_plg(cls, page, language, group):
         if page and language and group:
             try:
-                return cls.query.filter(
-                    cls.page_id == page.id,
-                    cls.language_id == language.id,
-                    cls.group_id == group.id).\
-                    with_entities(cls.author_id,
-                                  sa.func.avg(cls.score).label('average'))\
-                    .group_by(cls.author_id).all()
-
-
-
-                '''
-                query1 = cls.query.filter(
-                    cls.page_id == page.id, cls.language_id == language.id, cls.group_id == group.id,
-                    cls.vote_type_id == type).with_entities(cls.id, annotran.pages.models.VoteValue.value)
-
-                query2 = cls.query.filter(
-                    cls.page_id == page.id, cls.language_id == language.id, cls.group_id == group.id,
-                    cls.vote_type_id == type).with_entities(cls.id, cls.user_id,
-                    sa.func.avg(annotran.pages.models.VoteValue.value).label('average'))\
-                    .group_by(cls.id).all()
-
-
-
-
-
-                    .filter(annotran.pages.models.VoteValue.members.contains(cls.id))\
-                    .with_entities(cls.user_id, sa.func.avg(annotran.pages.models.VoteValue.value).label('average'))\
-                    .group_by(cls.user_id).all()
-                '''
-
+                return\
+                    h.accounts.models.User.query.join(cls,
+                                                  and_(cls.page_id == page.id,
+                                                       cls.language_id == language.id,
+                                                       cls.group_id == group.id,
+                                                       h.accounts.models.User.id == cls.author_id)).\
+                    with_entities(h.accounts.models.User.username,
+                                  sa.func.avg(cls.score).label('average')).\
+                    group_by(h.accounts.models.User.username).all()
             except exc.NoResultFound:
                 return None
         else:
@@ -112,24 +91,3 @@ class Vote(Base):
                 cls.vote == vote).one()
         except exc.NoResultFound:
             return None
-
-    '''
-    @classmethod
-    def get_votes_for_authors(cls, page, language):
-        """Return avg votes per author on page for selected language, or None"""
-        h.accounts.models.User.query.filter(cls.relPage.contains(page), cls.relLanguage.contains(language), cls.relUser)\
-            .with_entities(h.accounts.models.User.username, sa.func.avg(cls.vote).label('average'))\
-            .group_by(h.accounts.models.User.username).all()
-        return None
-    '''
-
-    @classmethod
-    def get_by_language(cls, language):
-        """Return the language with the given pubid, or None."""
-        '''
-        if language:
-            return cls.query.filter(cls.relLanguage.contains(language))
-        else:
-            return None
-        '''
-        return None
