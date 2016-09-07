@@ -29,14 +29,16 @@ function votes(settings, session, $rootScope, $http) {
     return response;
    };
 
-  function showVotes() {
+  function showVote(author, score) {
+
+
     console.log(session.state.votes);
-  }
+  };
 
 
   return {
     addVote: addVote,
-    showVotes: showVotes,
+    showVote: showVote,
   };
 };
 
