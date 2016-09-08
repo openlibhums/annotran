@@ -21,13 +21,16 @@
                 <stars starscore="user.score"></stars>
               </a>
             </span>
+              <div ng-if="author == user.author" style="width:100%; border-style: solid; border-width: 1px; border-color: #000000;">
+                Rate this user's translation by clicking on a star:
                <ul class="vote-list">
                 <li class="vote-item" ng-repeat="score in [5,4,3,2,1] | filter:voteAuthor(user.author)">
                   <a href="#" ng-click="addVote(user.author, score)">
-                    star {{score}} <stars starscore="score"></stars>
+                    <stars starscore="score"></stars>
                   </a>
                 </li>
                </ul>
+              </div>
               </span>
             <span ng-if="$root.currentUser == 'acct:' + user.author.username + '@' + user.author.provider">
               <a href="#" ng-click="setUser('self')">
