@@ -246,16 +246,18 @@ def _current_votes(request):
     if page is not None:
         public_languages = models.Language.get_public(page)
 
-        ''' public language, public group?
+
         for language in public_languages:
-            for auth_score in annotran.votes.models.Vote.get_author_scores_plg(page, language):
-                votes.append({
-                    'author_id': auth_score.author_id,
-                    'avg_score': str(decimal.Decimal(auth_score.average)),
-                    'url': request.route_url('vote_read', userid=user.username,
-                                             languageid=language.pubid, pageid=request.url),
-                })
-        '''
+            l_votes = annotran.votes.models.Vote.get_author_scores_plg(page, language)
+            if l_votes:
+                for auth_score in l_votes:
+                    votes.append({
+                        'author_id': auth_score.username,
+                        'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
+                        'url': request.route_url('vote_read', userid=user.username,
+                                                 languageid=language.pubid, pageid=request.url),
+                    })
+
 
         languages_for_page = models.Language.get_by_page(page)
 
