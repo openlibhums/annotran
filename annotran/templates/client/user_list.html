@@ -18,9 +18,7 @@
             <span ng-if="$root.currentUser != 'acct:' + user.author.username + '@' + user.author.provider">
               <a href="#" ng-click="setUser(user.author)">{{user.author.username}}</a>
               <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user.author)" ng-init="showVote(user.author, user.score)">
-                  {{user.score}} <stars starscore="user.score"></stars>
-                <a>
-                </a>
+                <stars starscore="user.score"></stars>
               </a>
             </span>
                <ul class="vote-list">
