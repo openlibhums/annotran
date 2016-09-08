@@ -18,15 +18,17 @@ app.controller('AppController', require('./app-controller'))
         return {
             restrict: 'E',
             link: function($scope, elem, attr) {
-
                 function starify() {
-                    var val = parseFloat(angular.element(elem).html());
+                    var val = parseFloat($scope.starscore);
                     var size = Math.max(0, (Math.min(5, val))) * 16;
                     var span = angular.element('<span/>').css('width', size+'px');
                     angular.element(elem).html(span[0].outerHTML);
                 }
                 starify();
-         }
+            },
+            scope: {
+                starscore: '='
+            },
          };
     })
 
