@@ -29,7 +29,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
   prepareData: (target) ->
     desiredText = $(target).text()
-    desiredText = desiredText.split('.')
+    desiredText = desiredText.split(/[.!?]/)
 
     offset_to_use = 0
     counter = 0
