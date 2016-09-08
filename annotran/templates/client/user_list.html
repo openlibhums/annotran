@@ -30,7 +30,7 @@
                 <stars starscore="user.score"></stars>
               </a>
             </span>
-              <div ng-if="author == user.author" class="votelist">
+              <div ng-if="vm.auth.status === 'signed-in'" ng-if="author == user.author" class="votelist">
                 Rate {{user.author.username}}'s translation by clicking on a star:
                <ul class="vote-list">
                 <li class="vote-item" ng-repeat="score in [5,4,3,2,1] | filter:voteAuthor(user.author)">
