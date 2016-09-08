@@ -14,8 +14,21 @@ app.controller('AppController', require('./app-controller'))
     .directive('userList', require('./directive/user-list').directive)
     .directive('annotation', require('./directive/annotation').directive)
     .directive('topBar', require('./directive/top-bar').directive)
+    .directive('stars', function() {
+        return {
+            restrict: 'E',
+            link: function($scope, elem, attr) {
 
-
+                function starify() {
+                    var val = parseFloat(angular.element(elem).html());
+                    var size = Math.max(0, (Math.min(5, val))) * 16;
+                    var span = angular.element('<span/>').css('width', size+'px');
+                    angular.element(elem).html(span[0].outerHTML);
+                }
+                starify();
+         }
+         };
+    })
 
 .service('languages', require('./languages'))
 .service('pages', require('./pages'))
@@ -33,6 +46,10 @@ app.controller("languageController", ['$scope', 'langListFactory',
 }]);
 
 
+
+
+
+
 // these decorators override hypothes.is's decorators
 
 app.decorator(
@@ -48,6 +65,7 @@ app.decorator(
                 return( [ $delegate[1] ] );
             }
         );
+
 
 /*
 app.controller('AppController', ['$scope', '$controller', function ( $controller, $document, $location, $rootScope, $route, $scope,

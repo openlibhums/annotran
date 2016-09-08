@@ -71,7 +71,14 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
 
   $scope.addVote = function(author, score) {
     $scope.author=author;
+
     return votes.addVote(author.username, languages.focused().id, score);
+  };
+
+  $scope.showVote = function(author, score) {
+
+    votes.showVote(author, score);
+
   };
 
   $scope.voteAuthor = function(user) {
@@ -83,7 +90,7 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
       else
         return false;
     }
-  }
+  };
 
   $scope.userList = function () {
     return $scope.$root.updateUserList()
@@ -92,6 +99,7 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
   // for some reason we have to use an array here as NG repeat won't handle it properly otherwise
   $scope.list_of_users = $scope.$root.list_of_users;
   $scope.$root.updateUserList();
+
 }
 
 // @ngInject
@@ -113,7 +121,7 @@ function userList (languages) {
     },
     templateUrl: 'user_list.html'
   };
-  }
+}
 
 module.exports = {
   directive: userList,

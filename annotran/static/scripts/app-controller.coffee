@@ -26,13 +26,30 @@ class AppControllerExt extends appcontroller
 
       if $scope.$root.allPageAnnotations.length > 0
         for entry in $scope.$root.allPageAnnotations
-          parsed = persona.parseAccountID(entry.user)
-
+          author = persona.parseAccountID(entry.user)
+          parsed = {}
+          parsed["author"] = author
+          parsed["score"] = getAuthorTotalScore(author)
           if dupeCheck.indexOf(entry.user) == -1
             $scope.$root.list_of_users.push parsed
             dupeCheck.push entry.user
 
       return $scope.$root.list_of_users
+
+    allVotes = {}
+    getAuthorTotalScore = (author) ->
+      author_score = 0.0
+      if (session.state.votes != undefined)
+        if Object.keys(allVotes).length == 0
+          for i in [0 .. (session.state.votes.length-1)]
+            allVotes[session.state.votes[i].author_id] = session.state.votes[i]
+            if session.state.votes[i].author_id == author.username
+              author_score = session.state.votes[i].avg_score
+        else
+          auth_obj = allVotes[author.username]
+          if (auth_obj)
+            author_score = auth_obj.avg_score
+      return author_score
 
     `
       function getParameterByName(name, url) {

@@ -15,16 +15,23 @@
           <p><b>Select a user below to view a translation of this page:</b></p>
           <ul class="user-list">
             <li class="user-item" ng-repeat="user in $root.list_of_users">
-            <span ng-if="$root.currentUser != 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser(user)">{{user.username}}</a> <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user)"> <span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span></a></span>
+            <span ng-if="$root.currentUser != 'acct:' + user.author.username + '@' + user.author.provider">
+              <a href="#" ng-click="setUser(user.author)">{{user.author.username}}</a>
+              <a ng-if="vm.auth.status === 'signed-in'" class="rank" href="#" ng-click="vote(user.author)" ng-init="showVote(user.author, user.score)">
+                  <stars>{{user.score}}</stars>
+                <a>
+                </a>
+              </a>
+            </span>
                <ul class="vote-list">
-                <li class="vote-item" ng-repeat="score in [5,4,3,2,1] | filter:voteAuthor(user)">
-                  <a href="#" ng-click="addVote(user, score)">
-                    star {{score}} <span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span><span>&#9734</span>
+                <li class="vote-item" ng-repeat="score in [5,4,3,2,1] | filter:voteAuthor(user.author)">
+                  <a href="#" ng-click="addVote(user.author, score)">
+                    star {{score}} <stars>{{score}}</stars>
                   </a>
                 </li>
                </ul>
               </span>
-            <span ng-if="$root.currentUser == 'acct:' + user.username + '@' + user.provider"><a href="#" ng-click="setUser('self')">{{user.username}}</a> [or <a href="#" ng-click="setUser(user)">edit your own translation</a>]</span>
+            <span ng-if="$root.currentUser == 'acct:' + user.author.username + '@' + user.author.provider"><a href="#" ng-click="setUser('self')">{{user.author.username}}</a> [or <a href="#" ng-click="setUser(user.author)">edit your own translation</a>]</span>
             </li>
           </ul>
         </div>

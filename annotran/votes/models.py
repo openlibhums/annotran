@@ -1,50 +1,77 @@
 # -*- coding: utf-8 -*-
 
-import sqlalchemy as sa
+
 import h
 
 from sqlalchemy.orm import exc
 from h.db import Base
-from sqlalchemy.sql import func
+import sqlalchemy as sa
+import annotran
+from sqlalchemy import *
+
+
 
 class Vote(Base):
     __tablename__ = 'vote'
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
-    vote = sa.Column(sa.Text(),
-                      unique=True,
+
+    score = sa.Column(sa.Integer,
                       nullable=False)
-    # we need a relationship table between a vote and: a user, a langauge and a page
-    relUser = sa.orm.relationship('User',
-                                  backref=sa.orm.backref('votes', lazy='dynamic'),
-                                  secondary='user_vote',
-                                  lazy='dynamic')
 
-    relLanguage = sa.orm.relationship('Language',
-                                      backref=sa.orm.backref('votes', lazy='dynamic'),
-                                      secondary='language_vote',
-                                      lazy='dynamic')
+    page_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.pages.models.Page.id))
+    page = sa.orm.relationship('Page', backref='pvote')
 
-    relPage = sa.orm.relationship('Page',
-                                  backref=sa.orm.backref('votes', lazy='dynamic'),
-                                  secondary='page_vote',
-                                  lazy='dynamic')
+    language_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.languages.models.Language.id))
+    language = sa.orm.relationship('Language', backref='lvote')
 
-    def __init__(self, score, page=None, language=None, author=None, voter=None):
-        self.vote = score
-        if author and language and page:
-            self.relUser.append(author)
-            self.relUser.append(voter)
-            self.relLanguage.append(language)
-            self.relPage.append(page)
+    group_id = sa.Column(sa.Integer, sa.ForeignKey(h.groups.models.Group.id))
+    group = sa.orm.relationship('Group', backref='gvote')
+
+    author_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id))
+    author = sa.orm.relationship('User', backref='avote', foreign_keys=[author_id])
+
+    voter_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id))
+    voter = sa.orm.relationship('User', backref='vvote', foreign_keys=[voter_id])
+
+    def __init__(self, score, page, language, group, author, voter):
+        if score and page and language and group and author and voter:
+            self.score = score
+            self.page_id = page.id
+            self.language_id = language.id
+            self.group_id = group.id
+            self.author_id = author.id
+            self.voter_id = voter.id
 
     @classmethod
-    def get_by_vote(cls, vote):
-        """Return the vote with the given vote value, or None."""
+    def get_vote(cls, page, language, group, author, voter):
         try:
             return cls.query.filter(
-                cls.vote == vote).one()
+                cls.page_id == page.id,
+                cls.language_id == language.id,
+                cls.group_id == group.id,
+                cls.author_id == author.id,
+                cls.voter_id == voter.id).one()
         except exc.NoResultFound:
+            return None
+
+    #returns avg of author scores per page, language, and group
+    @classmethod
+    def get_author_scores_plg(cls, page, language, group):
+        if page and language and group:
+            try:
+                return\
+                    h.accounts.models.User.query.join(cls,
+                                                  and_(cls.page_id == page.id,
+                                                       cls.language_id == language.id,
+                                                       cls.group_id == group.id,
+                                                       h.accounts.models.User.id == cls.author_id)).\
+                    with_entities(h.accounts.models.User.username,
+                                  sa.func.avg(cls.score).label('average')).\
+                    group_by(h.accounts.models.User.username).all()
+            except exc.NoResultFound:
+                return None
+        else:
             return None
 
     @classmethod
@@ -57,142 +84,10 @@ class Vote(Base):
             return None
 
     @classmethod
-    def get_by_author_voter(cls, page, language, user, voter):
-        
-        q1=h.accounts.models.User.query.filter()\
-            .filter(cls.relPage.contains(page), cls.relLanguage.contains(language))\
-            .filter(UserType.relUserType.contains(user or voter))
-
-        q2=UserType.query.filter().filter(UserType.relUserType.contains(user)).subquery()
-        q3=UserType.query.filter().filter(UserType.relUserType.contains(voter)).subquery()
-
-        q4=q1.join(q2, q2.columns.type=='author').join(q3, q3.columns.type=='voter')
-
-        if not q4.all():
-            return None
-        else:
-            return q4.all()
-
-
-    @classmethod
-    def get_votes_by_author(cls, author, page, language):
-        """Return votes for author on page for selected language, or None"""
-
-        q1=h.accounts.models.User.query.filter()\
-            .filter(cls.relPage.contains(page), cls.relLanguage.contains(language))\
-            .filter(UserType.relUserType.contains(author))
-
-        q2=UserType.query.filter().filter(UserType.relUserType.contains(author)).subquery()
-        q3=q1.join(q2, q2.columns.type=='author')
-
-        if not q3.all():
-            return None
-        else:
-            return q3.all()
-
-    @classmethod
-    def get_votes_for_authors(cls, page, language):
-        """Return votes per author on page for selected language, or None"""
-
-        #TODO
-        return None
-
-
-    @classmethod
-    def get_by_language(cls, language):
-        """Return the language with the given pubid, or None."""
-        if language:
-            return cls.query.filter(cls.relLanguage.contains(language))
-        else:
-            return None
-
-USER_VOTE_TABLE = sa.Table(
-    'user_vote', Base.metadata,
-    sa.Column('user_id',
-              sa.Integer,
-              sa.ForeignKey('user.id'),
-              nullable=False),
-    sa.Column('vote_id',
-              sa.Integer,
-              sa.ForeignKey('vote.id'),
-              nullable=False)
-)
-
-
-LANGUAGE_VOTE_TABLE = sa.Table(
-    'language_vote', Base.metadata,
-    sa.Column('language_id',
-              sa.Integer,
-              sa.ForeignKey('language.id'),
-              nullable=False),
-    sa.Column('vote_id',
-              sa.Integer,
-              sa.ForeignKey('vote.id'),
-              nullable=False)
-)
-
-PAGE_VOTE_TABLE = sa.Table(
-    'page_vote', Base.metadata,
-    sa.Column('page_id',
-              sa.Integer,
-              sa.ForeignKey('page.id'),
-              nullable=False),
-    sa.Column('vote_id',
-              sa.Integer,
-              sa.ForeignKey('vote.id'),
-              nullable=False)
-)
-
-
-class UserType(Base):
-    __tablename__ = 'user_type'
-
-    id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
-    type = sa.Column(sa.Text(),
-                      unique=True,
-                      nullable=False)
-    # we need a relationship table between a user_type and a user
-    relUserType = sa.orm.relationship('User',
-                                  backref=sa.orm.backref('user_types', lazy='dynamic'),
-                                  secondary='user_type_ref',
-                                  lazy='dynamic')
-
-    def __init__(self, type, user=None):
-        self.type = type
-        self.relUserType.append(user)
-
-    @classmethod
-    def get_by_type(cls, type):
-        """Return the type with the given type value, or None."""
+    def get_by_vote(cls, vote):
+        """Return the vote with the given vote value, or None."""
         try:
             return cls.query.filter(
-                cls.type == type).one()
+                cls.vote == vote).one()
         except exc.NoResultFound:
             return None
-
-    @classmethod
-    def get_by_id(cls, id_):
-        """Return the type with the given id, or None."""
-        try:
-            return cls.query.filter(
-                cls.id == id_).one()
-        except exc.NoResultFound:
-            return None
-
-    @classmethod
-    def get_users_by_type(cls, author, voter):
-        return cls.query.filter((cls.type=="author" and cls.relUserType.contains(author)) or
-                                (cls.type=="voter" and cls.relUserType.contains(voter)))
-
-
-USER_TYPE_REF_TABLE = sa.Table(
-    'user_type_ref', Base.metadata,
-    sa.Column('user_id',
-              sa.Integer,
-              sa.ForeignKey('user.id'),
-              nullable=False),
-    sa.Column('type_id',
-              sa.Integer,
-              sa.ForeignKey('user_type.id'),
-              nullable=False)
-)
