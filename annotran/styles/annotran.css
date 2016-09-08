@@ -8,3 +8,10 @@ stars, stars span {
 stars span {
     background-position: 0 0;
 }
+
+.votelist {
+    width:100%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+}
