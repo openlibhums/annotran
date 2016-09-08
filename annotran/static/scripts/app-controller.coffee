@@ -39,7 +39,7 @@ class AppControllerExt extends appcontroller
     allVotes = {}
     getAuthorTotalScore = (author) ->
       author_score = 0.0
-      if (session.state.votes != undefined)
+      if (session.state.votes != undefined && session.state.votes.length != 0)
         if Object.keys(allVotes).length == 0
           for i in [0 .. (session.state.votes.length-1)]
             allVotes[session.state.votes[i].author_id] = session.state.votes[i]
