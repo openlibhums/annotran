@@ -185,7 +185,7 @@ def _current_languages(request):
     languages = []
     userid = request.authenticated_userid
 
-    page = annotran.pages.models.Page.get_by_uri(url)
+    page = annotran.pages.models.Page.get_by_uri(util.strip_logout(url))
 
     if page is not None:
         public_languages = models.Language.get_public(page)
