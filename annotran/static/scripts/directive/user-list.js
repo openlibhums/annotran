@@ -74,7 +74,12 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
   $scope.addVote = function(author, score) {
     $scope.author=author;
 
-    return votes.addVote(author.username, languages.focused().id, score);
+    var voteRet = votes.addVote(author.username, languages.focused().id, score);
+
+    // set scope.author to an empty dictionary in order to hide the box once the user has voted.
+    $scope.author={};
+
+    return voteRet;
   };
 
   $scope.showVote = function(author, score) {

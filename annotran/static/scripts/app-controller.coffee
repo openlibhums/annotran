@@ -36,17 +36,17 @@ class AppControllerExt extends appcontroller
 
       return $scope.$root.list_of_users
 
-    allVotes = {}
+    $scope.$root.allVotes = {}
     getAuthorTotalScore = (author) ->
       author_score = 0.0
       if (session.state.votes != undefined && session.state.votes.length != 0)
-        if Object.keys(allVotes).length == 0
+        if Object.keys($scope.$root.allVotes).length == 0
           for i in [0 .. (session.state.votes.length-1)]
-            allVotes[session.state.votes[i].author_id] = session.state.votes[i]
+            $scope.$root.allVotes[session.state.votes[i].author_id] = session.state.votes[i]
             if session.state.votes[i].author_id == author.username
               author_score = session.state.votes[i].avg_score
         else
-          auth_obj = allVotes[author.username]
+          auth_obj = $scope.$root.allVotes[author.username]
           if (auth_obj)
             author_score = auth_obj.avg_score
       return author_score

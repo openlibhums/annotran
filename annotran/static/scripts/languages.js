@@ -268,8 +268,10 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
 
   $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
-    $rootScope.map = null;
-    focusByName(languageName);
+    if (languageName != "") {
+      $rootScope.map = null;
+      focusByName(languageName);
+    }
   });
 
   return {

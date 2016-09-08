@@ -10,9 +10,18 @@
  */
 'use strict';
 
+var eventsa =  require('./events');
+
 
 // @ngInject
 function votes(settings, session, $rootScope, $http) {
+
+  $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
+    if (languageName == "") {
+      $rootScope.allVotes = {};
+      $rootScope.updateUserList();
+    }
+  });
 
 
   function addVote(userId, languageId, score) {
@@ -24,7 +33,7 @@ function votes(settings, session, $rootScope, $http) {
       url: settings.serviceUrl + 'votes/' + userId + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + score + '/' + 'addVote',
     });
 
-    //$scope.$root.$broadcast(eventsa.USER_VOTED, languages.focused().id);
+    session.reload("");
 
     return response;
    };
