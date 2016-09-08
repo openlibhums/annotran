@@ -231,17 +231,12 @@ def _current_votes(request):
     This list is meant to be returned to the client in the "session" model
     """
     votes = []
-    userid = request.authenticated_userid
+
     url=util.get_url_from_request(request)
 
     page = annotran.pages.models.Page.get_by_uri(url)
 
-    if userid is None:
-        return votes
-
     user = request.authenticated_user
-    if user is None:
-        return votes
 
     if page is not None:
         public_languages = models.Language.get_public(page)
@@ -254,9 +249,10 @@ def _current_votes(request):
                     votes.append({
                         'author_id': auth_score.username,
                         'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
-                        'url': request.route_url('vote_read', userid=user.username,
-                                                 languageid=language.pubid, pageid=request.url),
                     })
+
+        if user is None:
+            return votes
 
 
         languages_for_page = models.Language.get_by_page(page)
@@ -268,8 +264,6 @@ def _current_votes(request):
                         votes.append({
                             'author_id': auth_score.username,
                             'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
-                            'url': request.route_url('vote_read', userid=user.username,
-                                                     languageid=language.pubid, pageid=request.url),
                         })
     return votes
 
