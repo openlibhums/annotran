@@ -234,7 +234,7 @@ def _current_votes(request):
 
     url=util.get_url_from_request(request)
 
-    page = annotran.pages.models.Page.get_by_uri(url)
+    page = annotran.pages.models.Page.get_by_uri(util.strip_logout(url))
 
     user = request.authenticated_user
 
