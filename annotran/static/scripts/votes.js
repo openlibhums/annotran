@@ -30,9 +30,7 @@ function votes(settings, session, $rootScope, $http) {
    };
 
   function showVote(author, score) {
-
-
-    console.log(session.state.votes);
+    //console.log(session.state.votes);
   };
 
 
