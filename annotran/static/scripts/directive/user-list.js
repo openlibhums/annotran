@@ -66,7 +66,9 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
   };
 
   $scope.vote = function(author) {
-    $scope.author=author;
+    if (author != this.$root.currentUser) {
+      $scope.author = author;
+    }
   };
 
   $scope.addVote = function(author, score) {
