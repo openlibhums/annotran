@@ -15,8 +15,7 @@
         </p>
         <p><span ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or </span>
           <a href="#" ng-click="setUserForReset()">
-            <span ng-if="vm.auth.status === 'signed-in'">v</span>
-            <span ng-if="vm.auth.status != 'signed-in'">V</span>iew the original document
+            <span ng-if="vm.auth.status === 'signed-in'">v</span><span ng-if="vm.auth.status != 'signed-in'">V</span>iew the original document
           </a>.
         </p>
         <div ng-if="$root.list_of_users.length > 0">
@@ -30,7 +29,7 @@
                 <stars starscore="user.score"></stars>
               </a>
             </span>
-              <div ng-if="vm.auth.status === 'signed-in'" ng-if="author == user.author" class="votelist">
+              <div ng-if="author == user.author && vm.auth.status === 'signed-in'" class="votelist">
                 Rate {{user.author.username}}'s translation by clicking on a star:
                <ul class="vote-list">
                 <li class="vote-item" ng-repeat="score in [5,4,3,2,1] | filter:voteAuthor(user.author)">
