@@ -241,7 +241,6 @@ def _current_votes(request):
     if page is not None:
         public_languages = models.Language.get_public(page)
 
-
         for language in public_languages:
             l_votes = annotran.votes.models.Vote.get_author_scores_plg(page, language)
             if l_votes:
@@ -249,11 +248,12 @@ def _current_votes(request):
                     votes.append({
                         'author_id': auth_score.username,
                         'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
+                        'language_id': language.pubid,
+                        'group_id': "__world__",
                     })
 
         if user is None:
             return votes
-
 
         languages_for_page = models.Language.get_by_page(page)
 
@@ -264,6 +264,8 @@ def _current_votes(request):
                         votes.append({
                             'author_id': auth_score.username,
                             'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
+                            'language_id': language.pubid,
+                            'group_id': group.pubid,
                         })
     return votes
 
