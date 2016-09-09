@@ -78,7 +78,9 @@ class Vote(Base):
                                                        h.accounts.models.User.id == cls.author_id)).\
                     with_entities(h.accounts.models.User.username,
                                   sa.func.avg(cls.score).label('average')).\
-                    group_by(h.accounts.models.User.username).all()
+                        group_by(h.accounts.models.User.username).\
+                        order_by(sa.func.avg(cls.score).desc()).\
+                        all()
             except exc.NoResultFound:
                 return None
 
@@ -92,7 +94,8 @@ class Vote(Base):
                                                        h.accounts.models.User.id == cls.author_id)).\
                     with_entities(h.accounts.models.User.username,
                                   sa.func.avg(cls.score).label('average')).\
-                    group_by(h.accounts.models.User.username).all()
+                        group_by(h.accounts.models.User.username).\
+                        order_by(sa.func.avg(cls.score).desc()).all()
             except exc.NoResultFound:
                 return None
         else:
