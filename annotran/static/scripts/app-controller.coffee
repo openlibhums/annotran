@@ -11,7 +11,6 @@ class AppControllerExt extends appcontroller
     super
     $scope.$root.userListvisible = true
     $scope.$root.editOnly = false
-    $scope.$root.list_of_users = []
     $scope.$root.userAnnotations = []
     $scope.$root.allPageAnnotations = []
     $scope.$root.pageid = window.location.href
@@ -19,11 +18,22 @@ class AppControllerExt extends appcontroller
     $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
 
     $scope.$root.updateUserList = ->
+      # clear the array
+      #$scope.$root.list_of_users.length = 0
+      $scope.$root.list_of_users = []
+
+      keys = Object.keys($scope.$root.users_no_scores)
+      if (keys.length != 0)
+        for i in [0 .. (keys.length-1)]
+          delete $scope.$root.users_no_scores[keys[i]]
+
+      keys = Object.keys($scope.$root.users_with_scores)
+      if (keys.length != 0)
+        for i in [0 .. (keys.length-1)]
+          delete $scope.$root.users_with_scores[keys[i]]
+
       # get all users using annot list
       getUsers()
-
-      # clear the array
-      $scope.$root.list_of_users.length = 0
 
       dupeCheck = []
 
@@ -41,22 +51,24 @@ class AppControllerExt extends appcontroller
 
         #push unvoted users
         keys = Object.keys($scope.$root.users_no_scores)
-        for i in [0 .. (Object.keys($scope.$root.users_no_scores).length-1)]
-          auth_obj = {}
-          auth_obj["score"] = 0
-          auth_obj["author"] = $scope.$root.users_no_scores[keys[i]]
-          $scope.$root.list_of_users.push auth_obj
+        if (keys.length != 0)
+          for i in [0 .. (keys.length-1)]
+            auth_obj = {}
+            auth_obj["score"] = 0
+            auth_obj["author"] = $scope.$root.users_no_scores[keys[i]]
+            $scope.$root.list_of_users.push auth_obj
 
       return $scope.$root.list_of_users
 
-    $scope.$root.users_no_scores = {}
+    $scope.$root.users_no_scores = {} #all users on the page, for all groups and langauges
     getUsers = () ->
       for entry in $scope.$root.allPageAnnotations
         parsed = persona.parseAccountID(entry.user)
-        if Object.keys($scope.$root.users_no_scores).length != 0 && $scope.$root.users_no_scores[parsed.username] != undefined
-          continue
-        else
-          $scope.$root.users_no_scores[parsed.username] = parsed
+        if (groups.focused().id == entry.group && languages.focused().id == entry.language)
+          if Object.keys($scope.$root.users_no_scores).length != 0 && $scope.$root.users_no_scores[parsed.username] != undefined
+            continue
+          else
+            $scope.$root.users_no_scores[parsed.username] = parsed
 
     $scope.$root.users_with_scores = {}
     setUserWithScore = (authorusername) ->
