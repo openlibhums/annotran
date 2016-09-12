@@ -5,7 +5,7 @@ persona = require('../../../../h/h/static/scripts/filter/persona.js')
 class AppControllerExt extends appcontroller
    constructor: (
      $controller,   $document,   $location,   $rootScope,   $route,   $scope,
-     $window,   annotationUI,   auth,   drafts,   features,   groups,
+     $window,   annotationUI,   auth,   drafts,   features, groups, languages,
      identity,   session
    ) ->
     super
@@ -19,25 +19,54 @@ class AppControllerExt extends appcontroller
     $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
 
     $scope.$root.updateUserList = ->
+      # get all users using annot list
+      getUsers()
+
       # clear the array
       $scope.$root.list_of_users.length = 0
 
       dupeCheck = []
 
       if $scope.$root.allPageAnnotations.length > 0
-        for entry in $scope.$root.allPageAnnotations
-          author = persona.parseAccountID(entry.user)
-          parsed = {}
-          parsed["author"] = author
-          parsed["score"] = getAuthorTotalScore(author)
-          if dupeCheck.indexOf(entry.user) == -1
-            $scope.$root.list_of_users.push parsed
-            dupeCheck.push entry.user
+        if (session.state.votes != undefined && session.state.votes.length != 0)
+          for i in [0 .. (session.state.votes.length-1)]
+            if (groups.focused().id == session.state.votes[i].group_id &&
+                languages.focused().id == session.state.votes[i].language_id)
+              score = session.state.votes[i].avg_score
+              author = setUserWithScore(session.state.votes[i].author_id)
+              auth_obj = {}
+              auth_obj["score"] = score
+              auth_obj["author"] = author
+              $scope.$root.list_of_users.push auth_obj
+
+        #push unvoted users
+        keys = Object.keys($scope.$root.users_no_scores)
+        for i in [0 .. (Object.keys($scope.$root.users_no_scores).length-1)]
+          auth_obj = {}
+          auth_obj["score"] = 0
+          auth_obj["author"] = $scope.$root.users_no_scores[keys[i]]
+          $scope.$root.list_of_users.push auth_obj
 
       return $scope.$root.list_of_users
 
+    $scope.$root.users_no_scores = {}
+    getUsers = () ->
+      for entry in $scope.$root.allPageAnnotations
+        parsed = persona.parseAccountID(entry.user)
+        if Object.keys($scope.$root.users_no_scores).length != 0 && $scope.$root.users_no_scores[parsed.username] != undefined
+          continue
+        else
+          $scope.$root.users_no_scores[parsed.username] = parsed
+
+    $scope.$root.users_with_scores = {}
+    setUserWithScore = (authorusername) ->
+      user_info = $scope.$root.users_no_scores[authorusername]
+      $scope.$root.users_with_scores[authorusername] = user_info
+      delete $scope.$root.users_no_scores[authorusername]
+      return user_info
+
     $scope.$root.allVotes = {}
-    getAuthorTotalScore = (author) ->
+    getAuthorTotalScore = (authorusername) ->
       author_score = 0.0
       if (session.state.votes != undefined && session.state.votes.length != 0)
         if Object.keys($scope.$root.allVotes).length == 0
@@ -65,4 +94,3 @@ class AppControllerExt extends appcontroller
     `
 
 module.exports = AppControllerExt
-
