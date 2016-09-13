@@ -1,4 +1,7 @@
-<div class="sheet">
+<div class="sheet" ng-if="vm.auth.status === 'signed-in' ||
+    (vm.auth.status === 'signed-out' &&
+    (languages.getLanguageList() != undefined
+    && languages.getLanguageList().length != 0))">
   <div class="form-vertical">
     <ul class="nav nav-tabs">
       <li class="active"><a href="">Translation Options</a></li>
