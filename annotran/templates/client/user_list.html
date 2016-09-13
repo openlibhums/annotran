@@ -22,10 +22,10 @@
           <hr/>
           <p><b>Select a user below to view a translation of this page:</b></p>
           <p ng-if="direction == 1">
-            <a ng-click="reverseUserList(0)">Sort (desc)</a>
+            Sort by score: <a ng-click="reverseUserList(0)" href="#">descending</a>
           </p>
           <p ng-if="direction == 0 || direction == undefined">
-            <a ng-click="reverseUserList(1)">Sort (asc):</a>
+            Sort by score: <a ng-click="reverseUserList(1)" href="#">ascending</a>
           </p>
           <ul class="user-list">
             <li class="user-item" ng-repeat="user in $root.list_of_users">
