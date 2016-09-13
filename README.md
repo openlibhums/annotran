@@ -4,11 +4,15 @@
 
 ## About
 
-The purpose of this project is to develop annotation technologies for translation purposes for the Open Library of Humanities (OLH).
+Annotran is an extension to the hypothesis annotation framework that allows users to translate web pages themselves and to view other users' translations. It is developed at the [Open Library of Humanities](https://about.openlibhums.org) and was funded by the Andrew W. Mellon Foundation. 
+
+## Quirks
+
+Annotran does not work well on extremely dynamic pages. If the web page that you are translating changes substantially, then it is likely that your translation will break.
 
 ## Development
 
-This project is built as an extension to hypothesis annotation framework: https://hypothes.is/. We are in an early stage of the development, and if you would like to join us you can set up your development environment in a following way. Please note these instructions for Ubuntu 14.04.
+This project is built as an extension to the hypothesis annotation framework: https://hypothes.is/. If you would like to join us in development efforts, or wish to run your own server, you can set up your development environment in the following way. Please note these instructions for Ubuntu 14.04.
 
 Download the source code:
 ```
@@ -50,14 +54,18 @@ pip install -r requirements.txt
 
 ###Steps performed to extend and overwrite hypothes.is
 
-1. Boot system. Since the annotran package has been installed into the same Python environment as the hypothes.is application, it is possibile to start hypothes.is application from the annotran. To do that, in annotran, a h's pyramid configuration should be included in the annotran's Pyramid configuration. 
+1. Boot system. Since the annotran package has been installed into the same Python environment as the hypothes.is application, it is possibile to start the hypothes.is application from annotran. To do so, place a version of h's pyramid configuration inside annotran. 
 
 2. When extending Pyramid application (see documentation on how to do that: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/extending.html), it is necessary to override views, routes and static assets (http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/assets.html#assets-chapter). To extend hypothes.is UI code, there are following steps performed:
 	- There is assets.yaml file in annotran that is a copy of the same file from hypothes.is. Paths for assets that are overwritten in annotran are appropriately updated within this file. 
-	- Assets are overwitted by invoking config.override_asset(..) method.
+	- Assets are overwritten by invoking config.override_asset(..) method.
 	- Javascript is overwritten using Angular dependency injection. h/static/scripts/app.coffee is required from the main module within the annotran.
 
+3. In app.py we replace a set of hypothesis functions using Python monkey patching. The replacement functions are in replacements.py.
+
+4. To override Angular directives, add the directive file in static/scripts/directive and then edit apps.js to add an app decorator that selects the override directive. 
 
 ##How to contribute
 
-Tasks under development are available to investigate under the issues. You can also join in the discussion over there. More guidelines to come..
+Tasks under development are available to investigate under the issues. You can also join in the discussion over there.
+
