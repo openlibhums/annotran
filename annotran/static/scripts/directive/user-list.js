@@ -9,7 +9,6 @@ function Controller($scope, $window, session, settings, languages, votes, crossf
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
 
-
   if ($scope.model == null) {
     $scope.model = {};
   }
@@ -99,8 +98,9 @@ function Controller($scope, $window, session, settings, languages, votes, crossf
     }
   };
 
-  $scope.reverseUserList = function() {
-    $scope.$root.updateUserList(1);
+  $scope.reverseUserList = function(direction) {
+    $scope.direction = direction
+    $scope.$root.updateUserList($scope.direction);
   };
 
   $scope.userList = function () {
