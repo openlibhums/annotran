@@ -50,12 +50,12 @@ def addLanguage(request):
     name = request.matchdict["language"]
     groupubid = request.matchdict["groupubid"]
 
-    group = h.groups.models.Group.get_by_pubid(groupubid) # just add public group handling, and the group will always be available
+    group = h.groups.models.Group.get_by_pubid(groupubid)
     language = models.Language.get_by_name(name)
 
     if not language:
         if group:
-            language = models.Language(name=name, group=h.groups.models.Group.get_by_pubid(groupubid))
+            language = models.Language(name=name, group=group)
         else:
             language = models.Language(name=name)
         request.db.add(language)
@@ -77,7 +77,7 @@ def read(request):
     groupubid = request.matchdict["groupubid"]
     group = h.groups.models.Group.get_by_pubid(groupubid)
 
-    if group is None:
+    if group.id == -1:
         # this is the public group
         return replacements._read_group(request, group, language)
     if not request.authenticated_userid:

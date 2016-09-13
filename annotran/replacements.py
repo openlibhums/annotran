@@ -89,9 +89,40 @@ def _read_group(request, group, language=None):
         renderer_name='h:templates/groups/share.html.jinja2',
         value=template_data, request=request)
 
-
 # annotran's version of h.session.model
 def model(request):
+
+
+    # test whether our world group exists in the database
+    # normally, in hypothesis, we don't have a world group in the DB
+    # we need one so that we can create public languages that also feature in private groups
+    # see: https://github.com/birkbeckOLH/annotran/issues/48
+    world_group = h.groups.models.Group.get_by_pubid("__world__")
+    dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
+
+    # add a dummy user if one doesn't exist
+    # NOTE: nobody can login as this user since there is no activation set
+    if not dummy_user:
+        dummy_user = h.accounts.models.User(username="ADummyUserForGroupCreation", email="dummy@martineve.com",
+                                            password="ABCDEFGHIJKLMN0123456789")
+        request.db.add(dummy_user)
+
+        # Create a new activation for the user
+        activation = h.accounts.models.Activation()
+        request.db.add(activation)
+        dummy_user.activation = activation
+
+        # Flush the session to ensure that the user can be created and the
+        # activation is successfully wired up
+        request.db.flush()
+
+
+    if not world_group:
+        group = h.models.Group(name="Public", creator=dummy_user)
+        group.id = -1
+        group.pubid = "__world__"
+        request.db.add(group)
+
     session = {}
     session['csrf'] = request.session.get_csrf_token()
     session['userid'] = request.authenticated_userid

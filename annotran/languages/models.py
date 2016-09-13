@@ -33,6 +33,8 @@ from sqlalchemy.orm import exc
 
 from h.db import Base
 from h import pubid
+import h
+
 
 LANGUAGE_NAME_MIN_LENGTH = 4
 LANGUAGE_NAME_MAX_LENGTH = 25
@@ -92,7 +94,8 @@ class Language(Base):
         """Return all public languages"""
         # get the current page object from the database
         # filter by page object
-        return cls.query.filter(cls.members == None, cls.pages.contains(page)).all()
+        world_group = h.groups.models.Group.get_by_pubid("__world__")
+        return cls.query.filter(cls.members.contains(world_group), cls.pages.contains(page)).all()
 
     @classmethod
     def get_by_id(cls, id_):
