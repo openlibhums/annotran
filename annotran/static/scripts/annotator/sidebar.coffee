@@ -217,6 +217,11 @@ module.exports = class Sidebar extends Host
 
     body = document.body
 
+    if range is null
+      super
+      this.show() unless annotation.$highlight
+      return
+
     # convert this to a range in the current document and extract the start and end points
     #range = new xpathRange.sniff(packager).normalize(document.body)
     selection_box = range.toRange().getBoundingClientRect()
