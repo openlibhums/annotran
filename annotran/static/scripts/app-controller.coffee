@@ -59,9 +59,6 @@ class AppControllerExt extends appcontroller
               auth_obj["author"] = author
               $scope.$root.list_of_users.push auth_obj
 
-        if (direction == 1) #reverse the order;
-           $scope.$root.list_of_users = $scope.$root.list_of_users.reverse()
-
         #push unvoted users
         keys = Object.keys($scope.$root.users_no_scores)
         if (keys.length != 0)
@@ -70,6 +67,9 @@ class AppControllerExt extends appcontroller
             auth_obj["score"] = 0
             auth_obj["author"] = $scope.$root.users_no_scores[keys[i]]
             $scope.$root.list_of_users.push auth_obj
+
+      if (direction == 1) #reverse the order;
+           $scope.$root.list_of_users = $scope.$root.list_of_users.reverse()
 
       return $scope.$root.list_of_users
 
