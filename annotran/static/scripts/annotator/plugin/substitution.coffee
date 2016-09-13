@@ -89,6 +89,10 @@ module.exports = class Substitution extends Annotator.Plugin
 
   singleSubstitution: (data = {}, substituteText = '') =>
 
+    div = document.createElement('div')
+    div.appendChild(document.createTextNode(substituteText))
+    substituteText = div.innerHTML
+
     # resolve the passed xpath
     full_range = new xpathRange.SerializedRange(data).normalize(document.body)
 
