@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, $window, settings, languages, votes, crossframe) {
+function Controller($scope, $window, session, settings, languages, votes, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
@@ -99,13 +99,17 @@ function Controller($scope, $window, settings, languages, votes, crossframe) {
     }
   };
 
+  $scope.reverseUserList = function() {
+    $scope.$root.updateUserList(1);
+  };
+
   $scope.userList = function () {
-    return $scope.$root.updateUserList()
+    return $scope.$root.updateUserList(0)
   };
 
   // for some reason we have to use an array here as NG repeat won't handle it properly otherwise
   $scope.list_of_users = $scope.$root.list_of_users;
-  $scope.$root.updateUserList();
+  $scope.$root.updateUserList(0);
 
 }
 

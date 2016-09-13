@@ -27,7 +27,7 @@ class AppControllerExt extends appcontroller
     $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
 
 
-    $scope.$root.updateUserList = ->
+    $scope.$root.updateUserList = (direction) ->
       # clear the array
       #$scope.$root.list_of_users.length = 0
       $scope.$root.list_of_users = []
@@ -58,6 +58,9 @@ class AppControllerExt extends appcontroller
               auth_obj["score"] = score
               auth_obj["author"] = author
               $scope.$root.list_of_users.push auth_obj
+
+        if (direction == 1) #reverse the order;
+           $scope.$root.list_of_users = $scope.$root.list_of_users.reverse()
 
         #push unvoted users
         keys = Object.keys($scope.$root.users_no_scores)

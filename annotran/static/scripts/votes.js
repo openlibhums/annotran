@@ -19,7 +19,7 @@ function votes(settings, session, $rootScope, $http) {
   $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
     if (languageName == "") {
       $rootScope.allVotes = {};
-      $rootScope.updateUserList();
+      $rootScope.updateUserList(0);
     }
   });
 

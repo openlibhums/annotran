@@ -116,7 +116,7 @@ class WidgetControllerExt extends widgetcontroller
         if $scope.$root != undefined and $scope.$root != null
           $scope.$root.userAnnotations = userAnnotations
           $scope.$root.allPageAnnotations = allPageAnnotations
-          $scope.$root.updateUserList()
+          $scope.$root.updateUserList(0)
 
         crossframe.call "resetDOM"
 
