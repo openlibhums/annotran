@@ -14,6 +14,7 @@ app.controller('AppController', require('./app-controller'))
     .directive('userList', require('./directive/user-list').directive)
     .directive('annotation', require('./directive/annotation').directive)
     .directive('topBar', require('./directive/top-bar').directive)
+    .directive('thread', require('./directive/thread'))
     .directive('stars', function() {
         return {
             restrict: 'E',
@@ -68,6 +69,12 @@ app.decorator(
             }
         );
 
+app.decorator(
+            "threadDirective",
+            function threadDirectiveDecorator( $delegate ) {
+                return( [ $delegate[1] ] );
+            }
+        );
 
 /*
 app.controller('AppController', ['$scope', '$controller', function ( $controller, $document, $location, $rootScope, $route, $scope,
