@@ -52,7 +52,7 @@ class Vote(Base):
                 return cls.query.filter(
                     cls.page_id == page.id,
                     cls.language_id == language.id,
-                    cls.group_id == None,
+                    cls.group_id == -1,
                     cls.author_id == author.id,
                     cls.voter_id == voter.id).one()
             else:
@@ -74,7 +74,7 @@ class Vote(Base):
                     h.accounts.models.User.query.join(cls,
                                                   and_(cls.page_id == page.id,
                                                        cls.language_id == language.id,
-                                                       cls.group_id == None,
+                                                       cls.group_id == -1,
                                                        h.accounts.models.User.id == cls.author_id)).\
                     with_entities(h.accounts.models.User.username,
                                   sa.func.avg(cls.score).label('average')).\
