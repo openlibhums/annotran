@@ -3,12 +3,21 @@ appcontroller =  require('../../../../h/h/static/scripts/app-controller.coffee')
 persona = require('../../../../h/h/static/scripts/filter/persona.js')
 
 class AppControllerExt extends appcontroller
-   constructor: (
+  this.$inject = [
+    '$controller', '$document', '$location', '$rootScope', '$route', '$scope',
+    '$window', 'annotationUI', 'auth', 'drafts', 'features', 'groups', 'languages'
+    'identity', 'session'
+  ]
+  constructor: (
      $controller,   $document,   $location,   $rootScope,   $route,   $scope,
      $window,   annotationUI,   auth,   drafts,   features, groups, languages,
      identity,   session
    ) ->
-    super
+
+    super($controller,   $document,   $location,   $rootScope,   $route,   $scope,
+     $window,   annotationUI,   auth,   drafts,   features, groups,
+     identity,   session)
+
     $scope.$root.userListvisible = true
     $scope.$root.editOnly = false
     $scope.$root.userAnnotations = []
@@ -16,6 +25,7 @@ class AppControllerExt extends appcontroller
     $scope.$root.pageid = window.location.href
     $scope.$root.pageid = decodeURIComponent($scope.$root.pageid);
     $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
+
 
     $scope.$root.updateUserList = ->
       # clear the array
