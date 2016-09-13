@@ -52,8 +52,10 @@ class AppControllerExt extends appcontroller
           for i in [0 .. (session.state.votes.length-1)]
             if (groups.focused().id == session.state.votes[i].group_id &&
                 languages.focused().id == session.state.votes[i].language_id)
-              score = session.state.votes[i].avg_score
               author = setUserWithScore(session.state.votes[i].author_id)
+              if (!author)
+                continue
+              score = session.state.votes[i].avg_score
               auth_obj = {}
               auth_obj["score"] = score
               auth_obj["author"] = author
