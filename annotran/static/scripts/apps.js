@@ -15,6 +15,7 @@ app.controller('AppController', require('./app-controller'))
     .directive('annotation', require('./directive/annotation').directive)
     .directive('topBar', require('./directive/top-bar').directive)
     .directive('thread', require('./directive/thread'))
+    .directive('shareDialog', require('./directive/share-dialog'))
     .directive('stars', function() {
         return {
             restrict: 'E',
@@ -72,6 +73,13 @@ app.decorator(
 app.decorator(
             "threadDirective",
             function threadDirectiveDecorator( $delegate ) {
+                return( [ $delegate[1] ] );
+            }
+        );
+
+app.decorator(
+            "shareDialogDirective",
+            function shareDialogDirectiveDecorator( $delegate ) {
                 return( [ $delegate[1] ] );
             }
         );
