@@ -32,6 +32,7 @@ angular = require('angular')
 
 eventsa = require('./events')
 events = require('../../../../h/h/static/scripts/events.js')
+persona = require('../../../../h/h/static/scripts/filter/persona.js');
 
 substitution = require('./annotator/plugin/substitution')
 
@@ -41,11 +42,11 @@ widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.co
 class WidgetControllerExt extends widgetcontroller
   this.$inject = [
     '$scope', 'annotationUI', 'crossframe', 'annotationMapper', 'drafts', 'groups', 'languages', 'session',
-    'streamer', 'streamFilter', 'store', 'threading'
+    'streamer', 'streamFilter', 'store', 'threading', '$http', 'settings'
   ]
   constructor:   (
      $scope,   annotationUI,  crossframe,   annotationMapper,  drafts, groups, languages, session,
-     streamer,   streamFilter,   store,   threading
+     streamer,   streamFilter,   store,   threading, $http, settings
   ) ->
     $scope.threadRoot = threading.root
     $scope.sortOptions = ['Newest', 'Oldest', 'Location']
@@ -156,7 +157,7 @@ class WidgetControllerExt extends widgetcontroller
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
 
     $scope.$root.addAnnotation = (annot) ->
-      $scope.$root.userAnnotations.push annot
+
       $scope.$root.allPageAnnotations.push annot
 
       # now update the interface
@@ -182,6 +183,34 @@ class WidgetControllerExt extends widgetcontroller
       loaded = []
       loadAnnotations crossframe.frames
 
+    $scope.$on eventsa.ROOTSCOPE_LISTS_UPDATED, (event, args) ->
+      userId = session.state.userid
+      i = 0
+      lastAnnotationDeleted = true
+      allAnnotations = $scope.$root.allPageAnnotations.length
+
+      while i < allAnnotations
+        if userId == $scope.$root.allPageAnnotations[i].user
+          lastAnnotationDeleted = false;
+          break;
+        i++
+
+      if lastAnnotationDeleted
+        deleteAuthorVotes userId
+
+      return true
+
+    deleteAuthorVotes = (authorId) ->
+      pageId = $scope.$root.pageid
+      authorId = persona.parseAccountID(authorId)
+      response = $http({
+       method: 'POST',
+       url: settings.serviceUrl + 'votes/' + authorId + '/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',
+      })
+      session.reload("")
+      return response
+
+
     $scope.$on eventsa.USER_DELETED_ANNOTATION, (event, deleted) ->
       array = (annot for annot in $scope.$root.userAnnotations when annot.id != deleted.id)
       $scope.$root.userAnnotations = array
@@ -193,7 +222,9 @@ class WidgetControllerExt extends widgetcontroller
       $scope.$root.updateUserList($scope.$root.direction)
 
       # now fire an event that can be hooked since we've updated the lists in the background
-      $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
+      $scope.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED, $scope.$root.allPageAnnotations);
+
+      return true
 
     $scope.$watchCollection (-> crossframe.frames), loadAnnotations
 

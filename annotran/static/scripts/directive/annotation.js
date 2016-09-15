@@ -187,6 +187,7 @@ function AnnotationController(
     * Initialize this AnnotationController instance.
     *
     * Initialize the `vm` object and any other variables that it needs,
+    * Initialize the `vm` object and any other variables that it needs,
     * register event listeners, etc.
     *
     * All initialization code intended to run when a new AnnotationController
@@ -439,35 +440,6 @@ function AnnotationController(
 
     return permissions.permits(action, domainModel, session.state.userid);
   };
-
-  $scope.$root.$on(eventsa.ROOTSCOPE_LISTS_UPDATED, function () {
-    console.log("ROOTSCOPE_LISTS_UPDATED");
-    var i = 0, lastAnnotationDeleted = true;
-    var allAnnotations = $scope.$root.allPageAnnotations.length;
-    var parsed;
-    while (i < allAnnotations ) {
-      if (domainModel.user === $scope.$root.allPageAnnotations[i].user) {
-        lastAnnotationDeleted = false;
-        break;
-      };
-      i++;
-    };
-    if (lastAnnotationDeleted) {
-      console.log("last annotation deleted");
-      deleteAuthorVotes();
-    };
-   });
-
-   function deleteAuthorVotes(authorId) {
-     var pageId = $rootScope.pageid;
-     var authorId = persona.parseAccountID(domainModel.user);
-     var response = $http({
-       method: 'POST',
-       url: settings.serviceUrl + 'votes/' + authorId + '/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',
-     });
-     session.reload("");
-     return response;
-   };
 
   /**
     * @ngdoc method
