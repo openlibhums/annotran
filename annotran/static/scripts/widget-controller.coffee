@@ -32,7 +32,6 @@ angular = require('angular')
 
 eventsa = require('./events')
 events = require('../../../../h/h/static/scripts/events.js')
-persona = require('../../../../h/h/static/scripts/filter/persona.js');
 
 substitution = require('./annotator/plugin/substitution')
 
@@ -202,10 +201,9 @@ class WidgetControllerExt extends widgetcontroller
 
     deleteAuthorVotes = (authorId) ->
       pageId = $scope.$root.pageid
-      authorId = persona.parseAccountID(authorId)
       response = $http({
        method: 'POST',
-       url: settings.serviceUrl + 'votes/' + authorId + '/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',
+       url: settings.serviceUrl + 'votes/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',
       })
       session.reload("")
       return response

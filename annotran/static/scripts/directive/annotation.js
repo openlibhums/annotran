@@ -452,11 +452,11 @@ function AnnotationController(
     */
   vm['delete'] = function() {
     return $timeout(function() {  // Don't use confirm inside the digest cycle.
-      var msg = 'Are you sure you want to delete this annotation?';
+      var msg = 'Are you sure you want to delete this translation?';
       if ($window.confirm(msg)) {
         var onRejected = function(reason) {
           flash.error(
-            errorMessage(reason), 'Deleting annotation failed');
+            errorMessage(reason), 'Deleting translation failed');
         };
         var onDelSuccess = function(event, arg) {
           $rootScope.$broadcast(eventsa.USER_DELETED_ANNOTATION, event, arg);
