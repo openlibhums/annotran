@@ -61,27 +61,17 @@ def deleteVote(request):
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
-    voter = request.authenticated_user
-    if voter is None:
-        raise exc.HTTPNotFound()
-
     languageId = request.matchdict["languageId"]
-    pageId = request.matchdict["pageId"]
-    userId = request.matchdict['userId']
     groupPubid = request.matchdict['groupId']
+    pageId = urllib.unquote(urllib.unquote(request.matchdict['pageId']))
 
-    pageId = urllib.unquote(urllib.unquote(pageId))
     page = annotran.pages.models.Page.get_by_uri(pageId)
     language = annotran.languages.models.Language.get_by_pubid(languageId, page)
-    author = h.models.User.get_by_username(userId)
-    voter = h.models.User.get_by_username(request.authenticated_user.username)
+    user = h.models.User.get_by_username(request.authenticated_user.username) #only authenticated used can delete translations and consequently their scores
     group = h.groups.models.Group.get_by_pubid(groupPubid)
 
-
-    if language is None or page is None:
-        raise exc.HTTPNotFound()
-
-    #TODO
+    models.Vote.delete_votes( page, language, group, user)
+    request.db.flush()
 
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupPubid)
     return exc.HTTPSeeOther(url)
@@ -101,6 +91,6 @@ def read(request):
 
 def includeme(config):
     config.add_route('vote_add', 'votes/{userId}/{groupId}/{languageId}/{pageId}/{score}/addVote')
-    config.add_route('vote_delete', 'votes/{userId}/{groupId}/{languageId}/{pageId}/deleteVote')
+    config.add_route('vote_delete', 'votes/{groupId}/{languageId}/{pageId}/deleteVote')
     config.add_route('vote_read', '/votes/{userid}/{languageid}/{pageid}')
     config.scan(__name__)

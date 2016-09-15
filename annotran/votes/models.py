@@ -102,6 +102,24 @@ class Vote(Base):
             return None
 
     @classmethod
+    def delete_votes(cls, page, language, group, author):
+        try:
+            if group is None:
+                return cls.query.filter(
+                    cls.page_id == page.id,
+                    cls.language_id == language.id,
+                    cls.group_id == -1,
+                    cls.author_id == author.id).delete()
+            else:
+                return cls.query.filter(
+                    cls.page_id == page.id,
+                    cls.language_id == language.id,
+                    cls.group_id == group.id,
+                    cls.author_id == author.id).delete()
+        except exc.NoResultFound:
+            return None
+
+    @classmethod
     def get_by_id(cls, id_):
         """Return the vote with the given id, or None."""
         try:
