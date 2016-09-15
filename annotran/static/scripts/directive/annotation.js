@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var dateUtil = require('../../../../../h/h/static/scripts/date-util');
 var events = require('../../../../../h/h/static/scripts/events.js');
 var a = require('../../../../../h/h/static/scripts/directive/annotation.js');
+var persona = require('../../../../../h/h/static/scripts/filter/persona.js');
 var eventsa = require('../events');
 var Annotator = require('annotator');
 
@@ -438,6 +439,35 @@ function AnnotationController(
 
     return permissions.permits(action, domainModel, session.state.userid);
   };
+
+  $scope.$root.$on(eventsa.ROOTSCOPE_LISTS_UPDATED, function () {
+    console.log("ROOTSCOPE_LISTS_UPDATED");
+    var i = 0, lastAnnotationDeleted = true;
+    var allAnnotations = $scope.$root.allPageAnnotations.length;
+    var parsed;
+    while (i < allAnnotations ) {
+      if (domainModel.user === $scope.$root.allPageAnnotations[i].user) {
+        lastAnnotationDeleted = false;
+        break;
+      };
+      i++;
+    };
+    if (lastAnnotationDeleted) {
+      console.log("last annotation deleted");
+      deleteAuthorVotes();
+    };
+   });
+
+   function deleteAuthorVotes(authorId) {
+     var pageId = $rootScope.pageid;
+     var authorId = persona.parseAccountID(domainModel.user);
+     var response = $http({
+       method: 'POST',
+       url: settings.serviceUrl + 'votes/' + authorId + '/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',
+     });
+     session.reload("");
+     return response;
+   };
 
   /**
     * @ngdoc method
