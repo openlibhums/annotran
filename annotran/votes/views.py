@@ -55,6 +55,37 @@ def addVote(request):
     url = request.route_url('language_read', pubid=language.pubid, groupubid=groupPubid)
     return exc.HTTPSeeOther(url)
 
+@view_config(route_name='vote_delete',
+             request_method='POST')
+def deleteVote(request):
+    if request.authenticated_userid is None:
+        raise exc.HTTPNotFound()
+
+    voter = request.authenticated_user
+    if voter is None:
+        raise exc.HTTPNotFound()
+
+    languageId = request.matchdict["languageId"]
+    pageId = request.matchdict["pageId"]
+    userId = request.matchdict['userId']
+    groupPubid = request.matchdict['groupId']
+
+    pageId = urllib.unquote(urllib.unquote(pageId))
+    page = annotran.pages.models.Page.get_by_uri(pageId)
+    language = annotran.languages.models.Language.get_by_pubid(languageId, page)
+    author = h.models.User.get_by_username(userId)
+    voter = h.models.User.get_by_username(request.authenticated_user.username)
+    group = h.groups.models.Group.get_by_pubid(groupPubid)
+
+
+    if language is None or page is None:
+        raise exc.HTTPNotFound()
+
+    #TODO
+
+    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupPubid)
+    return exc.HTTPSeeOther(url)
+
 @view_config(route_name='vote_read', request_method='GET')
 def read(request):
     url=util.get_url_from_request(request)
@@ -70,5 +101,6 @@ def read(request):
 
 def includeme(config):
     config.add_route('vote_add', 'votes/{userId}/{groupId}/{languageId}/{pageId}/{score}/addVote')
+    config.add_route('vote_delete', 'votes/{userId}/{groupId}/{languageId}/{pageId}/deleteVote')
     config.add_route('vote_read', '/votes/{userid}/{languageid}/{pageid}')
     config.scan(__name__)
