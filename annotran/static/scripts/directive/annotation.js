@@ -210,6 +210,10 @@ function AnnotationController(
     /** The URL for the Hypothesis service, e.g. 'https://hypothes.is/'. */
     vm.serviceUrl = settings.serviceUrl;
 
+    /** The support email address. */
+    vm.support_address = settings.supportAddress;
+
+
     /** Give the template access to the feature flags. */
     vm.feature = features.flagEnabled;
 

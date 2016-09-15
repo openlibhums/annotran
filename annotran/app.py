@@ -90,6 +90,7 @@ def main(global_config, **settings):
     # the following functions are monkey-patched inside H in order to give the annotran context
     h.client._angular_template_context = client._angular_template_context_ext
     h.client.render_app_html = client.render_app_html
+    h.client._app_html_context = client._app_html_context
 
     h.session.model = session.model
 

@@ -24,9 +24,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 # monkey patching of hypothesis methods
 
-from jinja2 import Environment, PackageLoader
+import json
 import os
+from urlparse import urlparse
+
+import annotran.views
 import h
+from h import __version__
+from jinja2 import Environment, PackageLoader
+
+jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
+
 
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
@@ -50,6 +58,51 @@ def _angular_template_context_ext(name):
         content, _, _ = jinja_env.loader.get_source(jinja_env,
                                                     angular_template_path)
     return {'name': '{}.html'.format(name), 'content': content}
+
+
+def _app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry_public_dsn, websocket_url):
+    """
+    Returns a dict of asset URLs and contents used by the sidebar app
+    HTML tempate.
+    """
+
+    if urlparse(service_url).hostname == 'localhost':
+        ga_cookie_domain = 'none'
+    else:
+        ga_cookie_domain = 'auto'
+
+    # the serviceUrl parameter must contain a path element
+    service_url = h.client.url_with_path(service_url)
+
+    app_config = {
+        'apiUrl': api_url,
+        'serviceUrl': service_url,
+        'supportAddress': annotran.views.Shared.support_address
+    }
+
+    if websocket_url:
+        app_config.update({
+            'websocketUrl': websocket_url,
+        })
+
+    if sentry_public_dsn:
+        app_config.update({
+            'raven': {
+                'dsn': sentry_public_dsn,
+                'release': __version__
+            }
+        })
+
+    return {
+        'app_config': json.dumps(app_config),
+        'angular_templates': map(h.client._angular_template_context,
+                                 h.client.ANGULAR_DIRECTIVE_TEMPLATES),
+        'app_css_urls': h.client.asset_urls(webassets_env, 'app_css'),
+        'app_js_urls': h.client.asset_urls(webassets_env, 'app_js'),
+        'ga_tracking_id': ga_tracking_id,
+        'ga_cookie_domain': ga_cookie_domain,
+        'register_url': service_url + 'register',
+    }
 
 
 # h.client.render_app_html
