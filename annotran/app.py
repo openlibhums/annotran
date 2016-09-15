@@ -49,6 +49,8 @@ def includeme(config):
                           override_with='annotran:templates/includes/logo-header.html.jinja2')
     config.override_asset(to_override='h:templates/accounts/profile.html.jinja2',
                           override_with='annotran:templates/accounts/profile.html.jinja2')
+    config.override_asset(to_override='h:templates/notfound.html.jinja2',
+                          override_with='annotran:templates/notfound.html.jinja2')
     config.commit()
 
 
