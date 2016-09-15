@@ -160,7 +160,7 @@ class WidgetControllerExt extends widgetcontroller
       $scope.$root.allPageAnnotations.push annot
 
       # now update the interface
-      $scope.$root.updateUserList(0)
+      $scope.$root.updateUserList($scope.$root.direction)
 
       # now fire an event that can be hooked since we've updated the lists in the background
       $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
@@ -193,7 +193,7 @@ class WidgetControllerExt extends widgetcontroller
       $scope.$root.allPageAnnotations = array
 
       # now update the interface
-      $scope.$root.updateUserList(0)
+      $scope.$root.updateUserList($scope.$root.direction)
 
       # now fire an event that can be hooked since we've updated the lists in the background
       $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
