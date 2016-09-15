@@ -42,4 +42,8 @@ module.exports = {
     USERS_LOADED: 'usersLoaded',
     /** Broadcast when the currently selected user changes*/
     USERS_FOCUSED: 'userFocused',
+    /** Broadcast when the user deleted an annotation*/
+    USER_DELETED_ANNOTATION: 'user_deleted_annotation',
+    /** Broadcast when the rootscope lists are updated*/
+    ROOTSCOPE_LISTS_UPDATED: 'rootscope_lists_updated',
 };

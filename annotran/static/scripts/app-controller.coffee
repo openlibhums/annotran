@@ -29,7 +29,6 @@ class AppControllerExt extends appcontroller
 
     $scope.$root.updateUserList = (direction) ->
       # clear the array
-      #$scope.$root.list_of_users.length = 0
       $scope.$root.list_of_users = []
 
       keys = Object.keys($scope.$root.users_no_scores)

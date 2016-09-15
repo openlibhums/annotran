@@ -281,6 +281,7 @@ function AnnotationController(
     // Call `onUserChanged()` whenever the user logs in or out.
     $scope.$on(events.USER_CHANGED, onUserChanged);
 
+
     // New annotations (just created locally by the client, rather then
     // received from the server) have some fields missing. Add them.
     domainModel.user = domainModel.user || session.state.userid;
@@ -444,9 +445,12 @@ function AnnotationController(
           flash.error(
             errorMessage(reason), 'Deleting annotation failed');
         };
+        var onDelSuccess = function(event, arg) {
+          $rootScope.$broadcast(eventsa.USER_DELETED_ANNOTATION, event, arg);
+        };
         $scope.$apply(function() {
           annotationMapper.deleteAnnotation(domainModel).then(
-            null, onRejected);
+            onDelSuccess, onRejected);
         });
       }
     }, true);

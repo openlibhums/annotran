@@ -175,6 +175,19 @@ class WidgetControllerExt extends widgetcontroller
       loaded = []
       loadAnnotations crossframe.frames
 
+    $scope.$on eventsa.USER_DELETED_ANNOTATION, (event, deleted) ->
+      array = (annot for annot in $scope.$root.userAnnotations when annot.id != deleted.id)
+      $scope.$root.userAnnotations = array
+
+      array = (annot for annot in $scope.$root.allPageAnnotations when annot.id != deleted.id)
+      $scope.$root.allPageAnnotations = array
+
+      # now update the interface
+      $scope.$root.updateUserList(0)
+
+      # now fire an event that can be hooked since we've updated the lists in the background
+      $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
+
     $scope.$watchCollection (-> crossframe.frames), loadAnnotations
 
     $scope.focus = (annotation) ->
