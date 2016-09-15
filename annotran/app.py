@@ -36,6 +36,7 @@ import annotran.views
 import h.app
 import h.client
 import h.config
+import h.views
 from h.assets import *
 from h.config import settings_from_environment
 
@@ -51,6 +52,8 @@ def includeme(config):
                           override_with='annotran:templates/accounts/profile.html.jinja2')
     config.override_asset(to_override='h:templates/notfound.html.jinja2',
                           override_with='annotran:templates/notfound.html.jinja2')
+    config.override_asset(to_override='h:templates/5xx.html.jinja2',
+                          override_with='annotran:templates/5xx.html.jinja2')
     config.commit()
 
 
@@ -102,6 +105,9 @@ def main(global_config, **settings):
 
     h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
     h.accounts.views.ProfileController.post = accounts_views.ProfileController.profile_post
+
+    h.views.error = annotran.views.error
+    h.views.json_error = annotran.views.json_error
 
     # load the support email address
     annotran.views.Shared.support_address = settings.get('annotran.app.support_address')
