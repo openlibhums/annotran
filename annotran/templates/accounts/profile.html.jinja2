@@ -1,0 +1,33 @@
+{% extends "h:templates/layouts/profile.html.jinja2" %}
+
+{% set page_route = 'profile' %}
+{% set page_title = 'Profile' %}
+
+{% block page_content %}
+  <div class="form-vertical">
+    <h2 class="form-heading">
+      <span>{% trans %}Change your email address{% endtrans %}</span>
+    </h2>
+    <legend>
+      {% trans %}Your current email address is:{% endtrans %}
+      <strong>{{ email }}</strong>.
+    </legend>
+    {{ email_form | safe }}
+
+    <h2 class="form-heading">
+      <span>{% trans %}Change your password{% endtrans %}</span>
+    </h2>
+    {{ password_form | safe }}
+
+    <h2 class="form-heading">
+      <span>{% trans %}Delete account{% endtrans %}</span>
+    </h2>
+    <legend>
+      {% trans %}
+        If you would like to delete your account, please email us at
+        <a href="mailto:{{ support_address }}">{{support_address}}</a> from your
+        registered email address, and we'll take it from there.
+      {% endtrans %}
+    </legend>
+  </div>
+{% endblock page_content %}

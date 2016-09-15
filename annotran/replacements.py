@@ -23,11 +23,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 # monkey patching of hypothesis methods
+import deform
 from annotran.languages import models
+from h import i18n
 from h import presenters
 from h.api import search
 from h.api import uri
-from pyramid import renderers
+from pyramid import httpexceptions
+from pyramid import renderers, settings
 from pyramid import httpexceptions as exc
 from jinja2 import Environment, PackageLoader
 from annotran.util import util
@@ -38,9 +41,13 @@ import annotran
 import os.path
 import decimal
 
+from pyramid.view import view_config
+
+_ = i18n.TranslationString
 
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
+support_address = ""
 
 # annotran's version of h.groups.views._read_group
 def _read_group(request, group, language=None):
@@ -136,6 +143,36 @@ def model(request):
     if user and not user.sidebar_tutorial_dismissed:
         session['preferences']['show_sidebar_tutorial'] = True
     return session
+
+
+@view_config(request_method='GET')
+def profile_get(self):
+    """Show the user's profile."""
+    return {'email': self.request.authenticated_user.email,
+            'email_form': self.forms['email'].render(),
+            'password_form': self.forms['password'].render(),
+            'support_address': support_address}
+
+
+@view_config(request_method='POST')
+def profile_post(self):
+    """Handle POST payload from profile update form."""
+    formid = self.request.POST.get('__formid__')
+    if formid is None or formid not in self.forms:
+        raise httpexceptions.HTTPBadRequest()
+
+    try:
+        if formid == 'email':
+            self._handle_email_form()
+        elif formid == 'password':
+            self._handle_password_form()
+    except deform.ValidationFailure:
+        return profile_get(self)
+
+    self.request.session.flash(_("Success. We've saved your changes."),
+                               'success')
+    return httpexceptions.HTTPFound(
+        location=self.request.route_url('profile'))
 
 # annotran's version of h.client._angular_template_context
 def _angular_template_context_ext(name):
