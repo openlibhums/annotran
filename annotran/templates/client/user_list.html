@@ -24,10 +24,10 @@
         <div ng-if="$root.list_of_users.length > 0">
           <hr/>
           <p><b>Select a user below to view a translation of this page:</b></p>
-          <p ng-if="direction == 1">
+          <p ng-if="$root.direction == 1">
             Sort by score: <a ng-click="reverseUserList(0)" href="#">descending</a>
           </p>
-          <p ng-if="direction == 0 || direction == undefined">
+          <p ng-if="$root.direction == 0 || $root.direction == undefined">
             Sort by score: <a ng-click="reverseUserList(1)" href="#">ascending</a>
           </p>
           <ul class="user-list">

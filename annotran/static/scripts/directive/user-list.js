@@ -99,8 +99,8 @@ function Controller($scope, $window, session, settings, languages, votes, crossf
   };
 
   $scope.reverseUserList = function(direction) {
-    $scope.direction = direction
-    $scope.$root.updateUserList($scope.direction);
+    $scope.$root.direction = direction;
+    $scope.$root.updateUserList($scope.$root.direction);
   };
 
   $scope.userList = function () {
