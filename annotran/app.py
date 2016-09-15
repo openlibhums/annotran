@@ -24,18 +24,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 #a lot of code here has been reused from hypothesis
-
-
+import annotran
+from annotran.accounts import views as accounts_views
+from annotran.api.groups import logic as api_logic
+from annotran import client
+from annotran.groups import views as groups_views
+from annotran import session
 from pyramid.config import Configurator
+import annotran.views
 
 import h.app
 import h.client
 import h.config
 from h.assets import *
 from h.config import settings_from_environment
-
-from annotran import replacements
-
 
 
 def includeme(config):
@@ -86,14 +88,20 @@ def main(global_config, **settings):
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.append('user_list')
 
     # the following functions are monkey-patched inside H in order to give the annotran context
-    h.client._angular_template_context = replacements._angular_template_context_ext
-    h.session.model = replacements.model
-    h.groups.views._read_group = replacements._read_group
-    h.api.groups.set_group_if_reply = replacements.set_group_if_reply
-    h.client.render_app_html = replacements.render_app_html
-    h.accounts.views.ProfileController.get = replacements.profile_get
-    h.accounts.views.ProfileController.post = replacements.profile_post
-    replacements.support_address = settings.get('annotran.app.support_address')
+    h.client._angular_template_context = client._angular_template_context_ext
+    h.client.render_app_html = client.render_app_html
+
+    h.session.model = session.model
+
+    h.groups.views._read_group = groups_views.Views._read_group
+
+    h.api.groups.set_group_if_reply = api_logic.Logic.set_group_if_reply
+
+    h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
+    h.accounts.views.ProfileController.post = accounts_views.ProfileController.profile_post
+
+    # load the support email address
+    annotran.views.Shared.support_address = settings.get('annotran.app.support_address')
     return config.make_wsgi_app()
 
 def recursivelyAddDictionary(dict):

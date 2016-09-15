@@ -31,7 +31,6 @@ import urllib
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
 from h import i18n
-from annotran import replacements
 from annotran.util import util
 
 import models
@@ -79,12 +78,12 @@ def read(request):
 
     if group.id == -1:
         # this is the public group
-        return replacements._read_group(request, group, language)
+        return h.groups.views._read_group(request, group, language)
     if not request.authenticated_userid:
         return None
     else:
         if group in request.authenticated_user.groups:
-            return replacements._read_group(request, group, language)
+            return h.groups.views._read_group(request, group, language)
         else:
             return None
 

@@ -14,3 +14,6 @@ def __init__(self):
 #@view_config(renderer='templates/login.html.jinja2', route_name='login.html')
 #def home(self):
 #    return {'title': 'This is title', 'name': 'Home View'}
+
+class Shared:
+    support_address = ""
