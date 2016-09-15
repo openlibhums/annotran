@@ -162,9 +162,6 @@ class WidgetControllerExt extends widgetcontroller
       # now update the interface
       $scope.$root.updateUserList($scope.$root.direction)
 
-      # now fire an event that can be hooked since we've updated the lists in the background
-      $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
-
     $scope.$on events.USER_CHANGED, ->
       $scope.$root.selectedUser = undefined
       _resetAnnotations(annotationMapper, drafts, threading)
