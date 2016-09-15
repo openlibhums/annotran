@@ -155,6 +155,16 @@ class WidgetControllerExt extends widgetcontroller
         streamFilter.resetFilter().addClause('/uri', 'one_of', loaded)
         streamer.setConfig('filter', {filter: streamFilter.getFilter()})
 
+    $scope.$root.addAnnotation = (annot) ->
+      $scope.$root.userAnnotations.push annot
+      $scope.$root.allPageAnnotations.push annot
+
+      # now update the interface
+      $scope.$root.updateUserList(0)
+
+      # now fire an event that can be hooked since we've updated the lists in the background
+      $scope.$root.$broadcast(eventsa.ROOTSCOPE_LISTS_UPDATED);
+
     $scope.$on events.USER_CHANGED, ->
       $scope.$root.selectedUser = undefined
       _resetAnnotations(annotationMapper, drafts, threading)

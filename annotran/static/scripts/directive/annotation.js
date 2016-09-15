@@ -269,6 +269,8 @@ function AnnotationController(
     // server.
     $rootScope.$on('annotationUpdated', onAnnotationUpdated);
 
+    $rootScope.$on('annotationCreated', onAnnotationCreated);
+
     // Call `onDestroy()` when this AnnotationController's scope is removed.
     $scope.$on('$destroy', onDestroy);
 
@@ -323,6 +325,11 @@ function AnnotationController(
       updateView(updatedDomainModel);
     }
   }
+
+  function onAnnotationCreated(event, annot) {
+    $rootScope.addAnnotation(annot);
+  }
+
 
   function onDestroy() {
     if (vm.cancelTimestampRefresh) {
