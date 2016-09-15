@@ -1,0 +1,62 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'reports' %}
+{% set page_title = 'Abuse Reports' %}
+
+{% block content %}
+  <p>
+    The following translations have been reported as abusive. Please review these and decide what action to take.
+  </p>
+  <p>
+    <strong>N.B.</strong> your changes will take effect immediately when you
+    save.
+  </p>
+  <div class="table-responsive">
+    <form method="POST">
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ request.session.get_csrf_token() }}">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Everyone</th>
+            <th>Admins</th>
+            <th>Staff</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for feat in features %}
+          <tr>
+            <td>{{ feat.name }}</td>
+            <td>
+              <input
+                type="checkbox"
+                name="{{ feat.name }}[everyone]"
+                {% if feat.everyone %}checked{% endif %}>
+            </td>
+            <td>
+              <input
+                type="checkbox"
+                name="{{ feat.name }}[admins]"
+                {% if feat.admins %}checked{% endif %}>
+            </td>
+            <td>
+              <input
+                type="checkbox"
+                name="{{ feat.name }}[staff]"
+                {% if feat.staff %}checked{% endif %}>
+            </td>
+            <td>
+              {{ feat.description }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input class="btn btn-primary" type="submit" value="Save changes">
+    </form>
+  </div>
+{% endblock %}

@@ -4,7 +4,7 @@ from h import models
 
 @view.view_config(route_name='admin_reports',
                   request_method='GET',
-                  renderer='h:templates/admin/reports.html.jinja2',
+                  renderer='annotran:templates/admin/reports.html.jinja2',
                   permission='admin_reports')
 def reports_index(_):
     return {}
