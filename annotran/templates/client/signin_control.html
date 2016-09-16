@@ -20,12 +20,6 @@
   </a>
   <ul class="dropdown-menu pull-right" role="menu">
     <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
-      <a href="{{vm.serviceUrl}}stream?q=user:{{vm.auth.username}}"
-         class="dropdown-menu__link"
-         title="View all your annotations"
-         target="_blank">{{vm.auth.username}}</a>
-    </li>
-    <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
       <a class="dropdown-menu__link" href="{{vm.serviceUrl}}profile" target="_blank">Account settings</a>
     </li>
     <li class="dropdown-menu__row">
