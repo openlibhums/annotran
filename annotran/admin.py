@@ -39,7 +39,7 @@ def reports_delete(request):
                   permission='admin_view_translation')
 def reports_view(request):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
-    page = annotran.pages.models.Page.get_by_uri(url + "/")
+    page = annotran.pages.models.Page.get_by_uri(url)
 
     pubid = request.matchdict["language"]
     language = annotran.languages.models.Language.get_by_pubid(pubid, page)
@@ -49,28 +49,27 @@ def reports_view(request):
 
     annotations = {}
 
-    annotations = h.groups.views._read_group(request, group, language, render=False)
+    user =  urllib.unquote(request.matchdict["user"])
 
-    user = request.matchdict["user"]
+    annotations = h.groups.views._read_group(request, group, language=language, uri=url, user=user, render=False)
 
     ret = []
     originals = []
 
     for annotation in annotations:
-        if (annotation.href == url or annotation.href == url + "/") and (annotation.annotation['user'][5:].split("@")[0] == user):
-            ret.append(annotation.annotation['text'])
+        ret.append(annotation.annotation['text'])
 
-            try:
-                for selector in annotation.annotation['target'][0]['selector']:
-                    if 'exact' in selector:
-                        originals.append(selector['exact'])
-            except:
-                originals.append("No linking text found")
+        try:
+            for selector in annotation.annotation['target'][0]['selector']:
+                if 'exact' in selector:
+                    originals.append(selector['exact'])
+        except:
+            originals.append("No linking text found")
 
     return {'annotations': ret,
             'full_annotations': annotations,
             'original': originals,
-            'user': user,
+            'user': urllib.quote(user, safe=''),
             'pageId': urllib.quote(urllib.quote(url, safe=''), safe=''),
             'language': pubid,
             'group': groupubid,
