@@ -32,11 +32,13 @@ from annotran.groups import views as groups_views
 from annotran import session
 from pyramid.config import Configurator
 import annotran.views
+import annotran.resources
 
 import h.app
 import h.client
 import h.config
 import h.views
+import h.resources
 from h.assets import *
 from h.config import settings_from_environment
 
@@ -54,6 +56,10 @@ def includeme(config):
                           override_with='annotran:templates/notfound.html.jinja2')
     config.override_asset(to_override='h:templates/5xx.html.jinja2',
                           override_with='annotran:templates/5xx.html.jinja2')
+    config.override_asset(to_override='h:templates/layouts/admin.html.jinja2',
+                          override_with='annotran:templates/layouts/admin.html.jinja2')
+    config.override_asset(to_override='h:templates/admin/index.html.jinja2',
+                          override_with='annotran:templates/admin/index.html.jinja2')
     config.commit()
 
 
@@ -84,6 +90,7 @@ def main(global_config, **settings):
     config.include('annotran.languages')
     config.include('annotran.pages')
     config.include('annotran.votes')
+    config.include('annotran.admin')
     config.include(__name__)
 
     config.add_static_view(name='annotran_images', path='static/images')
@@ -108,6 +115,8 @@ def main(global_config, **settings):
 
     h.views.error = annotran.views.error
     h.views.json_error = annotran.views.json_error
+
+    h.resources.Root.__acl__ = annotran.resources.__acl__
 
     # load the support email address
     annotran.views.Shared.support_address = settings.get('annotran.app.support_address')

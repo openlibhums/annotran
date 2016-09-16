@@ -1,0 +1,32 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'reports' %}
+{% set page_title = 'View a translation' %}
+
+{% block content %}
+
+
+    <h2>Translation</h2>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Original text</th>
+            <th>User translation</th>
+        </tr>
+    </thead>
+
+    {% for annotation in annotations %}
+        <tr>
+            <td>{{ original[loop.index0] }}</td>
+            <td>{{ annotation }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <h2>Options</h2>
+    <ul>
+        <li><a href="/admin/delete/translation/{{ pageId }}/{{group}}/{{language}}/{{user}}/{{report}}">Delete this translation</a></li>
+        <li><a href="/admin/delete/block/translation/{{ pageId }}/{{group}}/{{language}}/{{user}}/{{report}}">Delete this translation and block the user</a></li>
+    </ul>
+
+{% endblock %}
