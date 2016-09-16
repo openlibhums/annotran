@@ -1,0 +1,116 @@
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+!-->
+
+<!--modifies the original template so that the annotran specific instructions are used!-->
+
+{% extends "../../../h/h/templates/help.html.jinja2" %}
+
+{% block content %}
+  <div class="help-page">
+    <div class="help-page-content masthead-small">
+      {% include "includes/logo-header.html.jinja2" %}
+    </div>
+    <article class="help-page-content">
+      {% if is_help %}
+        <section class="help-page-section">
+          <h2 id="installation" class="help-page-heading">Installation</h2>
+          <div class="numbered-list grid">
+            <div class="column-desktop-1-2"><div class="numbered-list-item">To load Annotran on a webpage drag the button into your bookmarks bar then click it to launch the Annotran application.</div></div>
+            <div class="column-desktop-1-2"><div class="numbered-list-item">If you wish to install Annotran on your own site then head over to GitHub.</div></div>
+          </div>
+        </section>
+      {% endif %}
+      {% if is_onboarding %}
+        <section class="help-page-section">
+          <h2 id="getting-started" class="help-page-heading">Getting started</h2>
+          <p class="help-page-lede">Now you have the Annotran up and running. It's time to
+            start translating some documents.</p>
+          <div class="numbered-list grid">
+            <div class="column-desktop-1-2"><div class="numbered-list-item">Create an account using the sidebar on the right of the screen.</div></div>
+            <div class="column-desktop-1-2"><div class="numbered-list-item">Go forth and translate!</div></div>
+          </div>
+        </section>
+      {% endif %}
+      <section class="help-page-section">
+        <h2 id="key-features" class="help-page-heading">Translations</h2>
+        <p class="help-page-lede">Start adding your translations by clicking Start in the Translations Options within the sidebar.</p>
+        <div class="feature-content">
+          <section class="feature">
+            <h3 class="feature-heading"><i class="feature-icon h-icon-insert-comment"></i> New Translation</h3>
+            <div class="feature-content styled-text">
+              <p>Create a <em>translation</em> by selecting some text and clicking the <i class="help-icon h-icon-insert-comment"></i> button</p>
+            </div>
+          </section>
+        </div>
+      </section>
+      <section class="help-page-section">
+        <h2 id="key-features" class="help-page-heading">Privacy</h2>
+        <p class="help-page-lede">Translations are either public and visible to everyone
+          or private and visible only to you.</p>
+        <div class="grid feature-content">
+          <section class="feature column-desktop-1-2">
+            <h3 class="feature-heading"><i class="feature-icon h-icon-public"></i> Public</h3>
+            <div class="feature-content styled-text">
+              <p>These translations are visible to everyone both in the
+                document itself and our <a
+                href="{{request.resource_url(context, 'stream')}}">public stream</a>.</p>
+            </div>
+          </section>
+          <section class="feature column-desktop-1-2">
+            <h3 class="feature-heading"><i class="feature-icon h-icon-lock"></i> Private</h3>
+            <div class="feature-content">
+              <p>Private translations are visible only to you when logged in.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+      <section class="help-page-section">
+        <section class="feature">
+          <h3 class="feature-heading"><i class="feature-icon h-icon-share"></i>Sharing a page</h3>
+          <div class="feature-content">
+            <p>Use the <i class="help-icon h-icon-share"></i> button to get a sharable link to the page with translations.</p>
+          </div>
+        </section>
+      </section>
+      <section class="help-page-section">
+        <h2 class="help-page-heading">Resources</h2>
+        <div class="styled-text">
+          <ul>
+            <li>Report bugs on <a href="https://github.com/birkbeckOLH/annotran/issues">GitHub</a> under the issues section.</li>
+            <li>If you need help please don't hesitate to <a href="{{ support_address }}">get in touch</a>.</li>
+            <li>Learn more about the project and check out the code on <a href="https://github.com/birkbeckOLH/annotran">GitHub</a>.</li>
+          </ul>
+        </div>
+      </section>
+    </article>
+    <div class="help-page-sidebar">
+      <div id="help-1">
+        <p>Show and hide the sidebar using the <i class="h-icon-chevron-left"></i> button</p>
+      </div>
+      <div id="help-2"></div>
+    </div>
+  </div>
+{% endblock %}
