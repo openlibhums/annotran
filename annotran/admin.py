@@ -51,7 +51,7 @@ def reports_view(request):
 
     user =  urllib.unquote(request.matchdict["user"])
 
-    annotations = h.groups.views._read_group(request, group, language=language, uri=url, user=user, render=False)
+    annotations = h.groups.views._read_group(request, group, language=language, search_url=url, user=user, render=False)
 
     ret = []
     originals = []

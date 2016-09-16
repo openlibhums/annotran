@@ -36,7 +36,7 @@ from pyramid import renderers
 class Views:
 
     @staticmethod
-    def _read_group(request, group, language=None, uri=None, user=None, render=True):
+    def _read_group(request, group, language=None, search_url=None, user=None, render=True):
         """Return the rendered "Share this group" page.
 
         This is the page that's shown when a user who is already a member of a
@@ -60,8 +60,8 @@ class Views:
         if language:
             parameters['language'] = language.pubid
 
-        if uri:
-            parameters['uri'] = uri
+        if search_url:
+            parameters['uri'] = search_url
 
         if user:
             parameters['user'] = user
@@ -72,7 +72,6 @@ class Views:
 
         annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
                        for a in result['rows']]
-
 
         if render:
             # Group the annotations by URI.
