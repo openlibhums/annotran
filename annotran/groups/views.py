@@ -36,7 +36,7 @@ from pyramid import renderers
 class Views:
 
     @staticmethod
-    def _read_group(request, group, language=None):
+    def _read_group(request, group, language=None, render=True):
         """Return the rendered "Share this group" page.
 
         This is the page that's shown when a user who is already a member of a
@@ -61,23 +61,29 @@ class Views:
         annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
                        for a in result['rows']]
 
-        # Group the annotations by URI.
-        # Create a dict mapping the (normalized) URIs of the annotated documents
-        # to the most recent annotation of each document.
-        annotations_by_uri = collections.OrderedDict()
-        for annotation in annotations:
-            normalized_uri = uri.normalize(annotation.uri)
-            if normalized_uri not in annotations_by_uri:
-                annotations_by_uri[normalized_uri] = annotation
-                if len(annotations_by_uri) >= 25:
-                    break
 
-        document_links = [annotation.document_link
-                          for annotation in annotations_by_uri.values()]
 
-        template_data = {
-            'group': group, 'group_url': url, 'document_links': document_links}
 
-        return renderers.render_to_response(
-            renderer_name='h:templates/groups/share.html.jinja2',
-            value=template_data, request=request)
+        if render:
+            # Group the annotations by URI.
+            # Create a dict mapping the (normalized) URIs of the annotated documents
+            # to the most recent annotation of each document.
+            annotations_by_uri = collections.OrderedDict()
+            for annotation in annotations:
+                normalized_uri = uri.normalize(annotation.uri)
+                if normalized_uri not in annotations_by_uri:
+                    annotations_by_uri[normalized_uri] = annotation
+                    if len(annotations_by_uri) >= 25:
+                        break
+
+            document_links = [annotation.document_link
+                              for annotation in annotations_by_uri.values()]
+
+            template_data = {
+                'group': group, 'group_url': url, 'document_links': document_links}
+
+            return renderers.render_to_response(
+                renderer_name='h:templates/groups/share.html.jinja2',
+                value=template_data, request=request)
+        else:
+            return annotations

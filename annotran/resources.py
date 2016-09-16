@@ -15,4 +15,8 @@ __acl__ = [
     (Allow, 'group:__admin__', 'admin_badge'),
     (Allow, 'group:__admin__', 'admin_groups'),
     (Allow, 'group:__staff__', 'admin_groups'),
+    (Allow, 'group:__staff__', 'admin_view_translation'),
+    (Allow, 'group:__admin__', 'admin_view_translation'),
+    (Allow, 'group:__staff__', 'admin_delete_translation'),
+    (Allow, 'group:__admin__', 'admin_delete_translation'),
 ]
