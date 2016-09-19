@@ -69,9 +69,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <div class="language-item">
         <div class="language-icon-container"><i class="h-icon-add"></i></div>
         <div class="language-details" ng-controller="languageController">
-            <select ng-model="selectedLanguage" ng-options="language as language.name for language in languages"
+            <select id="languageSelector" ng-model="selectedLanguage" ng-options="language as language.name for language in languages"
                     ng-change="addLanguage(selectedLanguage)">
-                 <option value="">Add new translation</option>
+                 <option value="" id="zeroIndex">Add new translation</option>
             </select>
         </div>
       </div>

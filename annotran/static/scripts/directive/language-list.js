@@ -2,6 +2,8 @@
 
 var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
+var Annotator = require('annotator');
+var $ = Annotator.$;
 
 // @ngInject
 function LanguageListController($scope, $window, languages, groups, pages) {
@@ -17,16 +19,19 @@ function LanguageListController($scope, $window, languages, groups, pages) {
       if ($window.confirm(message)) {
         languages.addLanguage(language.name);
         $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
+      } else {
+        $("#zeroIndex").prop('selected', 'selected');
       }
     } else {
       $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
     }
-  }
+  };
  
   $scope.focusLanguage = function (languageId) {
     $scope.$root.selectedUser = undefined;
     languages.focus(languageId);
-  }
+  };
+
 
   $scope.showUserList = function () {
     $scope.$root.userListvisible = true;
