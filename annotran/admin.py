@@ -12,6 +12,7 @@ import annotran.pages.models
 import h.accounts.models
 import h.groups.models
 import annotran.languages.models
+import annotran.votes.models
 import h.util
 
 
@@ -144,6 +145,8 @@ def reports_delete(request, block=False):
         delete_annotations(request, group=group, language=language, search_url=url, user=user)
 
     delete_report(page, language, group, user_obj)
+
+    annotran.votes.models.Vote.delete_votes(page, language, group, user_obj)
 
     if block:
         dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
