@@ -94,6 +94,7 @@ def main(global_config, **settings):
     config.include('annotran.votes')
     config.include('annotran.admin')
     config.include('annotran.reports')
+    config.include('annotran.help')
     config.include(__name__)
 
     config.add_static_view(name='annotran_images', path='static/images')

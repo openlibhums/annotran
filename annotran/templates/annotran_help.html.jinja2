@@ -24,9 +24,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 !-->
 
-<!--modifies the original template so that the annotran specific instructions are used!-->
+{% extends "../../../h/h/templates/layouts/base.html.jinja2" %}
 
-{% extends "../../../h/h/templates/help.html.jinja2" %}
+{% block title %} Annotran
+{% endblock %}
+
+{% block meta %}
+  <link href='//fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+  {{ super() }}
+  {% if is_onboarding %}
+    <meta name="hypothesis-intent" content="first-run" />
+  {% endif %}
+  {% if not is_onboarding %}
+    <script>
+      function hypothesisConfig() { return {firstRun: true} }
+    </script>
+    <script async defer src="{{ embed_js_url }}"></script>
+  {% endif %}
+{% endblock %}
+
+{% block styles %}
+  {% assets "help_page_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
 
 {% block content %}
   <div class="help-page">
@@ -34,16 +55,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       {% include "includes/logo-header.html.jinja2" %}
     </div>
     <article class="help-page-content">
-      {% if is_help %}
+
         <section class="help-page-section">
-          <h2 id="installation" class="help-page-heading">Installation</h2>
+          <h2 id="installation" class="help-page-heading">Installation of Annotran</h2>
           <div class="numbered-list grid">
             <div class="column-desktop-1-2"><div class="numbered-list-item">To load Annotran on a webpage drag the button into your bookmarks bar then click it to launch the Annotran application.</div></div>
             <div class="column-desktop-1-2"><div class="numbered-list-item">If you wish to install Annotran on your own site then head over to GitHub.</div></div>
           </div>
         </section>
-      {% endif %}
-      {% if is_onboarding %}
+
         <section class="help-page-section">
           <h2 id="getting-started" class="help-page-heading">Getting started</h2>
           <p class="help-page-lede">Now you have the Annotran up and running. It's time to
@@ -53,7 +73,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <div class="column-desktop-1-2"><div class="numbered-list-item">Go forth and translate!</div></div>
           </div>
         </section>
-      {% endif %}
+
       <section class="help-page-section">
         <h2 id="key-features" class="help-page-heading">Translations</h2>
         <p class="help-page-lede">Start adding your translations by clicking Start in the Translations Options within the sidebar.</p>
