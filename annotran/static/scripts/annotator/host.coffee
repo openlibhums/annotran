@@ -57,6 +57,8 @@ module.exports = class Host extends Guest
         options.showHighlights = true
       this.setVisibleHighlights(options.showHighlights)
 
+      this.show()
+
       # Show the UI
       @frame.css('display', '')
 
