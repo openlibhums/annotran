@@ -38,6 +38,8 @@ import h.app
 import h.client
 import h.config
 import h.views
+import h.api.search.query
+import annotran.api.search.query
 import h.resources
 from h.assets import *
 from h.config import settings_from_environment
@@ -117,6 +119,8 @@ def main(global_config, **settings):
     h.views.json_error = annotran.views.json_error
 
     h.resources.Root.__acl__ = annotran.resources.__acl__
+
+    h.api.search.query.Builder.build = annotran.api.search.query.build
 
     # load the support email address
     annotran.views.Shared.support_address = settings.get('annotran.app.support_address')

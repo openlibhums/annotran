@@ -4,6 +4,40 @@ import annotran
 import h
 from pyramid import view
 from h import models
+from h.api import search
+from annotran.api.search import core as annotran_search
+from pyramid import httpexceptions as exc
+
+
+def delete_annotations(request, group, language=None, search_url=None, user=None):
+    """Delete a set of annotations
+    """
+
+    if group is None:
+        pubid = "__world__"
+        slug = "Public"
+    else:
+        pubid = group.pubid
+        slug = group.slug
+
+    url = request.route_url('group_read', pubid=pubid, slug=slug)
+
+    # language = models.Language.get_by_groupubid(group.pubid)
+
+    parameters = {"group": pubid, "limit": 1000}
+
+    if language:
+        parameters['language'] = language.pubid
+
+    if search_url:
+        parameters['uri'] = search_url
+
+    if user:
+        parameters['user'] = user
+
+    result = annotran_search.delete(request,
+                                    private=True,
+                                    params=parameters)
 
 
 @view.view_config(route_name='admin_reports',
@@ -13,13 +47,20 @@ from h import models
 def reports_index(_):
     return {}
 
+
 @view.view_config(route_name='admin_delete_translation',
                   request_method='GET',
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_translation')
 def reports_delete(request):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
+    page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
+    pubid = request.matchdict["language"]
+    language = annotran.languages.models.Language.get_by_pubid(pubid, page)
+
+    groupubid = request.matchdict["group"]
+    group = h.groups.models.Group.get_by_pubid(groupubid)
 
     # load the annotations so that we can manipulate them
     initial_values = reports_view(request)
@@ -27,10 +68,10 @@ def reports_delete(request):
     annotations = initial_values['full_annotations']
 
     for annotation in annotations:
-        if (annotation.href == url or annotation.href == url + "/") and (
-            annotation.annotation['user'][5:].split("@")[0] == user):
-                # call elasticsearch to delete the record
-                pass
+        # call elasticsearch to delete the record
+        delete_annotations(request, group=group, language=language, search_url=url, user=user)
+
+    return exc.HTTPSeeOther("/admin/reports")
 
 
 @view.view_config(route_name='admin_view_translation',
@@ -49,7 +90,7 @@ def reports_view(request):
 
     annotations = {}
 
-    user =  urllib.unquote(request.matchdict["user"])
+    user = urllib.unquote(request.matchdict["user"])
 
     annotations = h.groups.views._read_group(request, group, language=language, search_url=url, user=user, render=False)
 
