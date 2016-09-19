@@ -4,7 +4,7 @@ var events = require('../../../../../h/h/static/scripts/events.js');
 var eventsa =  require('../events');
 
 // @ngInject
-function Controller($scope, $window, session, settings, languages, votes, crossframe) {
+function Controller($scope, $window, session, settings, languages, votes, reports, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
@@ -79,6 +79,17 @@ function Controller($scope, $window, session, settings, languages, votes, crossf
     $scope.author={};
 
     return voteRet;
+  };
+
+  $scope.addReport = function(author) {
+    $scope.author=author;
+
+    var reportRet = reports.addReport(author.username, languages.focused().id);
+
+    // set scope.author to an empty dictionary in order to hide the box once the user has voted.
+    $scope.author={};
+
+    return reportRet;
   };
 
   $scope.showVote = function(author, score) {

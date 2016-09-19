@@ -40,6 +40,7 @@ app.controller('AppController', require('./app-controller'))
 .service('groups', require('./groups'))
 .service('session', require('./session'))
 .service('votes', require('./votes'))
+.service('reports', require('./reports'))
 
 app.factory('langListFactory', require('./directive/language-service').factory)
 
