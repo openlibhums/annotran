@@ -68,3 +68,9 @@ class Report(Base):
                 cls.id == id_).one()
         except exc.NoResultFound:
             return None
+
+
+    @classmethod
+    def get_all(cls):
+        """Return all reports."""
+        return cls.query.all()

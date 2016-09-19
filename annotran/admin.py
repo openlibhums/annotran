@@ -7,6 +7,12 @@ from h import models
 from h.api import search
 from annotran.api.search import core as annotran_search
 from pyramid import httpexceptions as exc
+import annotran.reports.models
+import annotran.pages.models
+import h.accounts.models
+import h.groups.models
+import annotran.languages.models
+import h.util
 
 
 def delete_annotations(request, group, language=None, search_url=None, user=None):
@@ -45,7 +51,23 @@ def delete_annotations(request, group, language=None, search_url=None, user=None
                   renderer='annotran:templates/admin/reports.html.jinja2',
                   permission='admin_reports')
 def reports_index(_):
-    return {}
+    reports = annotran.reports.models.Report.get_all()
+
+    ret_list = []
+
+    for report in reports:
+        ret_dict = {}
+        ret_dict["url"] = annotran.pages.models.Page.get_by_id(report.page_id).uri
+        ret_dict["url_encoded"] = urllib.quote(urllib.quote(ret_dict["url"], safe=''), safe='')
+        ret_dict["group"] = h.groups.models.Group.get_by_id(report.group_id).pubid
+        ret_dict["language"] = annotran.languages.models.Language.get_by_id(report.language_id).pubid
+        ret_dict["author"] = h.util.userid_from_username(h.accounts.models.User.query.filter(h.accounts.models.User.id == report.author_id).first().username, request=_)
+        ret_dict["reporter"] = h.util.userid_from_username(h.accounts.models.User.query.filter(h.accounts.models.User.id == report.reporter_id).first().username, request=_)
+        ret_dict["id"] = report.id
+
+        ret_list.append(ret_dict)
+
+    return {'reports': ret_list}
 
 
 @view.view_config(route_name='admin_delete_translation',
@@ -70,6 +92,8 @@ def reports_delete(request):
     for annotation in annotations:
         # call elasticsearch to delete the record
         delete_annotations(request, group=group, language=language, search_url=url, user=user)
+
+    annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page==page).delete()
 
     return exc.HTTPSeeOther("/admin/reports")
 

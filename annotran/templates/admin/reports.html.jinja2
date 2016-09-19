@@ -20,43 +20,31 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th></th>
-            <th>Everyone</th>
-            <th>Admins</th>
-            <th>Staff</th>
-            <th></th>
+            <th>Page</th>
+            <th>User</th>
+            <th>Reporting user</th>
+            <th style="width:10%">Action</th>
           </tr>
         </thead>
         <tbody>
-          {% for feat in features %}
+          {% for translation in reports %}
           <tr>
-            <td>{{ feat.name }}</td>
             <td>
-              <input
-                type="checkbox"
-                name="{{ feat.name }}[everyone]"
-                {% if feat.everyone %}checked{% endif %}>
+              {{ translation.url }}
             </td>
             <td>
-              <input
-                type="checkbox"
-                name="{{ feat.name }}[admins]"
-                {% if feat.admins %}checked{% endif %}>
+              {{ translation.author }}
             </td>
             <td>
-              <input
-                type="checkbox"
-                name="{{ feat.name }}[staff]"
-                {% if feat.staff %}checked{% endif %}>
+              {{ translation.reporter }}
             </td>
             <td>
-              {{ feat.description }}
+              <a href="/admin/view/translation/{{ translation.url_encoded }}/{{ translation.group }}/{{ translation.language }}/{{ translation.author }}/{{ translation.id }}">View report</a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
-      <input class="btn btn-primary" type="submit" value="Save changes">
     </form>
   </div>
 {% endblock %}
