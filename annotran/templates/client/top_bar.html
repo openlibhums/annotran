@@ -55,9 +55,9 @@ that works in the sidebar--!>
   <div class="top-bar__inner content" ng-if="::isSidebar">
     <group-list class="group-list" auth="auth"></group-list>
     <language-list class="language-list" auth="auth"></language-list>
-
     <div class="top-bar__expander"></div>
     <simple-search
+      ng-if="$root.selectedUser == auth.userid || $root.selectedUser == 'self'"
       class="simple-search"
       query="searchController.query"
       on-search="searchController.update(query)"
@@ -65,6 +65,7 @@ that works in the sidebar--!>
       title="Filter the annotation list">
     </simple-search>
     <sort-dropdown
+      ng-if="$root.selectedUser == auth.userid || $root.selectedUser == 'self'"
       sort-options="sortOptions"
       sort-by="sortBy"
       show-as-icon="true"
