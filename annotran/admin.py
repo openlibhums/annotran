@@ -73,24 +73,39 @@ def reports_index(_):
 
     return {'reports': ret_list}
 
+@view.view_config(route_name='admin_delete_block_report',
+                  request_method='GET',
+                  renderer='annotran:templates/admin/translation.html.jinja2',
+                  permission='admin_delete_block_report')
+def reports_delete_block_report(request):
+    return reports_delete_report(request, block=True)
+
 
 @view.view_config(route_name='admin_delete_report',
                   request_method='GET',
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_report')
-def reports_delete_report(request):
+def reports_delete_report(request, block=False):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
     pubid = request.matchdict["language"]
     language = annotran.languages.models.Language.get_by_pubid(pubid, page)
-    user_obj = h.accounts.models.User.query.filter(
-        h.accounts.models.User.username == h.util.split_user(user)["username"]).first()
+
+    report = annotran.reports.models.Report.get_by_id(request.matchdict["report"])
+
+    user_obj = h.accounts.models.User.query.filter(h.accounts.models.User.username == report.Reporter.username).first()
 
     groupubid = request.matchdict["group"]
     group = h.groups.models.Group.get_by_pubid(groupubid)
 
-    delete_report(page, language, group, user_obj)
+    if block:
+        dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
+        user_obj.activation_id = dummy_user.activation_id
+
+        request.db.flush()
+
+    delete_report(page, language, group, user_obj, reporter=True)
 
     return exc.HTTPSeeOther("/admin/reports")
 
@@ -139,12 +154,18 @@ def reports_delete(request, block=False):
     return exc.HTTPSeeOther("/admin/reports")
 
 
-def delete_report(page, language, group, user_obj):
+def delete_report(page, language, group, user_obj, reporter=False):
     # NB this function deletes all reports pertaining to this translation
-    annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
-                                                annotran.reports.models.Report.language == language,
-                                                annotran.reports.models.Report.group == group,
-                                                annotran.reports.models.Report.author == user_obj).delete()
+    if not reporter:
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
+                                                    annotran.reports.models.Report.language == language,
+                                                    annotran.reports.models.Report.group == group,
+                                                    annotran.reports.models.Report.author == user_obj).delete()
+    else:
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
+                                                    annotran.reports.models.Report.language == language,
+                                                    annotran.reports.models.Report.group == group,
+                                                    annotran.reports.models.Report.Reporter == user_obj).delete()
 
 
 @view.view_config(route_name='admin_view_translation',
@@ -197,4 +218,6 @@ def includeme(config):
     config.add_route('admin_delete_report', '/admin/delete/report/{page}/{group}/{language}/{user}/{report}')
     config.add_route('admin_delete_block_translation',
                      '/admin/delete/block/translation/{page}/{group}/{language}/{user}/{report}')
+    config.add_route('admin_delete_block_report',
+                     '/admin/delete/block/report/{page}/{group}/{language}/{user}/{report}')
     config.scan(__name__)

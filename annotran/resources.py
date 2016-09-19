@@ -23,4 +23,6 @@ __acl__ = [
     (Allow, 'group:__admin__', 'admin_delete_block_translation'),
     (Allow, 'group:__staff__', 'admin_delete_report'),
     (Allow, 'group:__admin__', 'admin_delete_report'),
+    (Allow, 'group:__staff__', 'admin_delete_block_report'),
+    (Allow, 'group:__admin__', 'admin_delete_block_report'),
 ]
