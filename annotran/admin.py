@@ -70,11 +70,19 @@ def reports_index(_):
     return {'reports': ret_list}
 
 
+@view.view_config(route_name='admin_delete_block_translation',
+                  request_method='GET',
+                  renderer='annotran:templates/admin/translation.html.jinja2',
+                  permission='admin_delete_block_translation')
+def reports_delete_block(request, block=False):
+    return reports_delete(request, block=True)
+
+
 @view.view_config(route_name='admin_delete_translation',
                   request_method='GET',
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_translation')
-def reports_delete(request):
+def reports_delete(request, block=False):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
@@ -94,6 +102,13 @@ def reports_delete(request):
         delete_annotations(request, group=group, language=language, search_url=url, user=user)
 
     annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page==page).delete()
+
+    if block:
+        dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
+        user_obj = h.accounts.models.User.query.filter(h.accounts.models.User.username == h.util.split_user(user)["username"]).first()
+        user_obj.activation_id = dummy_user.activation_id
+
+        request.db.flush()
 
     return exc.HTTPSeeOther("/admin/reports")
 
@@ -145,4 +160,5 @@ def includeme(config):
     config.add_route('admin_reports', '/admin/reports')
     config.add_route('admin_view_translation', '/admin/view/translation/{page}/{group}/{language}/{user}/{report}')
     config.add_route('admin_delete_translation', '/admin/delete/translation/{page}/{group}/{language}/{user}/{report}')
+    config.add_route('admin_delete_block_translation', '/admin/delete/block/translation/{page}/{group}/{language}/{user}/{report}')
     config.scan(__name__)
