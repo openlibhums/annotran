@@ -29,5 +29,8 @@ dev: deps
 
 test: backend-test
 
+#backend-test: deps
+#	@python setup.py test
+
 backend-test:
 	py.test -q

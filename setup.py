@@ -52,10 +52,10 @@ class PyTest(TestCommand):
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ['h']
+        self.test_args = ['annotran']
         self.test_suite = True
         if self.cov:
-            self.test_args += ['--cov', 'h',
+            self.test_args += ['--cov', 'annotran',
                                '--cov-config', '.coveragerc']
 
     def run_tests(self):
@@ -121,15 +121,18 @@ setup(name='annotran',
       author_email='',
       url='',
       keywords='web wsgi bfg pylons pyramid',
-      packages=find_packages(),
+      packages=find_packages(exclude=['*.test']),
       include_package_data=True,
       zip_safe=False,
-      test_suite='annotran',
       install_requires=INSTALL_REQUIRES,
-      entry_points="""\
-      [paste.app_factory]
-      main = annotran.app:main
-      [console_scripts]
-      initialize_annotran_db = annotran.scripts.initializedb:main
-      """,
-      )
+      extras_require={
+          'dev': DEV_EXTRAS + YAML_EXTRAS,
+          'testing': TESTING_EXTRAS,
+          'YAML': YAML_EXTRAS,
+      },
+      tests_require=DEV_EXTRAS + TESTING_EXTRAS,
+      cmdclass={'test': PyTest},
+    entry_points={
+
+    },
+)
