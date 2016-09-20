@@ -2,7 +2,13 @@ from h.api.search import query as hq
 
 
 def build(self, params, sort=True):
-    """Get the resulting query object from this query builder."""
+    """
+    Get the resulting query object from this query builder.
+    :param self: an instance of a query object
+    :param params: a set of parameters to pass to a query
+    :param sort: whether or not to include sort and other keys that pertain only to a search query
+    :return:
+    """
     params = params.copy()
 
     p_from = hq.extract_offset(params)
