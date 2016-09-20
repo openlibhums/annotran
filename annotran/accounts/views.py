@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,8 +21,8 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-# monkey patching of hypothesis methods
+"""
+
 import annotran
 import deform
 from h import i18n
@@ -32,11 +32,19 @@ import annotran.views
 
 _ = i18n.TranslationString
 
+
 class ProfileController:
+    def __init__(self):
+        pass
+
     @staticmethod
     @view_config(request_method='GET')
     def profile_get(self):
-        """Show the user's profile."""
+        """
+        Shows the user's profile
+        :param self: an instance of the ProfileController
+        :return: a context dictionary for the profile template
+        """
         return {'email': self.request.authenticated_user.email,
                 'email_form': self.forms['email'].render(),
                 'password_form': self.forms['password'].render(),
@@ -45,20 +53,23 @@ class ProfileController:
     @staticmethod
     @view_config(request_method='POST')
     def profile_post(self):
-        """Handle POST payload from profile update form."""
-        formid = self.request.POST.get('__formid__')
-        if formid is None or formid not in self.forms:
+        """
+        Handle POST payload from profile update form.
+        :param self: an instance of the ProfileController
+        :return: an HTTP redirect to the user's profile page
+        """
+        form_id = self.request.POST.get('__formid__')
+        if form_id is None or form_id not in self.forms:
             raise httpexceptions.HTTPBadRequest()
 
         try:
-            if formid == 'email':
+            if form_id == 'email':
                 self._handle_email_form()
-            elif formid == 'password':
+            elif form_id == 'password':
                 self._handle_password_form()
         except deform.ValidationFailure:
             return self.profile_get(self)
 
-        self.request.session.flash(_("Success. We've saved your changes."),
-                                   'success')
+        self.request.session.flash(_("Success. We've saved your changes."), 'success')
         return httpexceptions.HTTPFound(
             location=self.request.route_url('profile'))
