@@ -115,6 +115,9 @@ class Language(Base):
         except exc.NoResultFound:
             return None
 
+    def __repr__(self):
+        return '%s' % self.name
+
 GROUP_LANGUAGE_TABLE = sa.Table(
     'group_language', Base.metadata,
     sa.Column('group_id',
