@@ -1,5 +1,4 @@
-'''
-
+"""
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -21,7 +20,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+"""
 # monkey patching of hypothesis methods
 
 # annotran's version of h.groups.views._read_group
@@ -32,27 +31,33 @@ from h import presenters
 from h.api import search
 from h.api import uri
 from pyramid import renderers
+import h.models
+
 
 def read_group(request, group, language=None, search_url=None, user=None, render=True):
-    """Return the rendered "Share this group" page.
+    """
+    Return the rendered "Share this group" page.
 
-    This is the page that's shown when a user who is already a member of a
-    group visits the group's URL.
-
+    This is the page that's shown when a user who is already a member of a group visits the group's URL.
+    :param request: a request object
+    :param group: a group object
+    :param language: a language object to search or None
+    :param search_url: the URL to search or None
+    :param user: the user object to search or None
+    :param render: whether or not to return a context object
+    :return: if render, a context object for a template. If render is false, a list of annotations
     """
 
     if group is None:
-        pubid = "__world__"
+        public_group_id = "__world__"
         slug = "Public"
     else:
-        pubid = group.pubid
+        public_group_id = group.pubid
         slug = group.slug
 
-    url = request.route_url('group_read', pubid=pubid, slug=slug)
+    url = request.route_url('group_read', pubid=public_group_id, slug=slug)
 
-    # language = models.Language.get_by_groupubid(group.pubid)
-
-    parameters = {"group": pubid, "limit": 1000}
+    parameters = {"group": public_group_id, "limit": 1000}
 
     if language:
         parameters['language'] = language.pubid
