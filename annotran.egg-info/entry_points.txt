@@ -1,5 +1,17 @@
-      [paste.app_factory]
-      main = annotran.app:main
-      [console_scripts]
-      initialize_annotran_db = annotran.scripts.initializedb:main
-      
+[console_scripts]
+hypothesis = h.script:main
+hypothesis-buildext = h.buildext:main
+hypothesis-worker = h.worker:main
+
+[h.annotool]
+prepare = h.api.transform:prepare
+
+[h.worker]
+mailer = h.mailer:worker
+nipsa = h.api.nipsa.worker:worker
+notification = h.notification.worker:run
+
+[paste.app_factory]
+main = h.app:create_app
+websocket = h.websocket:create_app
+

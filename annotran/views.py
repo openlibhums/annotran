@@ -29,6 +29,10 @@ def error(context, request):
     h.views._handle_exc(request)
     return {'support_address': Shared.support_address}
 
+@view_config(route_name='annotranhelp', renderer='templates/help.html.jinja2')
+def help_page(request):
+    return {'support_address': Shared.support_address}
+
 
 @json_view(context=Exception)
 def json_error(context, request):
@@ -43,3 +47,8 @@ def json_error(context, request):
 
 class Shared:
     support_address = ""
+
+
+def includeme(config):
+    config.add_route('annotranhelp', '/help')
+    config.scan(__name__)
