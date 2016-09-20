@@ -78,12 +78,12 @@ def read(request):
 
     if group.id == -1:
         # this is the public group
-        return h.groups.views._read_group(request, group, language)
+        return h.groups.views.read_group(request, group, language)
     if not request.authenticated_userid:
         return None
     else:
         if group in request.authenticated_user.groups:
-            return h.groups.views._read_group(request, group, language)
+            return h.groups.views.read_group(request, group, language)
         else:
             return None
 

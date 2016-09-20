@@ -110,7 +110,7 @@ def main(global_config, **settings):
 
     h.session.model = session.model
 
-    h.groups.views._read_group = groups_views.Views._read_group
+    h.groups.views.read_group = groups_views.read_group
 
     h.api.groups.set_group_if_reply = api_logic.Logic.set_group_if_reply
 

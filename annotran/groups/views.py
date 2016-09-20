@@ -33,66 +33,63 @@ from h.api import search
 from h.api import uri
 from pyramid import renderers
 
-class Views:
+def read_group(request, group, language=None, search_url=None, user=None, render=True):
+    """Return the rendered "Share this group" page.
 
-    @staticmethod
-    def _read_group(request, group, language=None, search_url=None, user=None, render=True):
-        """Return the rendered "Share this group" page.
+    This is the page that's shown when a user who is already a member of a
+    group visits the group's URL.
 
-        This is the page that's shown when a user who is already a member of a
-        group visits the group's URL.
+    """
 
-        """
+    if group is None:
+        pubid = "__world__"
+        slug = "Public"
+    else:
+        pubid = group.pubid
+        slug = group.slug
 
-        if group is None:
-            pubid = "__world__"
-            slug = "Public"
-        else:
-            pubid = group.pubid
-            slug = group.slug
+    url = request.route_url('group_read', pubid=pubid, slug=slug)
 
-        url = request.route_url('group_read', pubid=pubid, slug=slug)
+    # language = models.Language.get_by_groupubid(group.pubid)
 
-        # language = models.Language.get_by_groupubid(group.pubid)
+    parameters = {"group": pubid, "limit": 1000}
 
-        parameters = {"group": pubid, "limit": 1000}
+    if language:
+        parameters['language'] = language.pubid
 
-        if language:
-            parameters['language'] = language.pubid
+    if search_url:
+        parameters['uri'] = search_url
 
-        if search_url:
-            parameters['uri'] = search_url
+    if user:
+        parameters['user'] = user
 
-        if user:
-            parameters['user'] = user
+    result = search.search(request,
+                           private=False,
+                           params=parameters)
 
-        result = search.search(request,
-                               private=False,
-                               params=parameters)
+    annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
+                   for a in result['rows']]
 
-        annotations = [presenters.AnnotationHTMLPresenter(h.models.Annotation(a))
-                       for a in result['rows']]
+    if render:
+        # Group the annotations by URI.
+        # Create a dict mapping the (normalized) URIs of the annotated documents
+        # to the most recent annotation of each document.
+        annotations_by_uri = collections.OrderedDict()
+        for annotation in annotations:
+            normalized_uri = uri.normalize(annotation.uri)
+            if normalized_uri not in annotations_by_uri:
+                annotations_by_uri[normalized_uri] = annotation
+                if len(annotations_by_uri) >= 25:
+                    break
 
-        if render:
-            # Group the annotations by URI.
-            # Create a dict mapping the (normalized) URIs of the annotated documents
-            # to the most recent annotation of each document.
-            annotations_by_uri = collections.OrderedDict()
-            for annotation in annotations:
-                normalized_uri = uri.normalize(annotation.uri)
-                if normalized_uri not in annotations_by_uri:
-                    annotations_by_uri[normalized_uri] = annotation
-                    if len(annotations_by_uri) >= 25:
-                        break
+        document_links = [annotation.document_link
+                          for annotation in annotations_by_uri.values()]
 
-            document_links = [annotation.document_link
-                              for annotation in annotations_by_uri.values()]
+        template_data = {
+            'group': group, 'group_url': url, 'document_links': document_links}
 
-            template_data = {
-                'group': group, 'group_url': url, 'document_links': document_links}
-
-            return renderers.render_to_response(
-                renderer_name='h:templates/groups/share.html.jinja2',
-                value=template_data, request=request)
-        else:
-            return annotations
+        return renderers.render_to_response(
+            renderer_name='h:templates/groups/share.html.jinja2',
+            value=template_data, request=request)
+    else:
+        return annotations

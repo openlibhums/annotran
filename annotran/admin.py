@@ -1,37 +1,38 @@
 import urllib
 
 import annotran
-import h
-from pyramid import view
-from h import models
-from h.api import search
-from annotran.api.search import core as annotran_search
-from pyramid import httpexceptions as exc
-import annotran.reports.models
+import annotran.groups.views
+import annotran.languages.models
 import annotran.pages.models
+import annotran.reports.models
+import annotran.votes.models
+import h
 import h.accounts.models
 import h.groups.models
-import annotran.languages.models
-import annotran.votes.models
+import h.groups.views
 import h.util
+from annotran.api.search import core as annotran_search
+from pyramid import httpexceptions as exc
+from pyramid import view
 
 
 def delete_annotations(request, group, language=None, search_url=None, user=None):
-    """Delete a set of annotations
+    """
+    Delete a set of annotations from Elastic search
+    :param request: a request object
+    :param group: a group object
+    :param language: a language object
+    :param search_url: the URL on which to operate
+    :param user: a username string
+    :return: None
     """
 
     if group is None:
-        pubid = "__world__"
-        slug = "Public"
+        public_group_id = "__world__"
     else:
-        pubid = group.pubid
-        slug = group.slug
+        public_group_id = group.pubid
 
-    url = request.route_url('group_read', pubid=pubid, slug=slug)
-
-    # language = models.Language.get_by_groupubid(group.pubid)
-
-    parameters = {"group": pubid, "limit": 1000}
+    parameters = {"group": public_group_id, "limit": 1000}
 
     if language:
         parameters['language'] = language.pubid
@@ -42,9 +43,9 @@ def delete_annotations(request, group, language=None, search_url=None, user=None
     if user:
         parameters['user'] = user
 
-    result = annotran_search.delete(request,
-                                    private=True,
-                                    params=parameters)
+    annotran_search.delete(request,
+                           private=True,
+                           params=parameters)
 
 
 @view.view_config(route_name='admin_reports',
@@ -52,33 +53,42 @@ def delete_annotations(request, group, language=None, search_url=None, user=None
                   renderer='annotran:templates/admin/reports.html.jinja2',
                   permission='admin_reports')
 def reports_index(_):
+    """
+    View a list of reports.
+    :param _: a request object
+    :return: a context list for the
+    """
     reports = annotran.reports.models.Report.get_all()
 
     ret_list = []
 
     for report in reports:
-        ret_dict = {}
-        ret_dict["url"] = annotran.pages.models.Page.get_by_id(report.page_id).uri
-        ret_dict["url_encoded"] = urllib.quote(urllib.quote(ret_dict["url"], safe=''), safe='')
-        ret_dict["group"] = h.groups.models.Group.get_by_id(report.group_id).pubid
-        ret_dict["language"] = annotran.languages.models.Language.get_by_id(report.language_id).pubid
-        ret_dict["author"] = h.util.userid_from_username(
-            h.accounts.models.User.query.filter(h.accounts.models.User.id == report.author_id).first().username,
-            request=_)
-        ret_dict["reporter"] = h.util.userid_from_username(
-            h.accounts.models.User.query.filter(h.accounts.models.User.id == report.reporter_id).first().username,
-            request=_)
-        ret_dict["id"] = report.id
+        ret_dict = {'url': annotran.pages.models.Page.get_by_id(report.page_id).uri,
+                    'group': h.groups.models.Group.get_by_id(report.group_id).pubid,
+                    'language': annotran.languages.models.Language.get_by_id(report.language_id).pubid,
+                    'author': h.util.userid_from_username(h.accounts.models.User.query.filter(
+                        h.accounts.models.User.id == report.author_id).first().username, request=_),
+                    'reporter': h.util.userid_from_username(h.accounts.models.User.query.filter(
+                        h.accounts.models.User.id == report.reporter_id).first().username, request=_),
+                    'id': report.id}
+
+        ret_dict['url_encoded'] = urllib.quote(urllib.quote(ret_dict["url"], safe=''), safe='')
 
         ret_list.append(ret_dict)
 
     return {'reports': ret_list}
+
 
 @view.view_config(route_name='admin_delete_block_report',
                   request_method='GET',
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_block_report')
 def reports_delete_block_report(request):
+    """
+    A view that deletes a report and blocks the user who reported it
+    :param request: a request object
+    :return: a redirect to the reports home page
+    """
     return reports_delete_report(request, block=True)
 
 
@@ -87,26 +97,32 @@ def reports_delete_block_report(request):
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_report')
 def reports_delete_report(request, block=False):
+    """
+    A view to delete a report but leave the translation in tact
+    :param request: a request object
+    :param block: whether or not to block the user who made the report
+    :return: a redirect to the reports home page
+    """
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
-    user = request.matchdict["user"]
-    pubid = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(pubid, page)
+    public_language_id = request.matchdict["language"]
+    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
 
     report = annotran.reports.models.Report.get_by_id(request.matchdict["report"])
 
-    user_obj = h.accounts.models.User.query.filter(h.accounts.models.User.username == report.Reporter.username).first()
+    user_object = h.accounts.models.User.query.filter(
+        h.accounts.models.User.username == report.Reporter.username).first()
 
-    groupubid = request.matchdict["group"]
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    public_group_id = request.matchdict["group"]
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
 
     if block:
         dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
-        user_obj.activation_id = dummy_user.activation_id
+        user_object.activation_id = dummy_user.activation_id
 
         request.db.flush()
 
-    delete_report(page, language, group, user_obj, reporter=True)
+    delete_report(page, language, group, user_object, reporter=True)
 
     return exc.HTTPSeeOther("/admin/reports")
 
@@ -115,7 +131,12 @@ def reports_delete_report(request, block=False):
                   request_method='GET',
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_block_translation')
-def reports_delete_block(request, block=False):
+def reports_delete_block(request):
+    """
+    Delete a report and a translation and block the user who made the translation
+    :param request: a request object
+    :return: a redirect to the reports home page
+    """
     return reports_delete(request, block=True)
 
 
@@ -124,51 +145,59 @@ def reports_delete_block(request, block=False):
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_delete_translation')
 def reports_delete(request, block=False):
+    """
+    Delete a report and a a translation
+    :param request: a request object
+    :param block: whether or not to block the user who owns the translation
+    :return: a redirect to the reports home page
+    """
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
-    pubid = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(pubid, page)
-    user_obj = h.accounts.models.User.query.filter(
+    public_language_id = request.matchdict["language"]
+    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
+    user_object = h.accounts.models.User.query.filter(
         h.accounts.models.User.username == h.util.split_user(user)["username"]).first()
 
-    groupubid = request.matchdict["group"]
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    public_group_id = request.matchdict["group"]
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
 
-    # load the annotations so that we can manipulate them
-    initial_values = reports_view(request)
+    delete_annotations(request, group=group, language=language, search_url=url, user=user)
 
-    annotations = initial_values['full_annotations']
+    delete_report(page, language, group, user_object)
 
-    for annotation in annotations:
-        # call elasticsearch to delete the record
-        delete_annotations(request, group=group, language=language, search_url=url, user=user)
-
-    delete_report(page, language, group, user_obj)
-
-    annotran.votes.models.Vote.delete_votes(page, language, group, user_obj)
+    annotran.votes.models.Vote.delete_votes(page, language, group, user_object)
 
     if block:
         dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
-        user_obj.activation_id = dummy_user.activation_id
+        user_object.activation_id = dummy_user.activation_id
 
         request.db.flush()
 
     return exc.HTTPSeeOther("/admin/reports")
 
 
-def delete_report(page, language, group, user_obj, reporter=False):
+def delete_report(page, language, group, user, reporter=False):
+    """
+    Delete all reports pertaining to a translation.
+    :param page: the page object of the translation
+    :param language: the language object of the translation
+    :param group: the group object of the translation
+    :param user: the user object of the translation
+    :param reporter: if true, deletes a report where the reporter is equal to user
+    :return: None
+    """
     # NB this function deletes all reports pertaining to this translation
     if not reporter:
         annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
                                                     annotran.reports.models.Report.language == language,
                                                     annotran.reports.models.Report.group == group,
-                                                    annotran.reports.models.Report.author == user_obj).delete()
+                                                    annotran.reports.models.Report.author == user).delete()
     else:
         annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
                                                     annotran.reports.models.Report.language == language,
                                                     annotran.reports.models.Report.group == group,
-                                                    annotran.reports.models.Report.Reporter == user_obj).delete()
+                                                    annotran.reports.models.Report.Reporter == user).delete()
 
 
 @view.view_config(route_name='admin_view_translation',
@@ -176,20 +205,24 @@ def delete_report(page, language, group, user_obj, reporter=False):
                   renderer='annotran:templates/admin/translation.html.jinja2',
                   permission='admin_view_translation')
 def reports_view(request):
+    """
+    A view to inspect a translation
+    :param request: a request object
+    :return: a context dictionary for the translation template
+    """
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
 
-    pubid = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(pubid, page)
+    public_language_id = request.matchdict["language"]
+    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
 
-    groupubid = request.matchdict["group"]
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    public_group_id = request.matchdict["group"]
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
 
-    annotations = {}
+    user_id = urllib.unquote(request.matchdict["user"])
 
-    user = urllib.unquote(request.matchdict["user"])
-
-    annotations = h.groups.views._read_group(request, group, language=language, search_url=url, user=user, render=False)
+    annotations = annotran.groups.views.read_group(request, group, language=language, search_url=url,
+                                                   user=user_id, render=False)
 
     ret = []
     originals = []
@@ -197,24 +230,26 @@ def reports_view(request):
     for annotation in annotations:
         ret.append(annotation.annotation['text'])
 
-        try:
-            for selector in annotation.annotation['target'][0]['selector']:
-                if 'exact' in selector:
-                    originals.append(selector['exact'])
-        except:
-            originals.append("No linking text found")
+        for selector in annotation.annotation['target'][0]['selector']:
+            if 'exact' in selector:
+                originals.append(selector['exact'])
 
     return {'annotations': ret,
             'full_annotations': annotations,
             'original': originals,
-            'user': urllib.quote(user, safe=''),
+            'user': urllib.quote(user_id, safe=''),
             'pageId': urllib.quote(urllib.quote(url, safe=''), safe=''),
-            'language': pubid,
-            'group': groupubid,
+            'language': public_language_id,
+            'group': public_group_id,
             'report': request.matchdict["report"]}
 
 
 def includeme(config):
+    """
+    Pyramid includeme setup method to add routes
+    :param config: the configuration supplied by pyramid
+    :return: None
+    """
     config.add_route('admin_reports', '/admin/reports')
     config.add_route('admin_view_translation', '/admin/view/translation/{page}/{group}/{language}/{user}/{report}')
     config.add_route('admin_delete_translation', '/admin/delete/translation/{page}/{group}/{language}/{user}/{report}')
