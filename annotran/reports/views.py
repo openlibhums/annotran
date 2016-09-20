@@ -32,7 +32,7 @@ def addReport(request):
 
     pageId = urllib.unquote(urllib.unquote(pageId))
     page = annotran.pages.models.Page.get_by_uri(pageId)
-    language = annotran.languages.models.Language.get_by_pubid(languageId, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(languageId, page)
     author = h.models.User.get_by_username(userId)
     reporter = h.models.User.get_by_username(request.authenticated_user.username)
     group = h.groups.models.Group.get_by_pubid(groupPubid)

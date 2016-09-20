@@ -72,7 +72,7 @@ def read(request):
 
     page = annotran.pages.models.Page.get_by_uri(url)
     pubid = request.matchdict["pubid"]
-    language = models.Language.get_by_pubid(pubid, page)
+    language = models.Language.get_by_public_language_id(pubid, page)
     groupubid = request.matchdict["groupubid"]
     group = h.groups.models.Group.get_by_pubid(groupubid)
 

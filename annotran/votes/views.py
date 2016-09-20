@@ -32,7 +32,7 @@ def addVote(request):
 
     pageId = urllib.unquote(urllib.unquote(pageId))
     page = annotran.pages.models.Page.get_by_uri(pageId)
-    language = annotran.languages.models.Language.get_by_pubid(languageId, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(languageId, page)
     author = h.models.User.get_by_username(userId)
     voter = h.models.User.get_by_username(request.authenticated_user.username)
     group = h.groups.models.Group.get_by_pubid(groupPubid)
@@ -66,7 +66,7 @@ def deleteVote(request):
     pageId = urllib.unquote(urllib.unquote(request.matchdict['pageId']))
 
     page = annotran.pages.models.Page.get_by_uri(pageId)
-    language = annotran.languages.models.Language.get_by_pubid(languageId, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(languageId, page)
     user = h.models.User.get_by_username(request.authenticated_user.username) #only authenticated used can delete translations and consequently their scores
     group = h.groups.models.Group.get_by_pubid(groupPubid)
 
@@ -81,7 +81,7 @@ def read(request):
     url=util.get_url_from_request(request)
     languageId = request.matchdict["languageId"]
     page = annotran.pages.models.Page.get_by_uri(url)
-    language = annotran.languages.models.Language.get_by_pubid(languageId, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(languageId, page)
     if not request.authenticated_userid:
         return None
 
