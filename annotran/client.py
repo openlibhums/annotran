@@ -40,7 +40,7 @@ jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
 
 # annotran's version of h.client._angular_template_context
-def _angular_template_context_ext(name):
+def angular_template_context(name):
     """Return the context for rendering a 'text/ng-template' <script>
        tag for an Angular directive.
     """
@@ -60,7 +60,7 @@ def _angular_template_context_ext(name):
     return {'name': '{}.html'.format(name), 'content': content}
 
 
-def _app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry_public_dsn, websocket_url):
+def app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry_public_dsn, websocket_url):
     """
     Returns a dict of asset URLs and contents used by the sidebar app
     HTML tempate.

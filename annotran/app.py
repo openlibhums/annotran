@@ -1,5 +1,4 @@
-'''
-
+"""
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -21,35 +20,45 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+"""
 
-#a lot of code here has been reused from hypothesis
 import annotran
-from annotran.accounts import views as accounts_views
-from annotran.api.groups import logic as api_logic
-from annotran import client
-from annotran.groups import views as groups_views
-from annotran import session
-from pyramid.config import Configurator
-import annotran.views
+import annotran.api.search.query
 import annotran.resources
-
+import annotran.views
+import h.accounts.views
+import h.api.groups
+import h.api.search.query
 import h.app
+import h.assets
 import h.client
 import h.config
-import h.views
-import h.api.search.query
-import annotran.api.search.query
+import h.groups
+import h.groups.views
 import h.resources
+import h.session
+import h.views
+import pyramid.events
+from annotran import client
+from annotran import session
+from annotran.accounts import views as accounts_views
+from annotran.api.groups import logic as api_logic
+from annotran.groups import views as groups_views
 from h.assets import *
 from h.config import settings_from_environment
+from pyramid.config import Configurator
 
 
 def includeme(config):
+    """
+    Pyramid includeme definition
+    :param config: a Pyramid configuration object to which overrides will be committed
+    :return: None
+    """
     config.registry.settings.setdefault('webassets.bundles', 'annotran:assets.yaml')
     config.include('pyramid_webassets')
-    config.override_asset(to_override = 'h:templates/old-home.html.jinja2',
-                        override_with = 'annotran:templates/home.html.jinja2')
+    config.override_asset(to_override='h:templates/old-home.html.jinja2',
+                          override_with='annotran:templates/home.html.jinja2')
     config.override_asset(to_override='h:templates/includes/logo-header.html.jinja2',
                           override_with='annotran:templates/includes/logo-header.html.jinja2')
     config.override_asset(to_override='h:templates/accounts/profile.html.jinja2',
@@ -65,7 +74,12 @@ def includeme(config):
     config.commit()
 
 
-def get_settings(global_config, **settings):
+def get_settings(**settings):
+    """
+    Load settings from Pyramid startup into a dictionary
+    :param settings: the settings dictionary to evaluate
+    :return: a result
+    """
     result = {}
     result.update(settings)
     result.update(settings_from_environment())
@@ -73,16 +87,20 @@ def get_settings(global_config, **settings):
 
 
 def main(global_config, **settings):
+    """
+    The main Pyramid entry point
+    :param global_config: a global configuration option as required by Pyramid's specification
+    :param settings: a dictionary of arbitrary key/value pairs, read from Pyramid's configuration
+    :return: a WSGI app
+    """
     h.assets.includeme = override_hypothesis_includeme
-    settings = get_settings(global_config, **settings)
+    settings = get_settings(**settings)
     config = Configurator(settings=settings)
 
-    #add settings from H to init H from annotran
+    # add settings from H to init H from annotran
     config.set_root_factory('h.resources.create_root')
-    config.add_subscriber('h.subscribers.add_renderer_globals',
-                      'pyramid.events.BeforeRender')
-    config.add_subscriber('h.subscribers.publish_annotation_event',
-                      'h.api.events.AnnotationEvent')
+    config.add_subscriber('h.subscribers.add_renderer_globals', 'pyramid.events.BeforeRender')
+    config.add_subscriber('h.subscribers.publish_annotation_event', 'h.api.events.AnnotationEvent')
     config.add_tween('h.tweens.conditional_http_tween_factory', under='pyramid.tweens.excview_tween_factory')
     config.add_tween('h.tweens.csrf_tween_factory')
     config.add_tween('h.tweens.auth_token')
@@ -104,9 +122,9 @@ def main(global_config, **settings):
     h.client.ANGULAR_DIRECTIVE_TEMPLATES.append('user_list')
 
     # the following functions are monkey-patched inside H in order to give the annotran context
-    h.client._angular_template_context = client._angular_template_context_ext
+    h.client._angular_template_context = client.angular_template_context
     h.client.render_app_html = client.render_app_html
-    h.client._app_html_context = client._app_html_context
+    h.client._app_html_context = client.app_html_context
 
     h.session.model = session.model
 
@@ -128,20 +146,12 @@ def main(global_config, **settings):
     annotran.views.Shared.support_address = settings.get('annotran.app.support_address')
     return config.make_wsgi_app()
 
-def recursivelyAddDictionary(dict):
-    if "iteritems" in dict:
-        for key, val in dict.iteritems():
-            if "iteritems" in dict[key]:
-                recursivelyAddDictionary(dict[key])
-            else:
-                dict[key] = val
 
 def override_hypothesis_includeme(config):
-    # this method is an override of hypothes.is's default includeme. It fires instead and handles CORS.k
+    """
+    An override of hypothes.is's default includeme. It fires instead and handles asset requests
+    :param config: a configuration object
+    :return: None
+    """
     config.add_subscriber_predicate('asset_request', AssetRequest)
-    config.add_subscriber(
-        asset_response_subscriber,
-        pyramid.events.NewResponse,
-        asset_request=True
-    )
-
+    config.add_subscriber(asset_response_subscriber, pyramid.events.NewResponse, asset_request=True)
