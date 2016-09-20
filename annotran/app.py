@@ -42,7 +42,6 @@ import pyramid.events
 from annotran import client
 from annotran import session
 from annotran.accounts import views as accounts_views
-from annotran.api.groups import logic as api_logic
 from annotran.groups import views as groups_views
 from h.assets import *
 from h.config import settings_from_environment
@@ -129,8 +128,6 @@ def main(global_config, **settings):
     h.session.model = session.model
 
     h.groups.views.read_group = groups_views.read_group
-
-    h.api.groups.set_group_if_reply = api_logic.Logic.set_group_if_reply
 
     h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
     h.accounts.views.ProfileController.post = accounts_views.ProfileController.profile_post
