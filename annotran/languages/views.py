@@ -42,6 +42,11 @@ _ = i18n.TranslationString
 @view_config(route_name='language_add',
              request_method='POST')
 def add_language(request):
+    """
+    This view adds a language
+    :param request: a request object
+    :return: a redirect to the language_read method
+    """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
@@ -68,13 +73,18 @@ def add_language(request):
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
-    url=util.get_url_from_request(request)
+    """
+    Read the list of languages available in a group
+    :param request: the request object
+    :return: a list of languages in a group
+    """
+    url = util.get_url_from_request(request)
 
     page = annotran.pages.models.Page.get_by_uri(url)
-    pubid = request.matchdict["public_language_id"]
-    language = models.Language.get_by_public_language_id(pubid, page)
-    groupubid = request.matchdict["public_group_id"]
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    public_language_id = request.matchdict["public_language_id"]
+    language = models.Language.get_by_public_language_id(public_language_id, page)
+    public_group_id = request.matchdict["public_group_id"]
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
 
     if group.id == -1:
         # this is the public group
@@ -87,7 +97,13 @@ def read(request):
         else:
             return None
 
+
 def includeme(config):
+    """
+    Pyramid's router configuration
+    :param config: the config to which to commit the routes
+    :return: None
+    """
     config.add_route('language_add', 'languages/{language}/{public_group_id}/{page_id}/addLanguage')
     config.add_route('language_read', '/languages/{public_language_id}/{public_group_id}')
     config.scan(__name__)
