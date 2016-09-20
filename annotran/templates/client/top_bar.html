@@ -37,7 +37,8 @@ that works in the sidebar--!>
       query="searchController.query"
       on-search="searchController.update(query)"
       on-clear="searchController.clear()"
-      always-expanded="true">
+      always-expanded="true"
+      ng-if="$root.selectedUser == auth.userid || $root.selectedUser == 'self'">
     </simple-search>
     <div class="top-bar__expander"></div>
     <signin-control
@@ -57,7 +58,7 @@ that works in the sidebar--!>
     <language-list class="language-list" auth="auth"></language-list>
     <div class="top-bar__expander"></div>
     <simple-search
-      ng-if="$root.selectedUser == auth.userid || $root.selectedUser == 'self'"
+      ng-if="($root.selectedUser == auth.userid || $root.selectedUser == 'self') && (auth.userid != '' && auth.userid != undefined)"
       class="simple-search"
       query="searchController.query"
       on-search="searchController.update(query)"
@@ -65,7 +66,7 @@ that works in the sidebar--!>
       title="Filter the annotation list">
     </simple-search>
     <sort-dropdown
-      ng-if="$root.selectedUser == auth.userid || $root.selectedUser == 'self'"
+      ng-if="($root.selectedUser == auth.userid || $root.selectedUser == 'self') && (auth.userid != '' && auth.userid != undefined)"
       sort-options="sortOptions"
       sort-by="sortBy"
       show-as-icon="true"
