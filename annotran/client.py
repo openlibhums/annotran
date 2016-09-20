@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,8 +21,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-# monkey patching of hypothesis methods
+"""
 
 import json
 import os
@@ -30,40 +29,45 @@ from urlparse import urlparse
 
 import annotran.views
 import h
+import h.client
 from h import __version__
 from jinja2 import Environment, PackageLoader
 
 jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
 
 
-jinja_env = Environment(loader=PackageLoader(__package__, 'templates'))
-
-
-# annotran's version of h.client._angular_template_context
 def angular_template_context(name):
-    """Return the context for rendering a 'text/ng-template' <script>
-       tag for an Angular directive.
     """
+    Return the context for rendering a 'text/ng-template' <script> tag for an Angular directive.
+    :param name: the name of the desired angular template
+    :return: a dictionary containing the path of the angular template file and the content
+    """
+
     jinja_env_ext = Environment(loader=PackageLoader(__package__, 'templates'))
-    jinja_env = h.client.jinja_env
+    jinja_env_hypothesis = h.client.jinja_env
 
     # first look if there is a local copy in annotran that we should use
     angular_template_path = 'client/{}.html'.format(name)
-    BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+    base_directory = os.path.dirname(os.path.realpath(__file__))
 
-    if os.path.isfile('{0}/templates/{1}'.format(BASE_DIR, angular_template_path)):
-        content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext,
-                                                        angular_template_path)
+    if os.path.isfile('{0}/templates/{1}'.format(base_directory, angular_template_path)):
+        content, _, _ = jinja_env_ext.loader.get_source(jinja_env_ext, angular_template_path)
     else:
-        content, _, _ = jinja_env.loader.get_source(jinja_env,
-                                                    angular_template_path)
+        content, _, _ = jinja_env_hypothesis.loader.get_source(jinja_env_hypothesis, angular_template_path)
+
     return {'name': '{}.html'.format(name), 'content': content}
 
 
 def app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry_public_dsn, websocket_url):
     """
-    Returns a dict of asset URLs and contents used by the sidebar app
-    HTML tempate.
+    Returns a dictionary of asset URLs and contents used by the sidebar app HTML template.
+    :param webassets_env: the environment's webassets setup from Pyramid
+    :param api_url: the URL of the API endpoint
+    :param service_url: the service URL of the hypothesis instance
+    :param ga_tracking_id: a Google Analytics tracking ID
+    :param sentry_public_dsn: the Sentry Data Source Name
+    :param websocket_url: the URL for websocket requests
+    :return: a context for the main hypothesis application
     """
 
     if urlparse(service_url).hostname == 'localhost':
@@ -95,8 +99,7 @@ def app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry
 
     return {
         'app_config': json.dumps(app_config),
-        'angular_templates': map(h.client._angular_template_context,
-                                 h.client.ANGULAR_DIRECTIVE_TEMPLATES),
+        'angular_templates': map(angular_template_context, h.client.ANGULAR_DIRECTIVE_TEMPLATES),
         'app_css_urls': h.client.asset_urls(webassets_env, 'app_css'),
         'app_js_urls': h.client.asset_urls(webassets_env, 'app_js'),
         'ga_tracking_id': ga_tracking_id,
@@ -105,19 +108,36 @@ def app_html_context(webassets_env, api_url, service_url, ga_tracking_id, sentry
     }
 
 
-# h.client.render_app_html
-def render_app_html(webassets_env,
-                    service_url,
-                    api_url,
-                    sentry_public_dsn,
-                    ga_tracking_id=None,
-                    websocket_url=None,
-                    extra={}):
+def merge(d1, d2):
+    """
+    Merge two dictionaries
+    :param d1: first dictionary
+    :param d2: second dictionary
+    :return: a merge of d1 and d2
+    """
+    result = d1.copy()
+    result.update(d2)
+    return result
+
+
+def render_app_html(webassets_env, service_url, api_url, sentry_public_dsn, ga_tracking_id=None, websocket_url=None,
+                    extra=None):
+    """
+    Render the main application HTML.
+    :param webassets_env: the environment's webassets setup from Pyramid
+    :param api_url: the URL of the API endpoint
+    :param service_url: the service URL of the hypothesis instance
+    :param ga_tracking_id: a Google Analytics tracking ID
+    :param sentry_public_dsn: the Sentry Data Source Name
+    :param websocket_url: the URL for websocket requests
+    :param extra: any extra variables
+    :return:
+    """
+    if extra is None:
+        extra = {}
+
     template = jinja_env.get_template('app.html.jinja2')
-    assets_dict = h.client._app_html_context(api_url=api_url,
-                                             service_url=service_url,
-                                             ga_tracking_id=ga_tracking_id,
-                                             sentry_public_dsn=sentry_public_dsn,
-                                             webassets_env=webassets_env,
-                                             websocket_url=websocket_url)
-    return template.render(h.client._merge(assets_dict, extra))
+    assets_dict = app_html_context(api_url=api_url, service_url=service_url, ga_tracking_id=ga_tracking_id,
+                                   sentry_public_dsn=sentry_public_dsn, webassets_env=webassets_env,
+                                   websocket_url=websocket_url)
+    return template.render(merge(assets_dict, extra))
