@@ -52,7 +52,7 @@ def addVote(request):
     request.db.flush()
 
     #url = request.route_url('vote_read', userid=userId, languageid=languageId, pageid=request.matchdict["pageId"])
-    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupPubid)
+    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=groupPubid)
     return exc.HTTPSeeOther(url)
 
 @view_config(route_name='vote_delete',

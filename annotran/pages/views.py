@@ -54,13 +54,13 @@ def addPage(request):
     pageid = urllib.unquote(urllib.unquote(pageid))
     page = annotran.pages.models.Page.get_by_uri(pageid)
     if not page:
-        page = annotran.pages.models.Page(uri = pageid, language = language)
+        page = annotran.pages.models.Page(uri=pageid, language=language)
         request.db.add(page)
     else:
         page.members.append(language)
     request.db.flush()
 
-    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
+    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=groupubid)
     return exc.HTTPSeeOther(url)
 
 def includeme(config):

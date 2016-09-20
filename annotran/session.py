@@ -55,8 +55,8 @@ def _current_languages(request):
                 'groupubid': '__world__',
                 'name': language.name,
                 'id': language.pubid,
-                'url': request.route_url('language_read',
-                                         pubid=language.pubid, groupubid='__world__'),
+                'url': request.route_url('language_read', public_language_id=language.pubid,
+                                         public_group_id='__world__')
             })
 
         if userid is None:
@@ -81,7 +81,7 @@ def _current_languages(request):
                         'name': language.name,
                         'id': language.pubid,
                         'url': request.route_url('language_read',
-                                                 pubid=language.pubid, groupubid=group.pubid),
+                                                 public_language_id=language.pubid, public_group_id=group.pubid)
                     })
     return languages
 
