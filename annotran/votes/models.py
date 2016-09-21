@@ -127,12 +127,3 @@ class Vote(Base):
                 cls.id == id_).one()
         except exc.NoResultFound:
             return None
-
-    @classmethod
-    def get_by_vote(cls, vote):
-        """Return the vote with the given vote value, or None."""
-        try:
-            return cls.query.filter(
-                cls.vote == vote).one()
-        except exc.NoResultFound:
-            return None
