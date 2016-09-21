@@ -70,6 +70,10 @@ def includeme(config):
                           override_with='annotran:templates/layouts/admin.html.jinja2')
     config.override_asset(to_override='h:templates/admin/index.html.jinja2',
                           override_with='annotran:templates/admin/index.html.jinja2')
+    config.override_asset(to_override='h:templates/groups/share.html.jinja2',
+                          override_with='annotran:templates/groups/share.html.jinja2')
+    config.override_asset(to_override='h:templates/groups/about-groups.html.jinja2',
+                          override_with='annotran:templates/groups/about-groups.html.jinja2')
     config.commit()
 
 
