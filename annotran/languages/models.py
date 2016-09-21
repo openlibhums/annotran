@@ -108,7 +108,7 @@ class Language(Base):
 
     @classmethod
     def get_by_name(cls, name):
-        """Return the language with the given id, or None."""
+        """Return the language with the given name, or None."""
         try:
             return cls.query.filter(
                 cls.name == name).one()
