@@ -106,7 +106,7 @@ def reports_delete_report(request, block=False):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
 
     report = annotran.reports.models.Report.get_by_id(request.matchdict["report"])
 
@@ -155,7 +155,7 @@ def reports_delete(request, block=False):
     page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
     user_object = h.accounts.models.User.query.filter(
         h.accounts.models.User.username == h.util.split_user(user)["username"]).first()
 
@@ -214,7 +214,7 @@ def reports_view(request):
     page = annotran.pages.models.Page.get_by_uri(url)
 
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_pubid(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
 
     public_group_id = request.matchdict["group"]
     group = h.groups.models.Group.get_by_pubid(public_group_id)

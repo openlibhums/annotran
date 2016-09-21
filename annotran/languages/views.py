@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,13 +21,9 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-
-#this is a code reused from hypothesis, adapted and extended to be used for languages
+"""
 
 # -*- coding: utf-8 -*-
-import urllib
-
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
 from h import i18n
@@ -36,20 +32,28 @@ from annotran.util import util
 import models
 import h
 import annotran
+import h.groups.models
+import annotran.pages.models
+import annotran.groups.views
 
 _ = i18n.TranslationString
 
 
 @view_config(route_name='language_add',
              request_method='POST')
-def addLanguage(request):
+def add_language(request):
+    """
+    This view adds a language
+    :param request: a request object
+    :return: a redirect to the language_read method
+    """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
     name = request.matchdict["language"]
-    groupubid = request.matchdict["groupubid"]
+    public_group_id = request.matchdict["public_group_id"]
 
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
     language = models.Language.get_by_name(name)
 
     if not language:
@@ -63,31 +67,43 @@ def addLanguage(request):
             language.members.append(group)
     # We need to flush the db session here so that language.id will be generated.
     request.db.flush()
-    url = request.route_url('language_read', pubid=language.pubid, groupubid=groupubid)
+    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
+
 
 @view_config(route_name='language_read', request_method='GET')
 def read(request):
-    url=util.get_url_from_request(request)
+    """
+    Read the list of languages available in a group
+    :param request: the request object
+    :return: a list of languages in a group
+    """
+    url = util.get_url_from_request(request)
 
     page = annotran.pages.models.Page.get_by_uri(url)
-    pubid = request.matchdict["pubid"]
-    language = models.Language.get_by_pubid(pubid, page)
-    groupubid = request.matchdict["groupubid"]
-    group = h.groups.models.Group.get_by_pubid(groupubid)
+    public_language_id = request.matchdict["public_language_id"]
+    language = models.Language.get_by_public_language_id(public_language_id, page)
+    public_group_id = request.matchdict["public_group_id"]
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
 
     if group.id == -1:
         # this is the public group
-        return h.groups.views.read_group(request, group, language)
+        return annotran.groups.views.read_group(request, group, language=language)
     if not request.authenticated_userid:
         return None
     else:
         if group in request.authenticated_user.groups:
-            return h.groups.views.read_group(request, group, language)
+            return annotran.groups.views.read_group(request, group, language=language)
         else:
             return None
 
+
 def includeme(config):
-    config.add_route('language_add', 'languages/{language}/{groupubid}/{pageid}/addLanguage')
-    config.add_route('language_read', '/languages/{pubid}/{groupubid}')
+    """
+    Pyramid's router configuration
+    :param config: the config to which to commit the routes
+    :return: None
+    """
+    config.add_route('language_add', 'languages/{language}/{public_group_id}/{page_id}/addLanguage')
+    config.add_route('language_read', '/languages/{public_language_id}/{public_group_id}')
     config.scan(__name__)

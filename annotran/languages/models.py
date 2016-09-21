@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,9 +21,8 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+"""
 
-#this is a code reused from hypothesis, adapted and extended to be used for languages
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -34,6 +33,7 @@ from sqlalchemy.orm import exc
 from h.db import Base
 from h import pubid
 import h
+import h.groups.models
 
 
 LANGUAGE_NAME_MIN_LENGTH = 4
@@ -76,17 +76,17 @@ class Language(Base):
         return name
 
     @classmethod
-    def get_by_pubid(cls, pubid, page):
+    def get_by_public_language_id(cls, public_language_id, page):
 
-        """Return the language with the given pubid, or None."""
+        """Return the language with the given public language id, or None."""
         if page:
-            return cls.query.filter(cls.pubid == pubid, cls.pages.contains(page)).first()
+            return cls.query.filter(cls.pubid == public_language_id, cls.pages.contains(page)).first()
         else:
             return None
 
     @classmethod
     def get_by_page(cls, page):
-        """Return the language with the given pubid, or None."""
+        """Return the language with the given page, or None."""
         return cls.query.filter(cls.pages.contains(page)).all()
 
     @classmethod
