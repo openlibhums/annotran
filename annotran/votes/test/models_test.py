@@ -74,7 +74,7 @@ def test_get_author_scores_plg_when_group_none():
 
     db.Session.flush()
 
-    assert votes_models.Vote.get_author_scores_plg(p, l) == v
+    assert votes_models.Vote.get_author_scores(p, l) == v
 
 def test_get_author_scores_plg_when_group_not_none():
     score = 5
@@ -95,7 +95,7 @@ def test_get_author_scores_plg_when_group_not_none():
 
     db.Session.flush()
 
-    assert votes_models.Vote.get_author_scores_plg(p, l, g) == v
+    assert votes_models.Vote.get_author_scores(p, l, g) == v
 
 
 def test_get_by_id_when_id_does_exist():

@@ -103,7 +103,7 @@ def _current_votes(request):
         public_languages = models.Language.get_public(page)
 
         for language in public_languages:
-            l_votes = annotran.votes.models.Vote.get_author_scores_plg(page, language)
+            l_votes = annotran.votes.models.Vote.get_author_scores(page, language)
             if l_votes:
                 for auth_score in l_votes:
                     votes.append({
@@ -121,7 +121,7 @@ def _current_votes(request):
         for group in user.groups:
             for language in languages_for_page:
                 if group in language.members:
-                    for auth_score in annotran.votes.models.Vote.get_author_scores_plg(page, language, group):
+                    for auth_score in annotran.votes.models.Vote.get_author_scores(page, language, group):
                         votes.append({
                             'author_id': auth_score.username,
                             'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
