@@ -1,5 +1,4 @@
 """
-
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -24,16 +23,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import annotran
-import deform
-from h import i18n
-from pyramid import httpexceptions
 from pyramid.view import view_config
 import annotran.views
 
-_ = i18n.TranslationString
 
-
-class ProfileController:
+class ProfileController(object):
     def __init__(self):
         pass
 
@@ -49,27 +43,3 @@ class ProfileController:
                 'email_form': self.forms['email'].render(),
                 'password_form': self.forms['password'].render(),
                 'support_address': annotran.views.Shared.support_address}
-
-    @staticmethod
-    @view_config(request_method='POST')
-    def profile_post(self):
-        """
-        Handle POST payload from profile update form.
-        :param self: an instance of the ProfileController
-        :return: an HTTP redirect to the user's profile page
-        """
-        form_id = self.request.POST.get('__formid__')
-        if form_id is None or form_id not in self.forms:
-            raise httpexceptions.HTTPBadRequest()
-
-        try:
-            if form_id == 'email':
-                self._handle_email_form()
-            elif form_id == 'password':
-                self._handle_password_form()
-        except deform.ValidationFailure:
-            return self.profile_get(self)
-
-        self.request.session.flash(_("Success. We've saved your changes."), 'success')
-        return httpexceptions.HTTPFound(
-            location=self.request.route_url('profile'))

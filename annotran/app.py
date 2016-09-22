@@ -139,7 +139,6 @@ def main(global_config, **settings):
     h.groups.views.read_group = groups_views.read_group
 
     h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
-    h.accounts.views.ProfileController.post = accounts_views.ProfileController.profile_post
 
     h.views.error = annotran.views.error
     h.views.json_error = annotran.views.json_error
