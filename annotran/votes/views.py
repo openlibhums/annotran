@@ -87,6 +87,11 @@ def delete_vote(request):
 
 
 def includeme(config):
+    """
+    Pyramid's router configuration
+    :param config: the configuration object to which to add our routes
+    :return: None
+    """
     config.add_route('vote_add', 'votes/{user_id}/{public_group_id}/{public_language_id}/{page_id}/{score}/addVote')
     config.add_route('vote_delete', 'votes/{public_group_id}/{public_language_id}/{page_id}/deleteVote')
     config.scan(__name__)
