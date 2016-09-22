@@ -1,3 +1,4 @@
+pytest
 -e .[YAML]
 certifi
 cffi

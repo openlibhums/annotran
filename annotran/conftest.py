@@ -1,5 +1,4 @@
-'''
-
+"""
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -21,30 +20,19 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-# monkey patching of hypothesis methods
-
-# annotran's version of h.conftest
+"""
 
 # -*- coding: utf-8 -*-
-# pylint: disable=no-self-use
-"""
-The `conftest` module is automatically loaded by py.test and serves as a place
-to put fixture functions that are useful application-wide.
-"""
 
 import os
 
 import pytest
-
-from pyramid.paster import get_appsettings
-
-from h.config import normalize_database_url
 from h import conftest
+from h.config import normalize_database_url
+from pyramid.paster import get_appsettings
 
 
 class DummyFeature(object):
-
     """
     A dummy feature flag looker-upper.
 
@@ -56,8 +44,8 @@ class DummyFeature(object):
     def __init__(self):
         self.flags = {}
 
-class DummySession(object):
 
+class DummySession(object):
     """
     A dummy database session.
     """
@@ -70,14 +58,17 @@ class DummySession(object):
 
 @pytest.fixture(scope='session', autouse=True)
 def settings():
-    """Default app settings (test.ini)."""
-    settings = get_appsettings('test.ini')
+    """
+    Default app settings (test.ini).
+    :return: a list of loaded settings
+    """
+    loaded_settings = get_appsettings('test.ini')
 
     if 'TEST_DATABASE_URL' in os.environ:
-        settings['sqlalchemy.url'] = normalize_database_url(
-            os.environ['TEST_DATABASE_URL'])
+        loaded_settings['sqlalchemy.url'] = normalize_database_url(os.environ['TEST_DATABASE_URL'])
 
-    return settings
+    return loaded_settings
+
 
 DummySession.settings = settings
 
@@ -90,4 +81,3 @@ mailer = conftest.mailer
 notify = conftest.notify
 routes_mapper = conftest.routes_mapper
 _make_session = conftest._make_session
-
