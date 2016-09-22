@@ -48,7 +48,7 @@ class Language(Base):
     # We don't expose the integer PK to the world, so we generate a short
     # random string to use as the publicly visible ID.
     pubid = sa.Column(sa.Text(),
-                      default=pubid.generate,
+                      default=h.pubid.generate,
                       unique=True,
                       nullable=False)
     name = sa.Column(sa.UnicodeText(), nullable=False, unique=True)

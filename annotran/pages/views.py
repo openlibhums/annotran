@@ -27,7 +27,7 @@ import urllib
 
 import annotran
 import annotran.languages.models
-import models
+import annotran.pages.models
 from h import i18n
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
