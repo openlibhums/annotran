@@ -65,6 +65,18 @@ pip install -r requirements.txt
 
 4. To override Angular directives, add the directive file in static/scripts/directive and then edit apps.js to add an app decorator that selects the override directive. 
 
+###Understanding the different components and languages used by hypothes.is and overridden by annotran
+Hypothesis uses multiple technologies:
+
+* Pyramid for URL routing and setting handling
+* The Python files (.py) in the project are part of the Pyramid framework's handling
+* SQLAlchemy is used by the python files to read from and write to a PostgresSQL database and can be accessed by the python components
+* An elasticsearch instance is used to store annotations themselves and can be accessed by the python components
+* Annotator.js provides the core annotation functions
+* A set of coffeescript and javascript files (.coffee and .js) extend Annotator.js and provide the hypothes.is sidebar and plugins to the document we are annotating
+* Some javascript files make calls to the Pyramid framework's server-side python scripts (see above) and load database values in the client (see session.js for example)
+* An event bubbling framework exists within the javascript files that can be fired and extended
+
 ##How to contribute
 
 Tasks under development are available to investigate under the issues. You can also join in the discussion over there.
