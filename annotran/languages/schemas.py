@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,27 +21,22 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-
-#this is a code reused from hypothesis, adapted and extended to be used for languages
+"""
 
 # -*- coding: utf-8 -*-
 
 import colander
 import deform
-
+import deform.widget
+from annotran.languages.models import LANGUAGE_NAME_MAX_LENGTH
+from annotran.languages.models import LANGUAGE_NAME_MIN_LENGTH
 from h import i18n
 from h.accounts.schemas import CSRFSchema
-from annotran.languages.models import LANGUAGE_NAME_MIN_LENGTH
-from annotran.languages.models import LANGUAGE_NAME_MAX_LENGTH
-
 
 _ = i18n.TranslationString
 
 
-
 class LanguageSchema(CSRFSchema):
-
     """The schema for the create-a-new-language form."""
 
     name = colander.SchemaNode(
