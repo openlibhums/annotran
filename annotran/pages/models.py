@@ -1,5 +1,4 @@
-'''
-
+"""
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -21,26 +20,27 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+"""
 
-#this is a code reused from hypothesis, adapted and extended to be used for pages
 # -*- coding: utf-8 -*-
 
 import datetime
 
 import sqlalchemy as sa
-from sqlalchemy.orm import exc
-
 from h.db import Base
+from sqlalchemy.orm import exc
 
 
 class Page(Base):
+    """
+    Represents a page in the database
+    """
     __tablename__ = 'page'
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
     uri = sa.Column(sa.Text(),
-                      unique=True,
-                      nullable=False)
+                    unique=True,
+                    nullable=False)
     created = sa.Column(sa.DateTime,
                         default=datetime.datetime.utcnow,
                         server_default=sa.func.now(),
@@ -51,23 +51,37 @@ class Page(Base):
                                   secondary='language_page')
 
     def __init__(self, uri, language=None):
+        """
+        Initialize a page
+        :param uri: the URI of the page
+        :param language: the language to attach to the page or None
+        """
         self.uri = uri
         if language:
             self.members.append(language)
 
     @classmethod
     def get_by_uri(cls, uri):
-        """Return the page with the given uri, or None."""
+        """
+        Get the page with the given URI
+        :param uri: the URI to fetch
+        :return: a page or None
+        """
         return cls.query.filter(cls.uri == uri).first()
 
     @classmethod
     def get_by_id(cls, id_):
-        """Return the page with the given id, or None."""
+        """
+        Get the page by a specified ID
+        :param id_: the ID
+        :return: a page or None
+        """
         try:
             return cls.query.filter(
                 cls.id == id_).one()
         except exc.NoResultFound:
             return None
+
 
 LANGUAGE_PAGE_TABLE = sa.Table(
     'language_page', Base.metadata,
