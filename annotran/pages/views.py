@@ -1,5 +1,4 @@
-'''
-
+"""
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
 Redistribution and use in source and binary forms, with or without
@@ -21,48 +20,55 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-
-#this is a code reused from hypothesis, adapted and extended to be used for languages
+"""
 
 # -*- coding: utf-8 -*-
 import urllib
 
+import annotran
+import annotran.languages.models
+import models
+from h import i18n
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
-from h import i18n
-
-import models
-import annotran
-
 
 _ = i18n.TranslationString
 
 
 @view_config(route_name='page_add',
              request_method='POST')
-def addPage(request):
+def add_page(request):
+    """
+    Add a page to the database
+    :param request: a request object
+    :return: a redirect to the language_read URL
+    """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
 
-    name = request.matchdict["languageName"]
-    pageid = request.matchdict["pageId"]
-    groupubid = request.matchdict["groupubid"]
+    name = request.matchdict["language_name"]
+    page_id = urllib.unquote(urllib.unquote(request.matchdict["page_url"]))
+    public_group_id = request.matchdict["public_group_id"]
 
     language = annotran.languages.models.Language.get_by_name(name)
+    page = annotran.pages.models.Page.get_by_uri(page_id)
 
-    pageid = urllib.unquote(urllib.unquote(pageid))
-    page = annotran.pages.models.Page.get_by_uri(pageid)
     if not page:
-        page = annotran.pages.models.Page(uri=pageid, language=language)
+        page = annotran.pages.models.Page(uri=page_id, language=language)
         request.db.add(page)
     else:
         page.members.append(language)
     request.db.flush()
 
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=groupubid)
+    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
+
 def includeme(config):
-    config.add_route('page_add', 'pages/{languageName}/{pageId}/{groupubid}/addPage')
+    """
+    Pyramid's router configuration
+    :param config: the config object to which to append routes
+    :return: None
+    """
+    config.add_route('page_add', 'pages/{language_name}/{page_url}/{public_group_id}/addPage')
     config.scan(__name__)
