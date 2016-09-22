@@ -9,7 +9,7 @@ import h.accounts.models
 import h.groups.models
 import sqlalchemy as sa
 from h.db import Base
-from sqlalchemy import *
+from sqlalchemy import and_
 from sqlalchemy.orm import exc
 
 
