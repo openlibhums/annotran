@@ -27,20 +27,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import datetime
 
-import sqlalchemy as sa
-from sqlalchemy.orm import exc
-
-from h.db import Base
-from h import pubid
 import h
 import h.groups.models
-
+import sqlalchemy as sa
+from h import pubid
+from h.db import Base
+from sqlalchemy.orm import exc
 
 LANGUAGE_NAME_MIN_LENGTH = 4
 LANGUAGE_NAME_MAX_LENGTH = 25
 
 
 class Language(Base):
+    """
+    Represents a language in the database
+    """
     __tablename__ = 'language'
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
@@ -63,12 +64,23 @@ class Language(Base):
                                   lazy='dynamic')
 
     def __init__(self, name, group=None):
+        """
+        Initialize a language
+        :param name: the name of the language
+        :param group: the group to which the language belongs
+        """
         self.name = name
         if group:
             self.members.append(group)
 
     @sa.orm.validates('name')
     def validate_name(self, key, name):
+        """
+        Validate that the language name is of an acceptable length
+        :param key: the uniquely identifying key (not used)
+        :param name: the name of the language
+        :return: either the name or a ValueError exception
+        """
         if not LANGUAGE_NAME_MIN_LENGTH <= len(name) <= LANGUAGE_NAME_MAX_LENGTH:
             raise ValueError('name must be between {min} and {max} characters '
                              'long'.format(min=LANGUAGE_NAME_MIN_LENGTH,
@@ -77,8 +89,12 @@ class Language(Base):
 
     @classmethod
     def get_by_public_language_id(cls, public_language_id, page):
-
-        """Return the language with the given public language id, or None."""
+        """
+        Get a language from the public group with the given public language ID
+        :param public_language_id: the public language ID
+        :param page: the page to which the language corresponds
+        :return: either a language or None
+        """
         if page:
             return cls.query.filter(cls.pubid == public_language_id, cls.pages.contains(page)).first()
         else:
@@ -86,12 +102,20 @@ class Language(Base):
 
     @classmethod
     def get_by_page(cls, page):
-        """Return the language with the given page, or None."""
+        """
+        Return a list of languages on a page
+        :param page: the page to query
+        :return: a list of languages or an empty list
+        """
         return cls.query.filter(cls.pages.contains(page)).all()
 
     @classmethod
     def get_public(cls, page):
-        """Return all public languages"""
+        """
+        Get a list of public languages for a page
+        :param page: the page to query
+        :return: a list of languages or an empty list
+        """
         # get the current page object from the database
         # filter by page object
         world_group = h.groups.models.Group.get_by_pubid("__world__")
@@ -99,7 +123,11 @@ class Language(Base):
 
     @classmethod
     def get_by_id(cls, id_):
-        """Return the language with the given id, or None."""
+        """
+        Get a language by its ID
+        :param id_: the ID of the language
+        :return: a language or None
+        """
         try:
             return cls.query.filter(
                 cls.id == id_).one()
@@ -108,7 +136,11 @@ class Language(Base):
 
     @classmethod
     def get_by_name(cls, name):
-        """Return the language with the given name, or None."""
+        """
+        Get a language by name
+        :param name: the name of the language
+        :return: a language or None
+        """
         try:
             return cls.query.filter(
                 cls.name == name).one()
@@ -116,7 +148,12 @@ class Language(Base):
             return None
 
     def __repr__(self):
-        return '%s' % self.name
+        """
+        The internal representation of the language
+        :return: the name of the language
+        """
+        return '{0}'.format(self.name)
+
 
 GROUP_LANGUAGE_TABLE = sa.Table(
     'group_language', Base.metadata,
