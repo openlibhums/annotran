@@ -1,5 +1,4 @@
 import urllib
-import urllib
 
 import annotran
 import annotran.languages.models
