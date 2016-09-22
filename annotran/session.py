@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (c) 2013-2014 Hypothes.is Project and contributors
 
@@ -21,29 +21,33 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
-# monkey patching of hypothesis methods
-
-# annotran's version of h.session.model
+"""
 
 import decimal
 
 import annotran
+import annotran.pages.models
+import annotran.votes.models
 import h
+import h.groups.models
+import h.accounts.models
+import h.models
+import h.session
 from annotran.languages import models
 from annotran.util import util
 
 
 def _current_languages(request):
-    """Return a list of languages for a given group and page.
-
-    This list is meant to be returned to the client in the "session" model.
-
+    """
+    Get a list of current languages for a group and page. This list is meant to be returned to the client in the
+    "session" model.
+    :param request: the current request
+    :return: a list of languages
     """
     url = util.get_url_from_request(request)
 
     languages = []
-    userid = request.authenticated_userid
+    user_id = request.authenticated_userid
 
     page = annotran.pages.models.Page.get_by_uri(util.strip_logout(url))
 
@@ -59,21 +63,19 @@ def _current_languages(request):
                                          public_group_id='__world__')
             })
 
-        if userid is None:
+        if user_id is None:
             return languages
 
         user = request.authenticated_user
         if user is None:
             return languages
-        # if user is None or get_group(request) is None:
-        #   return languages
-        # return languages for all groups for that particular user
 
+        # return languages for all groups for that particular user
         languages_for_page = models.Language.get_by_page(page)
 
         for group in user.groups:
             # list of languages for a group
-            # this needs to also filter by grouppubid
+            # this needs to also filter by the public group ID
             for language in languages_for_page:
                 if group in language.members:
                     languages.append({
@@ -87,9 +89,11 @@ def _current_languages(request):
 
 
 def _current_votes(request):
-    """Return votes for all users (authors) who made translations on a given page and for a given language
-
-    This list is meant to be returned to the client in the "session" model
+    """
+    Get votes for all users (authors) who wrote translations on a given page in a specified language. This list is meant
+    to be returned to the client in the "session" model
+    :param request: the current request
+    :return: a list of votes
     """
     votes = []
 
@@ -132,6 +136,12 @@ def _current_votes(request):
 
 
 def model(request):
+    """
+    Setup the session
+    :param request: the current request
+    :return: a session object
+    """
+
     # test whether our world group exists in the database
     # normally, in hypothesis, we don't have a world group in the DB
     # we need one so that we can create public languages that also feature in private groups
@@ -163,15 +173,13 @@ def model(request):
         group.pubid = "__world__"
         request.db.add(group)
 
-    session = {}
-    session['csrf'] = request.session.get_csrf_token()
-    session['userid'] = request.authenticated_userid
-    session['groups'] = h.session._current_groups(request)
-    session['features'] = h.session.features.all(request)
-    session['languages'] = _current_languages(request)
-    session['votes'] = _current_votes(request)
-    session['preferences'] = {}
+    session = {'csrf': request.session.get_csrf_token(), 'userid': request.authenticated_userid,
+               'groups': h.session._current_groups(request), 'features': h.session.features.all(request),
+               'languages': _current_languages(request), 'votes': _current_votes(request), 'preferences': {}}
+
     user = request.authenticated_user
+
     if user and not user.sidebar_tutorial_dismissed:
         session['preferences']['show_sidebar_tutorial'] = True
+
     return session
