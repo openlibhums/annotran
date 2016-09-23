@@ -59,10 +59,10 @@ class DummySession(object):
 @pytest.fixture(scope='session', autouse=True)
 def settings():
     """
-    Default app settings (test.ini).
+    Default app settings (conf/test.ini).
     :return: a list of loaded settings
     """
-    loaded_settings = get_appsettings('test.ini')
+    loaded_settings = get_appsettings('conf/test.ini')
 
     if 'TEST_DATABASE_URL' in os.environ:
         loaded_settings['sqlalchemy.url'] = normalize_database_url(os.environ['TEST_DATABASE_URL'])
