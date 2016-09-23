@@ -30,7 +30,6 @@ import datetime
 import h
 import h.groups.models
 import sqlalchemy as sa
-from h import pubid
 from h.db import Base
 from sqlalchemy.orm import exc
 
