@@ -1,4 +1,4 @@
-[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master) [![Latest Version](https://img.shields.io/badge/python-2.7-blue.svg)]() [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master) [![Latest Version](https://img.shields.io/badge/python-2.7-blue.svg)]() [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/birkbeckOLH/annotran/blob/master/LICENSE)
 
 #annotran
 
