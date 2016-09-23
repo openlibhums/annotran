@@ -1,4 +1,4 @@
-[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master)
+[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master) [![Latest Version](https://img.shields.io/badge/python-2.7-blue.svg)]()
 
 #annotran
 
