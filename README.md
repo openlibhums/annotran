@@ -4,7 +4,7 @@
 
 ## About
 
-Annotran is an extension to the hypothesis annotation framework that allows users to translate web pages themselves and to view other users' translations. It is developed at the [Open Library of Humanities](https://about.openlibhums.org) and was funded by the Andrew W. Mellon Foundation. 
+Annotran is an extension to the hypothesis annotation framework that allows users to translate web pages themselves and to view other users' translations. It is developed at the [Open Library of Humanities](https://about.openlibhums.org) and was funded by the Andrew W. Mellon Foundation. A [public alpha version is now available](https://annotran.openlibhums.org) to use (but with no guarantee that the server will always be up or that translations will not be deleted). 
 
 ## Quirks
 

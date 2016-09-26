@@ -53,16 +53,18 @@ module.exports = class Substitution extends Annotator.Plugin
     this.state = "dirty"
 
     for data in annotations.reverse()
-      for target_selector in data.target[0].selector
-        if target_selector.type == "RangeSelector"
-          packager = {
-            start: target_selector.startContainer
-            startOffset: target_selector.startOffset
-            end: target_selector.endContainer
-            endOffset: target_selector.endOffset
-          }
 
-          this.singleSubstitution(packager, data.text)
+      if data.target[0].selector != undefined
+        for target_selector in data.target[0].selector
+          if target_selector.type == "RangeSelector"
+            packager = {
+              start: target_selector.startContainer
+              startOffset: target_selector.startOffset
+              end: target_selector.endContainer
+              endOffset: target_selector.endOffset
+            }
+
+            this.singleSubstitution(packager, data.text)
 
   createSubstitutionElement: (originalText, substituteText, ele) ->
 
@@ -93,8 +95,16 @@ module.exports = class Substitution extends Annotator.Plugin
     div.appendChild(document.createTextNode(substituteText))
     substituteText = div.innerHTML
 
-    # resolve the passed xpath
-    full_range = new xpathRange.SerializedRange(data).normalize(document.body)
+    full_range = null
+
+    try
+      # resolve the passed xpath
+      full_range = new xpathRange.SerializedRange(data).normalize(document.body)
+    catch
+      full_range = null
+
+    if full_range == null
+      return
 
     # map the start and end points
     start = full_range.start

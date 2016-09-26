@@ -2,8 +2,10 @@ import urllib
 
 import annotran
 import annotran.languages.models
+import annotran.mailer
 import annotran.pages.models
 import annotran.reports.models
+import annotran.views
 import h
 import h.groups.models
 import h.models
@@ -49,6 +51,15 @@ def add_report(request):
     report = annotran.reports.models.Report(page, language, group, author, reporter)
     request.db.add(report)
     request.db.flush()
+
+    reports = request.route_url('admin_reports')
+
+    body_text = u'Hello,\n\nA new abuse report has been filed. ' \
+                u'Please see <a href="{0}">{0}</a>.\n\nAnnotran'.format(reports)
+
+    annotran.mailer.send(request, subject=u'A new abuse report has been filed',
+                         recipients=[annotran.views.Shared.support_address],
+                         body=body_text)
 
     return exc.HTTPSeeOther("/admin/reports")
 
