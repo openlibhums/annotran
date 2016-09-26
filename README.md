@@ -48,8 +48,11 @@ Run the following commands to install hypothes.is into your virtual environment:
 ```
 cd ..
 cd annotran
-sudo apt-get install -y --no-install-recommends  ruby-compass build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv
+sudo apt-get install -y --no-install-recommends  ruby-compass build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv nodejs npm
 pip install -r requirements.txt
+pip install setuptools --upgrade
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+make dev
 ```
 
 ###Steps performed to extend and overwrite hypothes.is
