@@ -25,7 +25,7 @@ def json_error(context, request):
         "subject 'Internal Server Error'.").format(Shared.support_address)}
 
 
-class Shared:
+class Shared(object):
     def __init__(self):
         pass
 

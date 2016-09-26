@@ -33,13 +33,13 @@ class ProfileController(object):
 
     @staticmethod
     @view_config(request_method='GET')
-    def profile_get(self):
+    def profile_get(controller_instance):
         """
         Shows the user's profile
-        :param self: an instance of the ProfileController
+        :param controller_instance: an instance of the ProfileController
         :return: a context dictionary for the profile template
         """
-        return {'email': self.request.authenticated_user.email,
-                'email_form': self.forms['email'].render(),
-                'password_form': self.forms['password'].render(),
+        return {'email': controller_instance.request.authenticated_user.email,
+                'email_form': controller_instance.forms['email'].render(),
+                'password_form': controller_instance.forms['password'].render(),
                 'support_address': annotran.views.Shared.support_address}

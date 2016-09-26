@@ -43,14 +43,13 @@ from annotran import client
 from annotran import session
 from annotran.accounts import views as accounts_views
 from annotran.groups import views as groups_views
-from h.assets import *
 from h.config import settings_from_environment
 from pyramid.config import Configurator
 
 
 def includeme_override(config):
     """
-    Pyramid includeme definition for override. This does nothing.
+    Pyramid includeme definition for override. This does nothing but stops Pyramid from doing its own thing.
     :param config: a Pyramid configuration object to which overrides will be committed
     :return: None
     """
@@ -121,8 +120,6 @@ def main(global_config, **settings):
                           override_with='annotran:templates/groups/about-groups.html.jinja2')
     config.commit()
 
-    config.include(__name__)
-
     config.add_static_view(name='annotran_images', path='static/images')
 
     # it is necessary to add *new* angular directives here but not those that are being overridden
@@ -150,4 +147,3 @@ def main(global_config, **settings):
     # load the support email address
     annotran.views.Shared.support_address = settings.get('annotran.app.support_address')
     return config.make_wsgi_app()
-

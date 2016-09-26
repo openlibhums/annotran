@@ -1,4 +1,4 @@
-[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master)
+[![Code Health](https://landscape.io/github/birkbeckOLH/annotran/master/landscape.svg?style=flat)](https://landscape.io/github/birkbeckOLH/annotran/master) [![Latest Version](https://img.shields.io/badge/python-2.7-blue.svg)]() [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/birkbeckOLH/annotran/blob/master/LICENSE)
 
 #annotran
 
@@ -48,8 +48,11 @@ Run the following commands to install hypothes.is into your virtual environment:
 ```
 cd ..
 cd annotran
-sudo apt-get install -y --no-install-recommends  ruby-compass build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv
+sudo apt-get install -y --no-install-recommends  ruby-compass build-essential     git     libevent-dev     libffi-dev     libfontconfig     libpq-dev     python-dev     python-pip     python-virtualenv nodejs npm
 pip install -r requirements.txt
+pip install setuptools --upgrade
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+make dev
 ```
 
 ###Steps performed to extend and overwrite hypothes.is
