@@ -120,6 +120,8 @@ def main(global_config, **settings):
                           override_with='annotran:templates/groups/share.html.jinja2')
     config.override_asset(to_override='h:templates/groups/about-groups.html.jinja2',
                           override_with='annotran:templates/groups/about-groups.html.jinja2')
+    config.override_asset(to_override='h:templates/layouts/base.html.jinja2',
+                          override_with='annotran:templates/layouts/base.html.jinja2')
     config.commit()
 
     config.add_static_view(name='annotran_images', path='static/images')
