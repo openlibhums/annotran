@@ -53,16 +53,18 @@ module.exports = class Substitution extends Annotator.Plugin
     this.state = "dirty"
 
     for data in annotations.reverse()
-      for target_selector in data.target[0].selector
-        if target_selector.type == "RangeSelector"
-          packager = {
-            start: target_selector.startContainer
-            startOffset: target_selector.startOffset
-            end: target_selector.endContainer
-            endOffset: target_selector.endOffset
-          }
 
-          this.singleSubstitution(packager, data.text)
+      if data.target[0].selector != undefined
+        for target_selector in data.target[0].selector
+          if target_selector.type == "RangeSelector"
+            packager = {
+              start: target_selector.startContainer
+              startOffset: target_selector.startOffset
+              end: target_selector.endContainer
+              endOffset: target_selector.endOffset
+            }
+
+            this.singleSubstitution(packager, data.text)
 
   createSubstitutionElement: (originalText, substituteText, ele) ->
 
