@@ -24,6 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import annotran
 import annotran.api.search.query
+import annotran.mailer
 import annotran.resources
 import annotran.views
 import h.accounts.views
@@ -35,6 +36,7 @@ import h.client
 import h.config
 import h.groups
 import h.groups.views
+import h.mailer
 import h.resources
 import h.session
 import h.views
@@ -132,6 +134,8 @@ def main(global_config, **settings):
     h.client._app_html_context = client.app_html_context
 
     h.session.model = session.model
+
+    h.mailer.send = annotran.mailer.send
 
     h.groups.views.read_group = groups_views.read_group
 
