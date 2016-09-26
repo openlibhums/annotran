@@ -95,8 +95,16 @@ module.exports = class Substitution extends Annotator.Plugin
     div.appendChild(document.createTextNode(substituteText))
     substituteText = div.innerHTML
 
-    # resolve the passed xpath
-    full_range = new xpathRange.SerializedRange(data).normalize(document.body)
+    full_range = null
+
+    try
+      # resolve the passed xpath
+      full_range = new xpathRange.SerializedRange(data).normalize(document.body)
+    catch
+      full_range = null
+
+    if full_range == null
+      return
 
     # map the start and end points
     start = full_range.start
