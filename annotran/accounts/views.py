@@ -23,9 +23,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import annotran
-from pyramid.view import view_config
 import annotran.views
+import deform
 
+from h import i18n
+from h.accounts import views as haccv
+from pyramid.view import view_config
+from h.accounts import schemas
+
+_ = i18n.TranslationString
 
 class ProfileController(object):
     def __init__(self):
@@ -43,3 +49,22 @@ class ProfileController(object):
                 'email_form': controller_instance.forms['email'].render(),
                 'password_form': controller_instance.forms['password'].render(),
                 'support_address': annotran.views.Shared.support_address}
+
+def new_init(self, request):
+    """
+    Replace the constructor of the h's h.account.views AuthController class - in order to skip the stream loading that is not used in the annotran
+    :param request: the current request
+    :return: None
+    """
+    form_footer = '<a href="{href}">{text}</a>'.format(
+        href=request.route_path('forgot_password'),
+        text=_('Forgot your password?'))
+    self.request = request
+    self.schema = schemas.LoginSchema().bind(request=self.request)
+    self.form = deform.Form(self.schema,
+                            buttons=(_('Sign in'),),
+                            footer=form_footer)
+    self.login_redirect = self.request.route_url('index')
+    self.logout_redirect = self.request.route_url('index')
+
+haccv.AuthController.__init__ = new_init
