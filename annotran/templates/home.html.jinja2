@@ -74,25 +74,6 @@
                     at <a href="http://www.bbk.ac.uk">Birkbeck</a> with generous support from the Andrew W. Mellon Foundation.
               </p>
 
-			  <section class="installer">
-
-                <span class="hide-in-chrome">
-                  <a class="btn btn-primary hidden-xs" href="#"
-                      data-toggle="modal" data-target="#bookmarklet">
-                    Get Bookmarklet
-                  </a>
-                </span>
-              </section>
-
-              <p class="hide-in-chrome installer__section--bookmarklet">
-                There's also a
-                <a href="https://chrome.google.com/webstore/detail/bjfhmglciegochdpefhhlphglcehbmek">
-                  Chrome extension
-                </a>
-                or you can
-                <a href="#" class="" data-toggle="modal" data-target="#addtoyoursite" data-addtosite-button="">
-                  add it to your website</a>.
-              </p>
               <p>
                 Use
                   <a href="#" class="" data-toggle="modal" data-target="#bookmarklet">
@@ -100,20 +81,7 @@
                 </a>
                   to add Annotran launch feature to your browser.
               </p>
-              <script>
-                if (window.chrome !== undefined) {
-                  var elements = document.getElementsByClassName(
-                      "unhide-in-chrome");
-                  for (var i=0; i<elements.length; i++) {
-                    elements[i].classList.remove("hidden");
-                  }
-                  elements = document.getElementsByClassName(
-                      "hide-in-chrome");
-                  for (var i=0; i<elements.length; i++) {
-                    elements[i].classList.add("hidden");
-                  }
-                }
-              </script>
+
 
               <div class="modal fade" id="bookmarklet" tabindex="-1"
                     role="dialog" aria-hidden="true">
