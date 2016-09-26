@@ -132,7 +132,10 @@ setup(name='annotran',
       },
       tests_require=DEV_EXTRAS + TESTING_EXTRAS,
       cmdclass={'test': PyTest},
-    entry_points={
-
-    },
+      entry_points="""\
+      [paste.app_factory]
+      main = annotran.app:main
+      [console_scripts]
+      initialize_annotran_db = annotran.scripts.initializedb:main
+      """,
 )
