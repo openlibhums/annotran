@@ -38,7 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         title="Change the selected language">
     <i class="language-list-label__icon h-icon-public" ng-switch-when="true"></i><!-- nospace
     !--><i class="language-list-label__icon h-icon-language" ng-switch-default></i>
-    <span class="language-list-label__label">{{languages.focused().name}}</span><!-- nospace
+    <span  ng-if="languages.langListEmpty() == false" class="language-list-label__label">{{languages.focused().name}}</span>
+    <span  ng-if="languages.langListEmpty() == true" class="language-list-label__label">Add New Translation</span><!-- nospace
     !--><i class="h-icon-arrow-drop-down"></i>
   </div>
   <div class="dropdown-menu__top-arrow"></div>
@@ -71,7 +72,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <div class="language-details" ng-controller="languageController">
             <select id="languageSelector" ng-model="selectedLanguage" ng-options="language as language.name for language in languages"
                     ng-change="addLanguage(selectedLanguage)">
-                 <option value="" id="zeroIndex">Add new translation</option>
+                 <option value="" id="zeroIndex">Select Language</option>
             </select>
         </div>
       </div>

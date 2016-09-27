@@ -65,6 +65,12 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     return false;
   };
 
+  function langListEmpty() {
+    if (getLanguageList() == undefined)
+        return true;
+    return false;
+  }
+
   function containsName(groupubid, languageName) {
     if ($rootScope.map == null || Object.keys($rootScope.map).length == 0 ||
           typeof $rootScope.map[0] == 'undefined') {
@@ -278,6 +284,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     hasLanguageAlready: hasLanguageAlready,
     getLanguageList: getLanguageList,
     get: get,
+    langListEmpty: langListEmpty,
 
     addLanguage: addLanguage,
     focused: focused,
