@@ -25,6 +25,10 @@ function reports(settings, session, $rootScope, $http) {
         var response = $http({
             method: 'POST',
             url: settings.serviceUrl + 'reports/' + userId + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + 'addReport'
+        }).then(function successCallback(response) {
+            var message = 'You reported "' +
+                userId + '\'s translations as abusive.';
+            $window.confirm(message)
         });
 
         session.reload("");
