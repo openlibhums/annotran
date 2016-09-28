@@ -5,9 +5,14 @@ var eventsa =  require('../events');
 var Annotator = require('annotator');
 var $ = Annotator.$;
 
+var mouseUpPrevent = true;
+var clickPrevent = true;
+
 // @ngInject
 function LanguageListController($scope, $window, languages, groups, pages) {
   $scope.addLanguage = function (language) {
+    clickPrevent = false;
+    mouseUpPrevent = false;
 
     // this will fire when the user selects the top entry in the list ("Add a new translation")
     if(language == null){ return; }
@@ -37,6 +42,26 @@ function LanguageListController($scope, $window, languages, groups, pages) {
     $scope.$root.userListvisible = true;
     $scope.$root.updateUserList(0);
   }
+
+  $scope.handleSubmenuMU = function (event) {
+    if (mouseUpPrevent == true) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    else{
+      mouseUpPrevent = true;
+    }
+  };
+
+  $scope.handleSubmenuClick = function (event) {
+    if (clickPrevent == true) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    else{
+      clickPrevent = true;
+    }
+  };
   
 }
 
