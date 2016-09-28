@@ -163,7 +163,9 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   function addLanguage(language) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/' + pageid + '/' + 'addLanguage',
+      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/' + pageid + '/' + 'addLanguage'
+    }).then(function successCallback(response) {
+      $rootScope.$broadcast(eventsa.LANGUAGE_ADDED, language);
     });
 
     // the language list will be updated in response to a session state

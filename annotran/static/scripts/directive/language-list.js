@@ -23,7 +23,6 @@ function LanguageListController($scope, $window, languages, groups, pages) {
         language.name + '"?';
       if ($window.confirm(message)) {
         languages.addLanguage(language.name);
-        $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
       } else {
         $("#zeroIndex").prop('selected', 'selected');
       }
