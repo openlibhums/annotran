@@ -45,6 +45,8 @@ module.exports = class Substitution extends Annotator.Plugin
           else if ele.nodeName != "SCRIPT"
             $(annotatorComponents[0]).before($(ele).clone())
 
+      this.annotator.adder.hide()
+
       return null
 
   multipleSubstitution: (annotations = []) =>
