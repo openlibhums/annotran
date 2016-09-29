@@ -25,31 +25,35 @@ def _mock_request(feature=None, settings=None, params=None,
         route_url=route_url or mock.Mock(return_value="test-read-url"),
         **kwargs)
 
-
 # The fixtures required to mock all of create()'s dependencies.
 create_fixtures = pytest.mark.usefixtures('Vote',
                                           'session_model')
 
+
 @create_fixtures
-def test_create_adds_vote_to_db(Vote, Group, Language, Page):
+def test_create_adds_vote_to_db(Vote, Group, Language, Page, User):
     """This should add the new vote to the database session."""
+    author = mock.Mock(id=1, username="test", uid="test")
+    User.return_value = author
+
     vote = mock.Mock(id=1)
     Vote.return_value = vote
 
     group = mock.Mock(id=1)
     Group.return_value = group
 
-    page = mock.Mock(id=1)
+    page = mock.Mock(id=1, uri='http://www.annotran_test.com')
     Page.return_value = page
 
     language = mock.Mock(id=1)
     Language.return_value = language
 
-    request = _mock_request(matchdict={'page_id': page.id,
+    request = _mock_request(matchdict={'page_id': page.uri,
                                        'public_group_id': group.pubid,
                                        'public_language_id': language.pubid,
                                        'score': 5,
-                                       'user_id': 1})
+                                       'username': author.username},
+                            authenticated_user=mock.Mock(id=2, username="test2", uid="test2"))
 
     views.add_vote(request)
 
@@ -57,25 +61,29 @@ def test_create_adds_vote_to_db(Vote, Group, Language, Page):
 
 
 @create_fixtures
-def test_create_redirects_to_vote_read_vote(Vote, Group, Language, Page):
+def test_create_redirects_to_vote_read_vote(Vote, Group, Language, Page, User):
     """After successfully creating a new vote it should redirect."""
+    author = mock.Mock(id=1, username="test", uid="test")
+    User.return_value = author
+
     vote = mock.Mock(id=1)
     Vote.return_value = vote
 
     group = mock.Mock(id=1)
     Group.return_value = group
 
-    page = mock.Mock(id=1)
+    page = mock.Mock(id=1, uri='http://www.annotran_test.com')
     Page.return_value = page
 
     language = mock.Mock(id=1)
     Language.return_value = language
 
-    request = _mock_request(matchdict={'page_id': page.id,
+    request = _mock_request(matchdict={'page_id': page.uri,
                                        'public_group_id': group.pubid,
                                        'public_language_id': language.pubid,
                                        'score': 5,
-                                       'user_id': 1})
+                                       'username': author.username},
+                            authenticated_user=mock.Mock(id=2, username="test2", uid="test2"))
 
     result = views.add_vote(request)
 
@@ -102,6 +110,12 @@ def Language(request):
 @pytest.fixture
 def Group(request):
     patcher = mock.patch('h.groups.models.Group', autospec=True)
+    request.addfinalizer(patcher.stop)
+    return patcher.start()
+
+@pytest.fixture
+def User(request):
+    patcher = mock.patch('h.accounts.models.User', autospec=True)
     request.addfinalizer(patcher.stop)
     return patcher.start()
 
