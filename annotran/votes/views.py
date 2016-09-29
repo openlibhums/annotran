@@ -32,9 +32,9 @@ def add_vote(request):
     public_group_id = request.matchdict['public_group_id']
     public_language_id = request.matchdict["public_language_id"]
     score = request.matchdict["score"]
-    user_id = request.matchdict['user_id']
+    username = request.matchdict['username']
 
-    author = h.models.User.get_by_username(user_id)
+    author = h.models.User.get_by_username(username)
     group = h.groups.models.Group.get_by_pubid(public_group_id)
     page = annotran.pages.models.Page.get_by_uri(page_url)
     voter = h.models.User.get_by_username(request.authenticated_user.username)
@@ -92,6 +92,6 @@ def includeme(config):
     :param config: the configuration object to which to add our routes
     :return: None
     """
-    config.add_route('vote_add', 'votes/{user_id}/{public_group_id}/{public_language_id}/{page_id}/{score}/addVote')
+    config.add_route('vote_add', 'votes/{username}/{public_group_id}/{public_language_id}/{page_id}/{score}/addVote')
     config.add_route('vote_delete', 'votes/{public_group_id}/{public_language_id}/{page_id}/deleteVote')
     config.scan(__name__)

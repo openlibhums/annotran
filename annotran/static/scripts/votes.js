@@ -24,13 +24,13 @@ function votes(settings, session, $rootScope, $http) {
   });
 
 
-  function addVote(userId, languageId, score) {
+  function addVote(username, languageId, score) {
 
     var pageId = $rootScope.pageid;
     var groupPubid = $rootScope.groupPubid;
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'votes/' + userId + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + score + '/' + 'addVote',
+      url: settings.serviceUrl + 'votes/' + username + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + score + '/' + 'addVote',
     });
 
     session.reload("");
