@@ -48,7 +48,7 @@ def test_create_adds_vote_to_db(Vote, Group, Language, Page, User):
     language = mock.Mock(id=1)
     Language.return_value = language
 
-    request = _mock_request(matchdict={'page_id': page.uri,
+    request = _mock_request(matchdict={'page_uri': page.uri,
                                        'public_group_id': group.pubid,
                                        'public_language_id': language.pubid,
                                        'score': 5,
@@ -78,7 +78,7 @@ def test_create_redirects_to_vote_read_vote(Vote, Group, Language, Page, User):
     language = mock.Mock(id=1)
     Language.return_value = language
 
-    request = _mock_request(matchdict={'page_id': page.uri,
+    request = _mock_request(matchdict={'page_uri': page.uri,
                                        'public_group_id': group.pubid,
                                        'public_language_id': language.pubid,
                                        'score': 5,
