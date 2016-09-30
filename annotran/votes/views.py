@@ -35,8 +35,11 @@ def add_vote(request):
     username = request.matchdict['username']
 
     author = h.models.User.get_by_username(username)
+
     group = h.groups.models.Group.get_by_pubid(public_group_id)
+
     page = annotran.pages.models.Page.get_by_uri(page_url)
+
     voter = h.models.User.get_by_username(request.authenticated_user.username)
 
     language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
@@ -58,7 +61,7 @@ def add_vote(request):
     return exc.HTTPSeeOther(url)
 
 
-@view_config(route_name='vote_delete', request_method='POST')
+@view_config(route_name='vote_delete', request_method='POST', renderer='annotran:templates/home.html.jinja2')
 def delete_vote(request):
     """
     Delete a vote from the database
@@ -82,8 +85,7 @@ def delete_vote(request):
     models.Vote.delete_votes(page, language, group, user)
     request.db.flush()
 
-    url = request.route_url('language_read', pubid=language.pubid, groupubid=public_group_id)
-    return exc.HTTPSeeOther(url)
+    return {}
 
 
 def includeme(config):
