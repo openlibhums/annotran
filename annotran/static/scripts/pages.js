@@ -11,7 +11,7 @@ function pages(settings, session, $rootScope, $http) {
     function addPage(languageName) {
         var response = $http({
             method: 'POST',
-            url: settings.serviceUrl + 'pages/' + languageName + '/' +  $rootScope.pageid  + '/' + $rootScope.groupPubid + '/addPage',
+            url: settings.serviceUrl + 'pages/' + languageName + '/' +  $rootScope.pageUri  + '/' + $rootScope.groupPubid + '/addPage',
         });
         return response;
     };

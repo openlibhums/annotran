@@ -26,11 +26,11 @@ function votes(settings, session, $rootScope, $http) {
 
   function addVote(username, languageId, score) {
 
-    var pageId = $rootScope.pageid;
+    var pageUri = $rootScope.pageUri;
     var groupPubid = $rootScope.groupPubid;
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'votes/' + username + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + score + '/' + 'addVote',
+      url: settings.serviceUrl + 'votes/' + username + '/' + groupPubid + '/' + languageId + '/' + pageUri + '/' + score + '/' + 'addVote',
     });
 
     session.reload("");

@@ -22,9 +22,9 @@ class AppControllerExt extends appcontroller
     $scope.$root.editOnly = false
     $scope.$root.userAnnotations = []
     $scope.$root.allPageAnnotations = []
-    $scope.$root.pageid = window.location.href
-    $scope.$root.pageid = decodeURIComponent($scope.$root.pageid);
-    $scope.$root.pageid = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageid)));
+    $scope.$root.pageUri = window.location.href
+    $scope.$root.pageUri = decodeURIComponent($scope.$root.pageUri);
+    $scope.$root.pageUri = encodeURIComponent(encodeURIComponent(getParameterByName("url", $scope.$root.pageUri)));
 
 
     $scope.$root.updateUserList = (direction) ->

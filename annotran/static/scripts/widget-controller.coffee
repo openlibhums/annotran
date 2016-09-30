@@ -200,7 +200,7 @@ class WidgetControllerExt extends widgetcontroller
       return true
 
     deleteAuthorVotes = (authorId) ->
-      pageId = $scope.$root.pageid
+      pageId = $scope.$root.pageUri
       response = $http({
        method: 'POST',
        url: settings.serviceUrl + 'votes/' + groups.focused().id + '/' + languages.focused().id + '/' + pageId + '/' + 'deleteVote',

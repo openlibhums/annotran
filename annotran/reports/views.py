@@ -45,7 +45,7 @@ def add_report(request):
 
     #if already in a database, it means it was reported previously
     if report:
-        raise exc.HTTPBadRequest()
+        return exc.HTTPBadRequest()
 
     report = annotran.reports.models.Report(page, language, group, author, reporter)
     request.db.add(report)

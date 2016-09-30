@@ -19,7 +19,7 @@ function reports(settings, session, $rootScope, $http, $window) {
 
     function addReport(userId, languageId) {
 
-        var pageId = $rootScope.pageid;
+        var pageId = $rootScope.pageUri;
         var groupPubid = $rootScope.groupPubid;
 
         var response = $http({

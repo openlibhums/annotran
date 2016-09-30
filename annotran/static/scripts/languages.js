@@ -53,7 +53,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // will be created for this language.
   var focusedLanguage;
 
-  var pageid = $rootScope.pageid;
+  var pageid = $rootScope.pageUri;
 
   function containsValue(groupubid, language) {
     var i=0, langs = $rootScope.map[groupubid];
