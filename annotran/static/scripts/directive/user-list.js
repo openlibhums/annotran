@@ -84,12 +84,13 @@ function Controller($scope, $window, session, settings, languages, votes, report
   $scope.addReport = function(author) {
     $scope.author=author;
 
-    var reportRet = reports.addReport(author.username, languages.focused().id);
-
-    // set scope.author to an empty dictionary in order to hide the box once the user has voted.
-    $scope.author={};
-
-    return reportRet;
+    var message = 'Are you sure you want to report ' + author.username  + '\'s translations as abusive?';
+      if ($window.confirm(message)) {
+        var reportRet = reports.addReport(author.username, languages.focused().id);
+        // set scope.author to an empty dictionary in order to hide the box once the user has voted.
+        $scope.author={};
+        return reportRet;
+      }
   };
 
   $scope.showVote = function(author, score) {
