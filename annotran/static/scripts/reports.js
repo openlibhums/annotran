@@ -26,7 +26,7 @@ function reports(settings, session, $rootScope, $http, $window) {
             method: 'POST',
             url: settings.serviceUrl + '/reports/' + userId + '/' + groupPubid + '/' + languageId + '/' + pageId + '/' + 'addReport'
         }).then(function successCallback(response) {
-            var message = 'You reported "' +
+            var message = 'You reported ' +
                 userId + '\'s translations as abusive.';
             alert(message);
         });
