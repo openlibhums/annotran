@@ -19,6 +19,11 @@
     !--><i class="h-icon-arrow-drop-down top-bar__dropdown-arrow"></i>
   </a>
   <ul class="dropdown-menu pull-right" role="menu">
+
+    <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
+      <a>{{vm.auth.username}}</a>
+    </li>
+
     <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
       <a class="dropdown-menu__link" href="{{vm.serviceUrl}}profile" target="_blank">Account settings</a>
     </li>
@@ -59,10 +64,6 @@
     </li>
     <li class="dropdown-menu__row" >
       <a class="dropdown-menu__link" href="{{vm.serviceUrl}}docs/annotran_help" target="_blank">Help</a>
-    </li>
-    <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
-      <a class="dropdown-menu__link" href="{{vm.serviceUrl}}stream?q=user:{{vm.auth.username}}"
-         target="_blank">My Annotations</a>
     </li>
     <li class="dropdown-menu__row" ng-if="vm.auth.status === 'signed-in'">
       <a class="dropdown-menu__link" href="" ng-click="vm.onLogout()">Sign out</a>
