@@ -29,6 +29,10 @@ function reports(settings, session, $rootScope, $http, $window) {
             var message = 'You reported ' +
                 userId + '\'s translations as abusive.';
             alert(message);
+        }, function errorCallback(response) {
+            var message = 'You already reported this ' +
+                userId + '\'s translations as abusive.';
+            alert(message);
         });
 
         session.reload("");

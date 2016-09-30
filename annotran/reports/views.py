@@ -43,10 +43,9 @@ def add_report(request):
 
     report = annotran.reports.models.Report.get_report(page, language, group, author, reporter)
 
-    # storing last selected value only
+    #if already in a database, it means it was reported previously
     if report:
-        request.db.delete(report)
-        request.db.flush()
+        raise exc.HTTPBadRequest()
 
     report = annotran.reports.models.Report(page, language, group, author, reporter)
     request.db.add(report)
@@ -62,7 +61,6 @@ def add_report(request):
                          body=body_text)
 
     return {}
-
 
 def includeme(config):
     """
