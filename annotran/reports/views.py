@@ -13,7 +13,7 @@ from pyramid import httpexceptions as exc
 from pyramid.view import view_config
 
 
-@view_config(route_name='report_add', request_method='POST')
+@view_config(route_name='report_add', request_method='POST', renderer='annotran:templates/home.html.jinja2')
 def add_report(request):
     """
     Add an abuse report to the database
@@ -61,7 +61,7 @@ def add_report(request):
                          recipients=[annotran.views.Shared.support_address],
                          body=body_text)
 
-    return exc.HTTPSeeOther("/admin/reports")
+    return {}
 
 
 def includeme(config):
