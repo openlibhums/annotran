@@ -51,16 +51,24 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     return target
 
-  packageData: (initialTarget, endTarget, endIndex) ->
+  packageData: (initialTarget, endTarget, endIndex, startIndexOffset = 0) ->
     full_xpath = Util.xpathFromNode($(initialTarget), document)
     end_xpath = Util.xpathFromNode($(endTarget), document)
 
-    data = {
-      start: full_xpath
-      startOffset: this.currentIndex
-      end: end_xpath
-      endOffset: endIndex + 1
-    }
+    if startIndexOffset != 0
+      data = {
+        start: full_xpath
+        startOffset: startIndexOffset
+        end: end_xpath
+        endOffset: endIndex + 1
+      }
+    else
+      data = {
+        start: full_xpath
+        startOffset: this.currentIndex
+        end: end_xpath
+        endOffset: endIndex + 1
+      }
 
     return data
 
@@ -83,7 +91,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     for sentence in desiredText
       if counter == this.currentSentence
         break
-      offset_to_use = offset_to_use + sentence.length
+      offset_to_use = offset_to_use + sentence.length + 1
       counter = counter + 1
 
     if desiredText.length == 1
@@ -91,25 +99,36 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     else
       desiredText = desiredText[this.currentSentence]
 
-    endIndex = offset_to_use + desiredText.length + this.currentSentence + 1
+    endIndex = offset_to_use + desiredText.length + 1
 
     if endIndex > $(currentTarget).text().length - 1
       endIndex = $(currentTarget).text().length - 1
 
     # test if we have found a sentence marker or if we are forcing this through anyway
-    if match or force
-      data = this.packageData(initialTarget, currentTarget, endIndex)
+    if (match or force) and (offset_to_use < endIndex)
+      console.log("Start:" + offset_to_use)
+      console.log("End:" + endIndex)
+      data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
       this.anchorToPage(data)
     else
       # here want to test:
       # 1. is there a sibling element?
       # 2. is there a parent element with a next sibling?
+      this.currentIndex = 0
+      this.currentSentence = 0
+
       nextSibling = $(currentTarget).next()
+
+      if offset_to_use == endIndex + 1
+        initialTarget = nextSibling
 
       if nextSibling != undefined and nextSibling.length != 0
         this.selectSentence initialTarget, nextSibling
       else
         nextSibling = this.findNextJumpNode(currentTarget)
+
+        if offset_to_use == endIndex + 1
+          initialTarget = nextSibling
 
         if nextSibling != undefined and nextSibling.length != 0
           this.selectSentence initialTarget, currentTarget, true
