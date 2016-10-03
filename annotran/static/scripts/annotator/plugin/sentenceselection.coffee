@@ -112,8 +112,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     # test if we have found a sentence marker or if we are forcing this through anyway
     if (match or force) and (offset_to_use < endIndex)
-      console.log("Start:" + offset_to_use)
-      console.log("End:" + endIndex)
       data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
       this.anchorToPage(data)
     else
