@@ -8,6 +8,7 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
   this.serviceUrl = settings.serviceUrl;
   $scope.sentenceMode = "on";
+  $scope.mode = "view";
 
   if ($scope.model == null) {
     $scope.model = {};
@@ -23,6 +24,10 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
     $scope.$root.$broadcast(eventsa.LANGUAGE_FOCUSED, languages.focused().id);
 
+  };
+
+  $scope.setMode = function(modeValue) {
+    $scope.mode = modeValue;
   };
 
   $scope.setUserForEdit = function () {

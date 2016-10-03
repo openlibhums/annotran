@@ -4,28 +4,19 @@
     && languages.getLanguageList().length != 0))">
   <div class="form-vertical">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="">Translation Options</a></li>
+      <li class="active"><a href="">Translation Options
+      </a></li>
        <ol ng-if="vm.auth.status === 'signed-in'" class="sidebar-tutorial__list">
-        <li class="sidebar-tutorial__list-item">
-          <p class="sidebar-tutorial__list-item-content">
-            There are two available modes: edit and view.
+          <p ng-if="vm.auth.status === 'signed-in'">
+            Click to change mode:
+            <a href="#" ng-if="mode === 'view'" ng-click="setMode('edit')"> view </a>
+            <a href="#" ng-if="mode === 'edit'" ng-click="setMode('view')"> edit </a>
           </p>
-        </li>
-        <li class="sidebar-tutorial__list-item">
-          <p class="sidebar-tutorial__list-item-content">
-            In edit mode you can add or change your own translations.
-          </p>
-        </li>
-        <li class="sidebar-tutorial__list-item">
-          <p class="sidebar-tutorial__list-item-content">
-            In view mode you can view all available translations.
-          </p>
-        </li>
       </ol>
       <ol ng-if="vm.auth.status === 'signed-out'" class="sidebar-tutorial__list">
         <li class="sidebar-tutorial__list-item">
           <p class="sidebar-tutorial__list-item-content">
-            To view available translations select a group and a language above.
+            To view available public translations select a language above and an author from the list of authors (if any) below.
           </p>
         </li>
         <li class="sidebar-tutorial__list-item">
@@ -40,16 +31,16 @@
       </div>
       <div ng-if="languages.getLanguageList().length > 0">
         <p><span ng-if="vm.auth.status === 'signed-out'">Sign in to write your own translation.</span>
-          <span ng-if="vm.auth.status === 'signed-in'">
-          <a href="#" ng-click="setUserForEdit()" id="selfEdit">Start, edit</a>, or <a href="#" ng-click="setUser('self')">view</a> your own translation.
-        </span>
         </p>
-        <p><span ng-if="vm.auth.status === 'signed-in'">You can also <a href="#" ng-click="toggleSentence()">turn {{sentenceMode}} sentence-by-sentence mode</a> or </span>
+        <p ng-if="mode=='view' && $root.list_of_users.length == 0">
+            There are no available translations.
+        </p>
+        <p ng-if="mode=='view' && $root.list_of_users.length > 0">
           <a href="#" ng-click="setUserForReset()">
-            <span ng-if="vm.auth.status === 'signed-in'">v</span><span ng-if="vm.auth.status != 'signed-in'">V</span>iew the original document
+            View the original document
           </a>.
         </p>
-        <div ng-if="$root.list_of_users.length > 0">
+        <div ng-if="$root.list_of_users.length > 0 && mode=='view'">
           <hr/>
           <p><b>Select a user below to view a translation of this page:</b></p>
           <p ng-if="$root.direction == 1">
@@ -82,7 +73,7 @@
               <a href="#" ng-click="setUser('self')">
                 {{user.author.username}}
               </a>
-              [or <a href="#" ng-click="setUser(user.author)">edit your own translation</a>]
+              [your own translation</a>]
               <stars starscore="user.score"></stars>
             </span>
             </li>
