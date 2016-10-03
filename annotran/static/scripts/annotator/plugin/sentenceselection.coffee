@@ -120,6 +120,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.storedEvent = event
 
     this.currentIndex = 0
+    this.currentSentence = 0
     this.selectSentence event.target
 
     selection = Annotator.Util.getGlobal().getSelection()
