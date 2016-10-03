@@ -40,8 +40,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
   normalizeStyleTags: (target) ->
 
-    return target
-
     # Get the currently selected ranges.
     tagName = $(target).prop("tagName").toLowerCase()
 
@@ -149,6 +147,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     this.currentIndex = 0
     this.currentSentence = 0
+
+    event.target = this.normalizeStyleTags event.target
+
     this.selectSentence event.target
 
     selection = Annotator.Util.getGlobal().getSelection()
