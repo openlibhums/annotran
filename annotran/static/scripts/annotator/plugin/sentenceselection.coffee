@@ -54,7 +54,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     full_xpath = Util.xpathFromNode($(initialTarget), document)
     end_xpath = Util.xpathFromNode($(endTarget), document)
 
-
     data = {
       start: full_xpath
       startOffset: startIndexOffset + this.savedOffset
@@ -63,8 +62,33 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     }
 
     this.savedOffset = 0
-
     return data
+
+  scanForNextSibling: (initialTarget, currentTarget, offset_to_use, endIndex) ->
+    # here want to test:
+    # 1. is there a sibling element?
+    # 2. is there a parent element with a next sibling?
+    this.currentIndex = 0
+    this.currentSentence = 0
+
+    nextSibling = $(currentTarget).next()
+
+    if offset_to_use == endIndex + 1
+      initialTarget = nextSibling
+
+    if nextSibling != undefined and nextSibling.length != 0
+      this.selectSentence initialTarget, nextSibling
+    else
+      nextSibling = this.findNextJumpNode(currentTarget)
+
+      if offset_to_use == endIndex + 1
+        initialTarget = nextSibling
+
+      if nextSibling != undefined and nextSibling.length != 0
+        this.selectSentence initialTarget, nextSibling
+      else
+        # this needs to gracefully fall through
+        this.selectSentence initialTarget, nextSibling
 
   selectSentence: (initialTarget, currentTarget = undefined, force = false) ->
 
@@ -113,30 +137,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
       this.anchorToPage(data)
     else
-      # here want to test:
-      # 1. is there a sibling element?
-      # 2. is there a parent element with a next sibling?
-      this.currentIndex = 0
-      this.currentSentence = 0
-
-      nextSibling = $(currentTarget).next()
-
-      if offset_to_use == endIndex + 1
-        initialTarget = nextSibling
-
-      if nextSibling != undefined and nextSibling.length != 0
-        this.selectSentence initialTarget, nextSibling
-      else
-        nextSibling = this.findNextJumpNode(currentTarget)
-
-        if offset_to_use == endIndex + 1
-          initialTarget = nextSibling
-
-        if nextSibling != undefined and nextSibling.length != 0
-          this.selectSentence initialTarget, nextSibling
-        else
-          # this needs to gracefully fall through
-          this.selectSentence initialTarget, nextSibling
+      this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
 
   findASentence: (event = {}) =>
     if this.operational == false
