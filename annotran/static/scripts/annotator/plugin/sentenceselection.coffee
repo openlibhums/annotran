@@ -17,6 +17,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentSentence = 0
     this.storedEvent = null
     this.extentElement = null
+    this.savedOffset = 0
 
     null
 
@@ -55,20 +56,15 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     full_xpath = Util.xpathFromNode($(initialTarget), document)
     end_xpath = Util.xpathFromNode($(endTarget), document)
 
-    if startIndexOffset != 0
-      data = {
-        start: full_xpath
-        startOffset: startIndexOffset
-        end: end_xpath
-        endOffset: endIndex + 1
-      }
-    else
-      data = {
-        start: full_xpath
-        startOffset: this.currentIndex
-        end: end_xpath
-        endOffset: endIndex + 1
-      }
+
+    data = {
+      start: full_xpath
+      startOffset: startIndexOffset + this.savedOffset
+      end: end_xpath
+      endOffset: endIndex + 1
+    }
+
+    this.savedOffset = 0
 
     return data
 
@@ -80,6 +76,10 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     desiredText = $(currentTarget).text()
     match = /[.!?]/.test(desiredText)
     desiredText = desiredText.split(/[.!?]/)
+
+    finalCount = desiredText.length - 1
+
+    matchEnd = desiredText[this.currentSentence] == ""
 
     offset_to_use = 0
     counter = 0
@@ -103,6 +103,12 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     if endIndex > $(currentTarget).text().length - 1
       endIndex = $(currentTarget).text().length - 1
+
+    if (this.currentSentence == finalCount) and (matchEnd == false)
+      # if this is the case then we are starting mid-element and need to jump
+      match = false
+      if this.savedOffset == 0
+        this.savedOffset = offset_to_use
 
     # test if we have found a sentence marker or if we are forcing this through anyway
     if (match or force) and (offset_to_use < endIndex)
@@ -133,6 +139,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         if nextSibling != undefined and nextSibling.length != 0
           this.selectSentence initialTarget, nextSibling
         else
+          # this needs to gracefully fall through
           this.selectSentence initialTarget, nextSibling
 
   findASentence: (event = {}) =>
