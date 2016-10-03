@@ -131,7 +131,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
           initialTarget = nextSibling
 
         if nextSibling != undefined and nextSibling.length != 0
-          this.selectSentence initialTarget, currentTarget, true
+          this.selectSentence initialTarget, nextSibling
         else
           this.selectSentence initialTarget, nextSibling
 
