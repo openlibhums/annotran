@@ -141,32 +141,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
           this.selectSentence initialTarget, nextSibling
 
   findASentence: (event = {}) =>
-    this.storedEvent = event
-
-    this.currentIndex = 0
-    this.currentSentence = 0
-    this.selectSentence event.target
-
-    selection = Annotator.Util.getGlobal().getSelection()
-    ranges = for i in [0...selection.rangeCount]
-      r = selection.getRangeAt(0)
-      if r.collapsed then continue else r
-
-    if ranges.length
-      event.ranges = ranges
-      @annotator.onSuccessfulSelection event
-      @annotator.createAnnotation()
-
-    return null
-
-  # This is called when the mouse is clicked on a DOM element.
-  # Checks to see if there is a sentence that we can select, if so
-  # calls Annotator's onSuccessfulSelection method.
-  #
-  # event - The event triggered this. Usually it's a click Event
-  #
-  # Returns nothing.
-  makeSentenceSelection: (event = {}) =>
     if this.operational == false
       # we are not in sentence selection mode
       return
