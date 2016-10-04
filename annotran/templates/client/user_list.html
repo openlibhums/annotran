@@ -35,10 +35,10 @@
             Sign in to write your own translation.
           </span>
         </p>
-        <div ng-if="mode === 'edit'" ng-if="vm.auth.status === 'signed-in'" action="">
-          <input type="radio" name="editmode" id="addchange" ng-click="setUserForEdit()"> Add or change your translations.<br>
-          <input type="radio" name="editmode" id="sentenceselection" ng-click="toggleSentence()">Sentence-by-sentence mode.<br>
-        </div>
+        <form ng-if="mode === 'edit'" ng-if="vm.auth.status === 'signed-in'" action="">
+           <label><input type="radio" name="editmode" id="addchange" ng-click="setUserForEdit()"/> Add or change your translations.</label>
+          <label><input type="radio" name="editmode" id="sentenceselection" ng-click="toggleSentence()"/>Add translations sentence-by-sentence.</label>
+        </form>
         <p ng-if="mode=='view' && $root.list_of_users.length == 0">
             There are no available translations.
         </p>
