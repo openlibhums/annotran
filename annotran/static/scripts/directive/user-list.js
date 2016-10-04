@@ -28,9 +28,19 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
   $scope.setMode = function(modeValue) {
     $scope.mode = modeValue;
+    if ($scope.mode == 'view') {
+      if ($scope.sentenceMode == "off") {
+        $scope.toggleSentence();
+      } else {
+         $scope.setUser('self');
+      }
+    }
   };
 
   $scope.setUserForEdit = function () {
+    if($scope.sentenceMode == "off") {
+      $scope.toggleSentence();
+    }
     this.$root.selectedUser = "self";
     this.$root.editOnly = true;
 
@@ -60,7 +70,6 @@ function Controller($scope, $window, session, settings, languages, votes, report
     if($scope.sentenceMode == "on")
     {
       $scope.sentenceMode = "off";
-      $scope.setUserForEdit();
     } else {
       $scope.sentenceMode = "on";
       $scope.setUserForReset();

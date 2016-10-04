@@ -36,12 +36,13 @@
           </span>
         </p>
         <div ng-if="mode === 'edit'" ng-if="vm.auth.status === 'signed-in'" action="">
-          <input type="radio" name="editmode" value="addchange" ng-click="setUserForEdit()"> Add or change your translations.<br>
-          <input type="radio" name="editmode" value="sentenceselection" ng-click="toggleSentence()">Sentence-by-sentence mode.<br>
+          <input type="radio" name="editmode" id="addchange" ng-click="setUserForEdit()"> Add or change your translations.<br>
+          <input type="radio" name="editmode" id="sentenceselection" ng-click="toggleSentence()">Sentence-by-sentence mode.<br>
         </div>
         <p ng-if="mode=='view' && $root.list_of_users.length == 0">
             There are no available translations.
         </p>
+        <p ng-if="mode=='view' && $root.list_of_users.length > 0">
         <p ng-if="mode=='view' && $root.list_of_users.length > 0">
           <a href="#" ng-click="setUserForReset()">
             View the original document
