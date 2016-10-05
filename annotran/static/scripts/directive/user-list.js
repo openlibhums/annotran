@@ -30,11 +30,11 @@ function Controller($scope, $window, session, settings, languages, votes, report
     $scope.mode = modeValue;
     if ($scope.mode == 'view') {
       if ($scope.sentenceMode == "on") {
-          crossframe.call("sentenceSelectionOff");
-          crossframe.call("hideAdder");
-      } else {
-         $scope.setUser('self');
+        crossframe.call("sentenceSelectionOff");
+        crossframe.call("hideAdder");
       }
+      $scope.setUserForReset();
+      $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS)
     }
   };
 

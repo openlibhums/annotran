@@ -20,6 +20,10 @@ function publishAnnotationBtnController(crossframe, $rootScope, $scope) {
       }
     });
 
+    $rootScope.$on('close_open_annotations', function () {
+        $scope.vm.onCancel();
+    });
+
     this.publishDestination = function () {
       return this.isShared ? this.group.name : this.privateLabel;
     }

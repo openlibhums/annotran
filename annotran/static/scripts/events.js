@@ -46,6 +46,8 @@ module.exports = {
     USER_DELETED_ANNOTATION: 'user_deleted_annotation',
     /** Broadcast when moving to another sentence in sentence-by-sentence mode*/
     MOVING_TO_SENTENCE: 'moving_to_sentence',
+    /** Broadcast when we want to close all active annotations*/
+    CLOSE_OPEN_ANNOTATIONS: 'close_open_annotations',
     /** Broadcast when the rootscope lists are updated*/
     ROOTSCOPE_LISTS_UPDATED: 'rootscope_lists_updated',
 };
