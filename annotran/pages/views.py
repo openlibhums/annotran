@@ -60,8 +60,7 @@ def add_page(request):
         page.members.append(language)
     request.db.flush()
 
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
-    return exc.HTTPSeeOther(url)
+    return {}
 
 
 def includeme(config):
