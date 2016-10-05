@@ -36,8 +36,8 @@
           </span>
         </p>
         <form ng-if="mode === 'edit'" ng-if="vm.auth.status === 'signed-in'" action="">
-           <p><label><input type="radio" name="editmode" id="addchange" style="display:inline-block" ng-click="disableSentence(); setUserForEdit()"/> Add or change your translations.</label></p>
-           <p><label><input type="radio" name="editmode" id="sentenceselection" style="display:inline-block" ng-click="enableSentence()"/> Add translations sentence-by-sentence.</label></p>
+           <p ng-if="vm.auth.status === 'signed-in'"><label><input type="radio" name="editmode" id="addchange" style="display:inline-block" ng-click="disableSentence(); setUserForEdit()"/> Add or change your translations.</label></p>
+           <p ng-if="vm.auth.status === 'signed-in'"><label><input type="radio" name="editmode" id="sentenceselection" style="display:inline-block" ng-click="enableSentence()"/> Add translations sentence-by-sentence.</label></p>
         </form>
         <p ng-if="mode=='view' && $root.list_of_users.length == 0">
             There are no available translations.
