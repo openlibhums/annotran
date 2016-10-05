@@ -23,8 +23,10 @@ class GuestExt extends Guest
     _connectAnnotationSync: (crossframe) =>
       super
 
-      crossframe.on 'toggleSentenceSelection', () =>
+      crossframe.on 'toggleSentenceSelection', (hideAdder) =>
         Annotator = require('annotator')
+        if (hideAdder == true)
+          Annotator._instances[0].plugins.CSSModify.hideAdder()
         Annotator._instances[0].plugins.SentenceSelection.toggleOperation()
 
       crossframe.on 'moveToNextSentence', () =>

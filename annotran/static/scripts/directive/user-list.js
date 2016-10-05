@@ -29,10 +29,11 @@ function Controller($scope, $window, session, settings, languages, votes, report
   $scope.setMode = function(modeValue) {
     $scope.mode = modeValue;
     if ($scope.mode == 'view') {
+      //$scope.toggleSentence();
       if ($scope.sentenceMode == "off") {
         $scope.toggleSentence();
       } else {
-         $scope.setUser('self');
+        $scope.setUser('self');
       }
     }
   };
@@ -74,8 +75,11 @@ function Controller($scope, $window, session, settings, languages, votes, report
       $scope.sentenceMode = "on";
       $scope.setUserForReset();
     }
-
-    crossframe.call("toggleSentenceSelection");
+    if ($scope.sentenceMode == "on") {
+      crossframe.call("toggleSentenceSelection", false);
+    } else {
+      crossframe.call("toggleSentenceSelection", true);
+    }
   };
 
   $scope.vote = function(author) {
