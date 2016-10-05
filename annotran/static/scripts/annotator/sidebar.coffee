@@ -258,13 +258,12 @@ module.exports = class Sidebar extends Host
       if isClaimed
         break
     regex = "^\\s*$";
-    console.log(range.start.data)
     if ((selection_box.bottom == 0 &&
         selection_box.height == 0 &&
         selection_box.left == 0 &&
         selection_box.right == 0 &&
         selection_box.top == 0 &&
-        selection_box.width == 0) || (range.start.data == '') || (range.start.data.match(regex)))
+        selection_box.width == 0) || (range.text() == '') || (range.text().match(regex)))
       alert("You cannot create a new translation here. No text selected.")
       return
 
