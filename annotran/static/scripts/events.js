@@ -44,6 +44,8 @@ module.exports = {
     USERS_FOCUSED: 'userFocused',
     /** Broadcast when the user deleted an annotation*/
     USER_DELETED_ANNOTATION: 'user_deleted_annotation',
+    /** Broadcast when moving to another sentence in sentence-by-sentence mode*/
+    MOVING_TO_SENTENCE: 'moving_to_sentence',
     /** Broadcast when the rootscope lists are updated*/
     ROOTSCOPE_LISTS_UPDATED: 'rootscope_lists_updated',
 };

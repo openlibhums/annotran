@@ -277,6 +277,10 @@ function AnnotationController(
 
     $rootScope.$on('annotationCreated', onAnnotationCreated);
 
+    $rootScope.$on('beforeAnnotationCreated', function () {
+        $rootScope.$broadcast(eventsa.MOVING_TO_SENTENCE);
+    });
+
     // Call `onDestroy()` when this AnnotationController's scope is removed.
     $scope.$on('$destroy', onDestroy);
 

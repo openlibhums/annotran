@@ -38,9 +38,6 @@ function Controller($scope, $window, session, settings, languages, votes, report
   };
 
   $scope.setUserForEdit = function () {
-    if($scope.sentenceMode == "off") {
-      $scope.toggleSentence();
-    }
     this.$root.selectedUser = "self";
     this.$root.editOnly = true;
 
@@ -66,16 +63,19 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
   };
 
-  $scope.toggleSentence = function () {
-    if($scope.sentenceMode == "on")
-    {
-      $scope.sentenceMode = "off";
-    } else {
-      $scope.sentenceMode = "on";
-      $scope.setUserForReset();
-    }
+  $scope.enableSentence = function () {
+    $scope.sentenceMode = "on";
+    $scope.setUserForReset();
+    this.$root.sentencebysentence = $scope.sentenceMode;
 
-    crossframe.call("toggleSentenceSelection");
+    crossframe.call("sentenceSelectionOn");
+  };
+
+  $scope.disableSentence = function () {
+    $scope.sentenceMode = "off";
+    this.$root.sentencebysentence = $scope.sentenceMode;
+
+    crossframe.call("sentenceSelectionOff");
   };
 
   $scope.vote = function(author) {

@@ -27,8 +27,11 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     })
     super
 
-  toggleOperation: () ->
-    this.operational = not this.operational
+  toggleOperationOn: () ->
+    this.operational = true
+
+  toggleOperationOff: () ->
+    this.operational = false
 
   anchorToPage: (data) ->
     anchor = new xpathRange.SerializedRange(data).normalize(document)

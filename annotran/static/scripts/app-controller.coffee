@@ -18,6 +18,7 @@ class AppControllerExt extends appcontroller
      $window,   annotationUI,   auth,   drafts,   features, groups,
      identity,   session)
 
+    $scope.$root.sentencebysentence = "off"
     $scope.$root.userListvisible = true
     $scope.$root.editOnly = false
     $scope.$root.userAnnotations = []

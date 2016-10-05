@@ -1,5 +1,7 @@
 'use strict';
 
+var eventsa =  require('../events');
+
 /**
  * @ngdoc directive
  * @name publishAnnotationBtn
@@ -7,12 +9,20 @@
  *              a new annotation
  */
 // @ngInject
-module.exports = function (crossframe) {
+module.exports = function (crossframe, $rootScope) {
   return {
     bindToController: true,
     controller: function () {
       this.showDropdown = false;
       this.privateLabel = 'Only Me';
+
+      $rootScope.$on('moving_to_sentence', function () {
+        console.log($rootScope.sentencebysentence);
+        if($rootScope.sentencebysentence == "on") {
+          console.log("MOVING TO SENTENCE");
+
+        }
+      });
 
       this.publishDestination = function () {
         return this.isShared ? this.group.name : this.privateLabel;
