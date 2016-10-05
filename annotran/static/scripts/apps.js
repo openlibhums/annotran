@@ -17,6 +17,7 @@ app.controller('AppController', require('./app-controller'))
     .directive('thread', require('./directive/thread'))
     .directive('shareDialog', require('./directive/share-dialog'))
     .directive('signinControl', require('./directive/signin-control'))
+    .directive('publishAnnotationBtn', require('./directive/publish-annotation-btn'))
     .directive('stars', function() {
         return {
             restrict: 'E',
@@ -89,6 +90,13 @@ app.decorator(
 app.decorator(
             "signinControlDirective",
             function signinControlDirectiveDecorator( $delegate ) {
+                return( [ $delegate[1] ] );
+            }
+        );
+
+app.decorator(
+            "publishAnnotationBtnDirective",
+            function publishAnnotationBtnDirectiveDecorator( $delegate ) {
                 return( [ $delegate[1] ] );
             }
         );
