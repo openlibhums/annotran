@@ -17,7 +17,7 @@ app.controller('AppController', require('./app-controller'))
     .directive('thread', require('./directive/thread'))
     .directive('shareDialog', require('./directive/share-dialog'))
     .directive('signinControl', require('./directive/signin-control'))
-    .directive('publishAnnotationBtn', require('./directive/publish-annotation-btn'))
+    .directive('publishAnnotationBtn', require('./directive/publish-annotation-btn').directive)
     .directive('stars', function() {
         return {
             restrict: 'E',

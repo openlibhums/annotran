@@ -9,37 +9,45 @@ var eventsa =  require('../events');
  *              a new annotation
  */
 // @ngInject
-module.exports = function (crossframe, $rootScope) {
+function publishAnnotationBtnController(crossframe, $rootScope, $scope) {
+
+    this.showDropdown = false;
+    this.privateLabel = 'Only Me';
+
+    $rootScope.$on('moving_to_sentence', function () {
+      if($rootScope.sentencebysentence == "on") {
+        $scope.vm.onCancel();
+      }
+    });
+
+    this.publishDestination = function () {
+      return this.isShared ? this.group.name : this.privateLabel;
+    }
+
+    this.moveToNext = function() {
+        crossframe.call("moveToNextSentence");
+    }
+
+    this.groupType = function () {
+      return this.group.public ? 'public' : 'group';
+    }
+
+    this.setPrivacy = function (level) {
+      this.onSetPrivacy({level: level});
+    }
+}
+
+/**
+ * @ngdoc directive
+ * @name languageList
+ * @restrict AE
+ * @description Displays a list of available languages
+ */
+// @ngInject
+function publishAnnotationBtn($window, languages, settings) {
   return {
     bindToController: true,
-    controller: function () {
-      this.showDropdown = false;
-      this.privateLabel = 'Only Me';
-
-      $rootScope.$on('moving_to_sentence', function () {
-        console.log($rootScope.sentencebysentence);
-        if($rootScope.sentencebysentence == "on") {
-          console.log("MOVING TO SENTENCE");
-
-        }
-      });
-
-      this.publishDestination = function () {
-        return this.isShared ? this.group.name : this.privateLabel;
-      }
-
-      this.moveToNext = function() {
-          crossframe.call("moveToNextSentence");
-      }
-
-      this.groupType = function () {
-        return this.group.public ? 'public' : 'group';
-      }
-
-      this.setPrivacy = function (level) {
-        this.onSetPrivacy({level: level});
-      }
-    },
+    controller: publishAnnotationBtnController,
     controllerAs: 'vm',
     restrict: 'E',
     scope: {
@@ -52,4 +60,9 @@ module.exports = function (crossframe, $rootScope) {
     },
     templateUrl: 'publish_annotation_btn.html'
   };
-}
+};
+
+module.exports = {
+  directive: publishAnnotationBtn,
+  Controller: publishAnnotationBtnController
+};
