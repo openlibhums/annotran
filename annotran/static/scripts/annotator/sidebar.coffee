@@ -257,13 +257,13 @@ module.exports = class Sidebar extends Host
 
       if isClaimed
         break
-
+    regex = "^\\s+$";
     if ((selection_box.bottom == 0 &&
         selection_box.height == 0 &&
         selection_box.left == 0 &&
         selection_box.right == 0 &&
         selection_box.top == 0 &&
-        selection_box.width == 0) || (range.start.data == ''))
+        selection_box.width == 0) || (range.start.data == '') || (range.start.data.match(regex)))
       alert("You cannot create a new translation here. No text selected.")
       return
 
