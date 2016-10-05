@@ -29,8 +29,9 @@ function Controller($scope, $window, session, settings, languages, votes, report
   $scope.setMode = function(modeValue) {
     $scope.mode = modeValue;
     if ($scope.mode == 'view') {
-      if ($scope.sentenceMode == "off") {
-        $scope.toggleSentence();
+      if ($scope.sentenceMode == "on") {
+          crossframe.call("sentenceSelectionOff");
+          crossframe.call("hideAdder");
       } else {
          $scope.setUser('self');
       }

@@ -31,6 +31,10 @@ class GuestExt extends Guest
         Annotator = require('annotator')
         Annotator._instances[0].plugins.SentenceSelection.toggleOperationOff()
 
+      crossframe.on 'hideAdder', () =>
+        Annotator = require('annotator')
+        Annotator._instances[0].plugins.CSSModify.hideAdder()
+
       crossframe.on 'moveToNextSentence', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.SentenceSelection.moveToNextSentence()
