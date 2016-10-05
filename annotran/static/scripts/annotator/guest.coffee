@@ -38,7 +38,6 @@ class GuestExt extends Guest
       crossframe.on 'moveToNextSentence', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.SentenceSelection.moveToNextSentence()
-        Annotator._instances[0].plugins.CSSModify.hideAdder()
 
       crossframe.on 'resetDOM', () =>
         Annotator = require('annotator')

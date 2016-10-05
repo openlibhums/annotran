@@ -257,7 +257,8 @@ module.exports = class Sidebar extends Host
 
       if isClaimed
         break
-    regex = "^\\s+$";
+    regex = "^\\s*$";
+    console.log(range.start.data)
     if ((selection_box.bottom == 0 &&
         selection_box.height == 0 &&
         selection_box.left == 0 &&
