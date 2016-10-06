@@ -87,7 +87,7 @@ def test_create_redirects_to_vote_read_vote(Vote, Group, Language, Page, User):
 
     result = views.add_vote(request)
 
-    assert isinstance(result, httpexceptions.HTTPRedirection)
+    assert result == {}
 
 @pytest.fixture
 def Vote(request):
