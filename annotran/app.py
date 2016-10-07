@@ -94,6 +94,7 @@ def main(global_config, **settings):
     config.include('annotran.languages')
     config.include('annotran.pages')
     config.include('annotran.votes')
+    config.include('annotran.translations')
     config.include('annotran.admin')
     config.include('annotran.reports')
     config.include('annotran.help')

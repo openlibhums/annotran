@@ -53,8 +53,6 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   // will be created for this language.
   var focusedLanguage;
 
-  var pageid = $rootScope.pageUri;
-
   function containsValue(groupubid, language) {
     var i=0, langs = $rootScope.map[groupubid];
     for (i = 0; i < langs.length; i++) {
@@ -129,15 +127,15 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   };
 
   // Return the full object for the language with the given id.
-  function get(id) {  
+  function get(id) {
     var gs = getLanguageList();
     if (gs) {
       for (var i = 0, max = gs.length; i < max; i++) {
         if (gs[i].id === id) {
           return gs[i];
         }
-      } 
-    }   
+      }
+    }
   }
 
   function getByName(languageName) {
@@ -163,7 +161,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   function addLanguage(language) {
     var response = $http({
       method: 'POST',
-      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/' + pageid + '/' + 'addLanguage'
+      url: settings.serviceUrl + 'languages/' + language + '/' + $rootScope.groupPubid + '/' + 'addLanguage'
     }).then(function successCallback(response) {
       $rootScope.$broadcast(eventsa.LANGUAGE_ADDED, language);
     });

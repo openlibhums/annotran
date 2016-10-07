@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 module.exports = {
     /** Broadcast when a language is added */
     LANGUAGE_ADDED: 'languageAdded',
+    /** Broadcast when a page is added */
+    PAGE_ADDED: 'pageAdded',
     /** Broadcast when the session is reloaded */
     SESSION_RELOADED: 'SessionReloaded',
     /** Broadcast when the currently selected language changes */

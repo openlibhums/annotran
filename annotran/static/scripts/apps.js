@@ -38,6 +38,7 @@ app.controller('AppController', require('./app-controller'))
 
 .service('languages', require('./languages'))
 .service('pages', require('./pages'))
+.service('translations', require('./translations'))
 .service('groups', require('./groups'))
 .service('session', require('./session'))
 .service('votes', require('./votes'))

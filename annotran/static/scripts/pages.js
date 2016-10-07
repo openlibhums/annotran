@@ -1,18 +1,25 @@
+
+/**
+ * @ngdoc service
+ * @name  pages
+ *
+ * @description Adds a page for which at least one language has been added previously.
+ *
+ */
 'use strict';
 
-
-// this assumes that h is stored in the same root directory as annotran
-var events = require('../../../../h/h/static/scripts/events.js');
 var eventsa =  require('./events');
 
 // @ngInject
-function pages(settings, session, $rootScope, $http) {
+function pages(settings, session, $rootScope, $http, translations) {
 
     function addPage(languageName) {
         var response = $http({
             method: 'POST',
             url: settings.serviceUrl + 'pages/' + languageName + '/' +  $rootScope.pageUri  + '/' + $rootScope.groupPubid + '/addPage',
-        });
+        }).then(function successCallback(response) {
+            $rootScope.$broadcast(eventsa.PAGE_ADDED, languageName);
+        });;
         return response;
     };
 
@@ -21,7 +28,7 @@ function pages(settings, session, $rootScope, $http) {
         session.reload(languageName);
     });
 
-  return {
+    return {
     addPage: addPage,
   };
 };
