@@ -33,9 +33,8 @@ import h.groups.models
 import h.accounts.models
 import h.models
 import h.session
-from annotran.languages import models
 from annotran.util import util
-
+from annotran.translations.models import Translation as tran_models
 
 def _current_languages(request):
     """
@@ -52,9 +51,11 @@ def _current_languages(request):
     page = annotran.pages.models.Page.get_by_uri(util.strip_logout(url))
 
     if page is not None:
-        public_languages = models.Language.get_public(page)
 
-        for language in public_languages:
+        public_translations = tran_models.get_public_translations(page)
+        #public_languages = models.Language.get_public(page)
+
+        for language in public_translations:
             languages.append({
                 'groupubid': '__world__',
                 'name': language.name,
@@ -71,19 +72,19 @@ def _current_languages(request):
             return languages
 
         # return languages for all groups for that particular user
-        languages_for_page = models.Language.get_by_page(page)
-
+        translations_for_page = tran_models.get_page_translations(page)
         for group in user.groups:
             # list of languages for a group
             # this needs to also filter by the public group ID
-            for language in languages_for_page:
-                if group in language.members:
+            for language in translations_for_page:
+                if group.id == language.group_id:
                     languages.append({
                         'groupubid': group.pubid,
                         'name': language.name,
                         'id': language.pubid,
                         'url': request.route_url('language_read',
-                                                 public_language_id=language.pubid, public_group_id=group.pubid)
+                                                 public_language_id=language.pubid,
+                                                 public_group_id=group.pubid)
                     })
     return languages
 
@@ -104,9 +105,10 @@ def _current_votes(request):
     user = request.authenticated_user
 
     if page is not None:
-        public_languages = models.Language.get_public(page)
+        public_translations = tran_models.get_public_translations(page)
+        #public_languages = models.Language.get_public(page)
 
-        for language in public_languages:
+        for language in public_translations:
             l_votes = annotran.votes.models.Vote.get_author_scores(page, language)
             if l_votes:
                 for auth_score in l_votes:
@@ -120,11 +122,11 @@ def _current_votes(request):
         if user is None:
             return votes
 
-        languages_for_page = models.Language.get_by_page(page)
+        translations_for_page = tran_models.get_page_translations(page)
+        #languages_for_page = models.Language.get_by_page(page)
 
         for group in user.groups:
-            for language in languages_for_page:
-                if group in language.members:
+            for language in translations_for_page:
                     for auth_score in annotran.votes.models.Vote.get_author_scores(page, language, group):
                         votes.append({
                             'author_id': auth_score.username,

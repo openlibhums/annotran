@@ -42,7 +42,7 @@ def add_vote(request):
 
     voter = h.models.User.get_by_username(request.authenticated_user.username)
 
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
     if language is None or page is None:
         raise exc.HTTPNotFound()
@@ -57,7 +57,8 @@ def add_vote(request):
     request.db.add(vote)
     request.db.flush()
 
-    return {}
+    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
+    return exc.HTTPSeeOther(url)
 
 
 @view_config(route_name='vote_delete', request_method='POST', renderer='annotran:templates/home.html.jinja2')
@@ -75,7 +76,7 @@ def delete_vote(request):
     page_uri = urllib.unquote(urllib.unquote(request.matchdict['page_uri']))
 
     page = annotran.pages.models.Page.get_by_uri(page_uri)
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
     # only authenticated used can delete translations and consequently their scores
     user = h.models.User.get_by_username(request.authenticated_user.username)
