@@ -27,14 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from pyramid import httpexceptions as exc
 from pyramid.view import view_config
 from h import i18n
-from annotran.util import util
 
 import models
-import h
-import annotran
-import h.groups.models
-import annotran.pages.models
-import annotran.groups.views
 
 _ = i18n.TranslationString
 
@@ -45,7 +39,7 @@ def add_language(request):
     """
     This view adds a language
     :param request: a request object
-    :return: a redirect to the language_read method
+    :return: None
     """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
@@ -53,50 +47,15 @@ def add_language(request):
     name = request.matchdict["language"]
     public_group_id = request.matchdict["public_group_id"]
 
-    group = h.groups.models.Group.get_by_pubid(public_group_id)
     language = models.Language.get_by_name(name)
 
     if not language:
-        if group:
-            language = models.Language(name=name, group=group)
-        else:
-            language = models.Language(name=name)
+        language = models.Language(name=name)
         request.db.add(language)
-    else:
-        if group:
-            language.members.append(group)
-    # We need to flush the db session here so that language.id will be generated.
-    request.db.flush()
+        # We need to flush the db session here so that language.id will be generated.
+        request.db.flush()
     url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
-
-
-@view_config(route_name='language_read', request_method='GET')
-def read(request):
-    """
-    Read the list of languages available in a group
-    :param request: the request object
-    :return: a list of languages in a group
-    """
-    url = util.get_url_from_request(request)
-
-    page = annotran.pages.models.Page.get_by_uri(url)
-    public_language_id = request.matchdict["public_language_id"]
-    language = models.Language.get_by_public_language_id(public_language_id, page)
-    public_group_id = request.matchdict["public_group_id"]
-    group = h.groups.models.Group.get_by_pubid(public_group_id)
-
-    if group.id == -1:
-        # this is the public group
-        return annotran.groups.views.read_group(request, group, language=language)
-    if not request.authenticated_userid:
-        return None
-    else:
-        if group in request.authenticated_user.groups:
-            return annotran.groups.views.read_group(request, group, language=language)
-        else:
-            return None
-
 
 def includeme(config):
     """
@@ -104,6 +63,5 @@ def includeme(config):
     :param config: the config to which to commit the routes
     :return: None
     """
-    config.add_route('language_add', 'languages/{language}/{public_group_id}/{page_id}/addLanguage')
-    config.add_route('language_read', '/languages/{public_language_id}/{public_group_id}')
+    config.add_route('language_add', 'languages/{language}/{public_group_id}/addLanguage')
     config.scan(__name__)

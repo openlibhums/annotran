@@ -45,20 +45,13 @@ class Page(Base):
                         default=datetime.datetime.utcnow,
                         server_default=sa.func.now(),
                         nullable=False)
-    # we only need a relationship table between a page and a language
-    members = sa.orm.relationship('Language',
-                                  backref='pages',
-                                  secondary='language_page')
 
-    def __init__(self, uri, language=None):
+    def __init__(self, uri):
         """
         Initialize a page
         :param uri: the URI of the page
-        :param language: the language to attach to the page or None
         """
         self.uri = uri
-        if language:
-            self.members.append(language)
 
     @classmethod
     def get_by_uri(cls, uri):
@@ -81,16 +74,3 @@ class Page(Base):
                 cls.id == id_).one()
         except exc.NoResultFound:
             return None
-
-
-LANGUAGE_PAGE_TABLE = sa.Table(
-    'language_page', Base.metadata,
-    sa.Column('language_id',
-              sa.Integer,
-              sa.ForeignKey('language.id'),
-              nullable=False),
-    sa.Column('page_id',
-              sa.Integer,
-              sa.ForeignKey('page.id'),
-              nullable=False)
-)

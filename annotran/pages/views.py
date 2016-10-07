@@ -54,11 +54,9 @@ def add_page(request):
     page = annotran.pages.models.Page.get_by_uri(page_id)
 
     if not page:
-        page = annotran.pages.models.Page(uri=page_id, language=language)
+        page = annotran.pages.models.Page(uri=page_id)
         request.db.add(page)
-    else:
-        page.members.append(language)
-    request.db.flush()
+        request.db.flush()
 
     url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)

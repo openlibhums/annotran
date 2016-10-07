@@ -56,21 +56,12 @@ class Language(Base):
                         server_default=sa.func.now(),
                         nullable=False)
 
-    # we only need a relationship table between a language and a group
-    members = sa.orm.relationship('Group',
-                                  backref=sa.orm.backref('languages', lazy='dynamic'),
-                                  secondary='group_language',
-                                  lazy='dynamic')
-
-    def __init__(self, name, group=None):
+    def __init__(self, name):
         """
         Initialize a language
         :param name: the name of the language
-        :param group: the group to which the language belongs
         """
         self.name = name
-        if group:
-            self.members.append(group)
 
     @sa.orm.validates('name')
     def validate_name(self, key, name):
@@ -87,18 +78,19 @@ class Language(Base):
         return name
 
     @classmethod
-    def get_by_public_language_id(cls, public_language_id, page):
+    def get_by_public_language_id(cls, public_language_id):
         """
-        Get a language from the public group with the given public language ID
+        Get a language with the given public language ID
         :param public_language_id: the public language ID
-        :param page: the page to which the language corresponds
         :return: either a language or None
         """
-        if page:
-            return cls.query.filter(cls.pubid == public_language_id, cls.pages.contains(page)).first()
+        if public_language_id:
+            return cls.query.filter(cls.pubid == public_language_id).first()
         else:
             return None
 
+
+    '''
     @classmethod
     def get_by_page(cls, page):
         """
@@ -119,6 +111,7 @@ class Language(Base):
         # filter by page object
         world_group = h.groups.models.Group.get_by_pubid("__world__")
         return cls.query.filter(cls.members.contains(world_group), cls.pages.contains(page)).all()
+    '''
 
     @classmethod
     def get_by_id(cls, id_):
@@ -152,16 +145,3 @@ class Language(Base):
         :return: the name of the language
         """
         return '{0}'.format(self.name)
-
-
-GROUP_LANGUAGE_TABLE = sa.Table(
-    'group_language', Base.metadata,
-    sa.Column('group_id',
-              sa.Integer,
-              sa.ForeignKey('group.id'),
-              nullable=False),
-    sa.Column('language_id',
-              sa.Integer,
-              sa.ForeignKey('language.id'),
-              nullable=False)
-)
