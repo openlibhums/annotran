@@ -36,6 +36,7 @@ import h.session
 from annotran.util import util
 from annotran.translations.models import Translation as tran_models
 
+
 def _current_languages(request):
     """
     Get a list of current languages for a group and page. This list is meant to be returned to the client in the
@@ -53,7 +54,7 @@ def _current_languages(request):
     if page is not None:
 
         public_translations = tran_models.get_public_translations(page)
-        #public_languages = models.Language.get_public(page)
+        # public_languages = models.Language.get_public(page)
 
         for language in public_translations:
             languages.append({
@@ -106,7 +107,7 @@ def _current_votes(request):
 
     if page is not None:
         public_translations = tran_models.get_public_translations(page)
-        #public_languages = models.Language.get_public(page)
+        # public_languages = models.Language.get_public(page)
 
         for language in public_translations:
             l_votes = annotran.votes.models.Vote.get_author_scores(page, language)
@@ -123,17 +124,17 @@ def _current_votes(request):
             return votes
 
         translations_for_page = tran_models.get_page_translations(page)
-        #languages_for_page = models.Language.get_by_page(page)
+        # languages_for_page = models.Language.get_by_page(page)
 
         for group in user.groups:
             for language in translations_for_page:
-                    for auth_score in annotran.votes.models.Vote.get_author_scores(page, language, group):
-                        votes.append({
-                            'author_id': auth_score.username,
-                            'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
-                            'language_id': language.pubid,
-                            'group_id': group.pubid,
-                        })
+                for auth_score in annotran.votes.models.Vote.get_author_scores(page, language, group):
+                    votes.append({
+                        'author_id': auth_score.username,
+                        'avg_score': str(round(decimal.Decimal(auth_score.average), 2)),
+                        'language_id': language.pubid,
+                        'group_id': group.pubid,
+                    })
     return votes
 
 
