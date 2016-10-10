@@ -24,7 +24,7 @@ def _mock_request(feature=None, settings=None, params=None,
 
 
 def _matchdict():
-    """Return a matchdict like the one the language_read route receives."""
+    """Return a matchdict like the one the translation_read route receives."""
     return {"pubid": mock.sentinel.pubid, "slug": mock.sentinel.slug}
 
 
@@ -47,7 +47,7 @@ def test_create_adds_language_to_db():
 create_fixtures = pytest.mark.usefixtures('LanguageSchema', 'Language',
                                           'session_model')
 @create_fixtures
-def test_create_redirects_to_language_read_page(Language):
+def test_create_redirects_to_translation_read_page(Language):
     """
         After successfully fetching a mock Language object it
          should not add that one into db but it should redirect.

@@ -54,7 +54,7 @@ def add_language(request):
         request.db.add(language)
         # We need to flush the db session here so that language.id will be generated.
         request.db.flush()
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
+    url = request.route_url('translation_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
 def includeme(config):

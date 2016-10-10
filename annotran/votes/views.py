@@ -57,7 +57,7 @@ def add_vote(request):
     request.db.add(vote)
     request.db.flush()
 
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
+    url = request.route_url('translation_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
 

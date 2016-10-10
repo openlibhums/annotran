@@ -24,7 +24,7 @@ def add_translation(request):
     """
     This view adds a language
     :param request: a request object
-    :return: a redirect to the language_read method
+    :return: a redirect to the translation_read method
     """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
@@ -40,11 +40,11 @@ def add_translation(request):
     translation = tran_models(page=page, language=language, group=group)
     request.db.add(translation)
     request.db.flush()
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
+    url = request.route_url('translation_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
 
-@view_config(route_name='language_read', request_method='GET')
+@view_config(route_name='translation_read', request_method='GET')
 def read(request):
     """
     Read the list of languages available in a group
@@ -78,5 +78,5 @@ def includeme(config):
     :return: None
     """
     config.add_route('add_translation', 'translations/{language}/{public_group_id}/{page_url}/addTranslation')
-    config.add_route('language_read', '/languages/{public_language_id}/{public_group_id}')
+    config.add_route('translation_read', '/languages/{public_language_id}/{public_group_id}')
     config.scan(__name__)
