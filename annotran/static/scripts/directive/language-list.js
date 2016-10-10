@@ -32,6 +32,7 @@ function LanguageListController($scope, $window, languages, groups, pages) {
   };
  
   $scope.focusLanguage = function (languageId) {
+    $scope.$root.setMode('view');
     $scope.$root.selectedUser = undefined;
     languages.focus(languageId);
   };

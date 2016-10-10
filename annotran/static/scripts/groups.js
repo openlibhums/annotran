@@ -115,6 +115,7 @@ function groups(localStorage, session, settings, $rootScope, $http) {
 
   // reset the focused group if the user leaves it
   $rootScope.$on(events.GROUPS_CHANGED, function () {
+    $rootScope.setMode('view');
     if (focusedGroup) {
       focusedGroup = get(focusedGroup.id);
       $rootScope.$broadcast(events.GROUP_FOCUSED, focusedGroup);

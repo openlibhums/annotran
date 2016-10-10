@@ -26,7 +26,7 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
   };
 
-  $scope.setMode = function(modeValue) {
+  $scope.$root.setMode = function(modeValue) {
     $scope.mode = modeValue;
     if ($scope.mode == 'view') {
       if ($scope.sentenceMode == "on") {

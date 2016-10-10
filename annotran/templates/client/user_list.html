@@ -9,8 +9,8 @@
        <ol ng-if="vm.auth.status === 'signed-in'" class="sidebar-tutorial__list">
           <p ng-if="vm.auth.status === 'signed-in'">
             This is
-            <a href="#" ng-if="mode === 'view'" ng-click="setMode('edit')"> view </a>
-            <a href="#" ng-if="mode === 'edit'" ng-click="setMode('view')"> edit </a> mode. Click to change.
+            <a href="#" ng-if="mode === 'view'" ng-click="$root.setMode('edit')"> view </a>
+            <a href="#" ng-if="mode === 'edit'" ng-click="$root.setMode('view')"> edit </a> mode. Click to change.
           </p>
       </ol>
       <ol ng-if="vm.auth.status === 'signed-out'" class="sidebar-tutorial__list">

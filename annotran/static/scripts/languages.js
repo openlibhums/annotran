@@ -258,6 +258,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   // reset the focused language if the user leaves it
   $rootScope.$on(eventsa.LANGUAGES_CHANGED, function (data, keyData) {
+    $rootScope.setMode('view');
     if (focusedLanguage) {
       focusedLanguage = get(focusedLanguage.id);
       if (!focusedLanguage) {
@@ -268,12 +269,14 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   $rootScope.$on(events.GROUP_FOCUSED, function (event, groupPubid) {
     //load languages for selected group
+    $rootScope.setMode('view');
     $rootScope.userListvisible = true;
     return updateRootScopeAndReturnLanguageList(groupPubid);
   });
 
 
   $rootScope.$on(eventsa.SESSION_RELOADED, function (event, languageName) {
+    $rootScope.setMode('view');
     if (languageName != "") {
       $rootScope.map = null;
       focusByName(languageName);
