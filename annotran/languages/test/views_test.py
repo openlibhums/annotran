@@ -13,7 +13,7 @@ def _mock_request(feature=None, settings=None, params=None,
     """Return a mock Pyramid request object."""
     params = params or {"foo": "bar"}
     if authenticated_userid is _SENTINEL:
-        authenticated_userid = "acct:fred@hypothes.is"
+        authenticated_userid = "acct:fred@annotran.com"
     return mock.Mock(
         feature=feature or (lambda feature: True),
         registry=mock.Mock(settings=settings or {}),
@@ -24,39 +24,46 @@ def _mock_request(feature=None, settings=None, params=None,
 
 
 def _matchdict():
-    """Return a matchdict like the one the language_read route receives."""
+    """Return a matchdict like the one the translation_read route receives."""
     return {"pubid": mock.sentinel.pubid, "slug": mock.sentinel.slug}
 
 
-# The fixtures required to mock all of create()'s dependencies.
+# The fixtures required to mock create()'s dependencies when a language does not exist in a db.
+create_fixtures = pytest.mark.usefixtures('session_model')
+
+@create_fixtures
+def test_create_adds_language_to_db():
+    """
+        This should add the new language to the database session, whih is added only if it does not exit in a db.
+        After successfully creating a new language it should redirect
+    """
+    request = _mock_request(matchdict={'public_group_id': '12345', 'language': 'zrrtgy'})
+    result = views.add_language(request)
+    request.db.add.assert_called_once()
+    assert isinstance(result, httpexceptions.HTTPRedirection)
+
+
+# The fixtures required to mock create()'s dependencies for an existing language.
 create_fixtures = pytest.mark.usefixtures('LanguageSchema', 'Language',
                                           'session_model')
-
 @create_fixtures
-def test_create_adds_language_to_db(Language):
-    """This should add the new language to the database session."""
-    language = mock.Mock(id=6)
-    Language.return_value = language
-    request = _mock_request(matchdict={'public_group_id': '12345', 'language': 'test_language'})
-
-    views.add_language(request)
-
-    #request.db.add.assert_called_once_with(language)
-
-@create_fixtures
-def test_create_redirects_to_language_read_page(Language):
-    """After successfully creating a new language it should redirect."""
+def test_create_redirects_to_translation_read_page(Language):
+    """
+        After successfully fetching a mock Language object it
+         should not add that one into db but it should redirect.
+    """
     language = mock.Mock(public_group_id='12345', language='language')
     Language.return_value = language
     request = _mock_request(matchdict={'public_group_id': '12345', 'language': 'test_language'})
-
     result = views.add_language(request)
-
+    assert not request.db.add.called
     assert isinstance(result, httpexceptions.HTTPRedirection)
 
 @create_fixtures
 def test_create_with_non_ascii_name():
-    views.add_language(_mock_request(matchdict={'public_group_id': 'abc', 'language': u"☆ ßüper Gröup ☆"}))
+    request = _mock_request(matchdict={'public_group_id': 'abc', 'language': u"☆ ßüper Gröup ☆"})
+    views.add_language(request)
+
 
 @pytest.fixture
 def LanguageSchema(request):
@@ -66,7 +73,7 @@ def LanguageSchema(request):
 
 @pytest.fixture
 def Language(request):
-    patcher = mock.patch('annotran.languages.views.models.Language', autospec=True)
+    patcher = mock.patch('annotran.languages.models.Language', autospec=True)
     request.addfinalizer(patcher.stop)
     return patcher.start()
 

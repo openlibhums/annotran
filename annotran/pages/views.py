@@ -41,7 +41,7 @@ def add_page(request):
     """
     Add a page to the database
     :param request: a request object
-    :return: a redirect to the language_read URL
+    :return: a redirect to the translation_read URL
     """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
@@ -58,7 +58,7 @@ def add_page(request):
         request.db.add(page)
         request.db.flush()
 
-    url = request.route_url('language_read', public_language_id=language.pubid, public_group_id=public_group_id)
+    url = request.route_url('translation_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
 

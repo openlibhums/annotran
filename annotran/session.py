@@ -61,7 +61,7 @@ def _current_languages(request):
                 'groupubid': '__world__',
                 'name': language.name,
                 'id': language.pubid,
-                'url': request.route_url('language_read', public_language_id=language.pubid,
+                'url': request.route_url('translation_read', public_language_id=language.pubid,
                                          public_group_id='__world__')
             })
 
@@ -83,7 +83,7 @@ def _current_languages(request):
                         'groupubid': group.pubid,
                         'name': language.name,
                         'id': language.pubid,
-                        'url': request.route_url('language_read',
+                        'url': request.route_url('translation_read',
                                                  public_language_id=language.pubid,
                                                  public_group_id=group.pubid)
                     })
