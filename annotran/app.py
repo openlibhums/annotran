@@ -144,6 +144,8 @@ def main(global_config, **settings):
     h.groups.views.read_group = groups_views.read_group
 
     h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
+    h.accounts.views.RegisterController.__init__ = accounts_views.register_controller_init_patch
+    h.accounts.views.AuthController.__init__ = accounts_views.auth_controller_init_patch
 
     h.resources.Root.__acl__ = annotran.resources.__acl__
 

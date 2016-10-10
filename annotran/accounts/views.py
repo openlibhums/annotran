@@ -27,11 +27,32 @@ import annotran.views
 import deform
 
 from h import i18n
-from h.accounts import views as haccv
 from pyramid.view import view_config
 from h.accounts import schemas
 
 _ = i18n.TranslationString
+
+
+def register_controller_init_patch(self, request):
+    tos_link = ('<a href="/terms-of-service">' +
+                _('Terms of Service') +
+                '</a>')
+    cg_link = ('<a href="/community-guidelines">' +
+               _('Community Guidelines') +
+               '</a>')
+    privacy_link = ('<a href="/privacy-policy">' +
+               _('Privacy Policy') +
+               '</a>')
+    form_footer = _(
+        'You are agreeing to be bound by our {tos_link}, '
+        '{cg_link} and {privacy_link}.').format(tos_link=tos_link, cg_link=cg_link, privacy_link=privacy_link)
+
+    self.request = request
+    self.schema = schemas.RegisterSchema().bind(request=self.request)
+    self.form = deform.Form(self.schema,
+                            buttons=(_('Sign up'),),
+                            footer=form_footer)
+
 
 class ProfileController(object):
     def __init__(self):
@@ -50,7 +71,8 @@ class ProfileController(object):
                 'password_form': controller_instance.forms['password'].render(),
                 'support_address': annotran.views.Shared.support_address}
 
-def new_init(self, request):
+
+def auth_controller_init_patch(self, request):
     """
     Replace the constructor of the h's h.account.views AuthController class - in order to skip the stream loading that is not used in the annotran
     :param request: the current request
@@ -66,5 +88,3 @@ def new_init(self, request):
                             footer=form_footer)
     self.login_redirect = self.request.route_url('index')
     self.logout_redirect = self.request.route_url('index')
-
-haccv.AuthController.__init__ = new_init
