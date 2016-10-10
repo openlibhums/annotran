@@ -89,30 +89,6 @@ class Language(Base):
         else:
             return None
 
-
-    '''
-    @classmethod
-    def get_by_page(cls, page):
-        """
-        Return a list of languages on a page
-        :param page: the page to query
-        :return: a list of languages or an empty list
-        """
-        return cls.query.filter(cls.pages.contains(page)).all()
-
-    @classmethod
-    def get_public(cls, page):
-        """
-        Get a list of public languages for a page
-        :param page: the page to query
-        :return: a list of languages or an empty list
-        """
-        # get the current page object from the database
-        # filter by page object
-        world_group = h.groups.models.Group.get_by_pubid("__world__")
-        return cls.query.filter(cls.members.contains(world_group), cls.pages.contains(page)).all()
-    '''
-
     @classmethod
     def get_by_id(cls, id_):
         """
