@@ -18,6 +18,13 @@ def community_guidelines(context, request):
     return {'support_address': Shared.support_address}
 
 
+@view_config(route_name='privacypolicy', request_method='GET',
+             renderer='annotran:templates/privacy-policy.html.jinja2')
+def privacy_policy(context, request):
+    """Display the terms of service."""
+    return {'support_address': Shared.support_address}
+
+
 def includeme(config):
     """
     Pyramid includeme setup method to add routes
@@ -26,6 +33,7 @@ def includeme(config):
     """
     config.add_route('termsofservice', '/terms-of-service')
     config.add_route('communityguidelines', '/community-guidelines')
+    config.add_route('privacypolicy', '/privacy-policy')
     config.scan(__name__)
 
 

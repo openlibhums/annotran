@@ -74,7 +74,8 @@ class ProfileController(object):
 
 def auth_controller_init_patch(self, request):
     """
-    Replace the constructor of the h's h.account.views AuthController class - in order to skip the stream loading that is not used in the annotran
+    Replace the constructor of the h's h.account.views AuthController class - in order to skip the stream loading that
+    is not used in the annotran
     :param request: the current request
     :return: None
     """
