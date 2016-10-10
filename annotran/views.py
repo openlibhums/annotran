@@ -11,6 +11,13 @@ def terms_of_service(context, request):
     return {'support_address': Shared.support_address}
 
 
+@view_config(route_name='communityguidelines', request_method='GET',
+             renderer='annotran:templates/community-guidelines.html.jinja2')
+def community_guidelines(context, request):
+    """Display the terms of service."""
+    return {'support_address': Shared.support_address}
+
+
 def includeme(config):
     """
     Pyramid includeme setup method to add routes
@@ -18,6 +25,7 @@ def includeme(config):
     :return: None
     """
     config.add_route('termsofservice', '/terms-of-service')
+    config.add_route('communityguidelines', '/community-guidelines')
     config.scan(__name__)
 
 

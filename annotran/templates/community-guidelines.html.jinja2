@@ -1,0 +1,83 @@
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+!-->
+
+{% extends "../../../h/h/templates/layouts/base.html.jinja2" %}
+
+{% block title %}Annotran | Community Guidelines.{% endblock %}
+
+{% block styles %}
+  {% assets "help_page_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+    <style>
+        li {
+            list-style: circle;
+            margin-left: 25px;
+        }
+    </style>
+{% endblock %}
+
+
+
+{%  block content %}
+  <div class="help-page">
+    <div class="help-page-content masthead-small">
+      {% include "includes/logo-header.html.jinja2" %}
+    </div>
+    <article class="help-page-content">
+        <section class="help-page-section">
+            <h1><strong>Annotran Community Guidelines</strong></h1>
+        </section>
+        <section class="help-page-section">
+            <h2><strong>Annotran Community Guidelines</strong></h2>
+            <p>Annotran is an open platform for translating web resources. We believe translations can improve conversations on the web and we hope communities thrive by sharing knowledge and collaborating across linguistic boundaries.</p>
+            <p>We have a set of guidelines for participating in public translations through annotran. By Public, we mean translations that are published to the Annotran Public channel.</p>
+        </section>
+        <section class="help-page-section">
+            <p><strong>Things you should do:</strong></p>
+            <ul class="list">
+                <li>Be civil. When there’s disagreement, be respectful.</li>
+                <li>Make sure your translations are constructive, informative and well-intentioned.</li>
+            </ul>
+        </section>
+        <section class="help-page-section">
+            <p><strong>Things you shouldn’t do:</strong></p>
+            <ul class="list">
+                <li>Engage in illegal activity.</li>
+                <li>Circumvent copyright or post copyrighted works in translations.</li>
+                <li>Post translations of works that are under copyright without an open license.</li>
+                <li>Engage in personal attacks, trolling or harassment against other users.</li>
+                <li>Engage in marketing or advertising of your own offerings or others’.</li>
+                <li>Post explicit content.</li>
+                <li>Clutter the public channel with test messages.</li>
+            </ul>
+        </section>
+        <section class="help-page-section">
+            <p><strong>Use of the Annotran service is a privilege, not a right. We reserve the right to limit, suspend or terminate users who violate these guidelines.</strong></p>
+        </section>
+    </article>
+  </div>
+{% endblock %}}
