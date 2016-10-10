@@ -78,7 +78,8 @@ module.exports = class Substitution extends Annotator.Plugin
     newEle.html(substituteText)
 
     newEle.css({
-      "background-color" : "#F5F5F5"
+      "background-color" : "#F5F5F5",
+      "color" : "#000000"
     })
 
     ele.before(newEle)
