@@ -26,9 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # -*- coding: utf-8 -*-
 
 import datetime
-
-import h
-import h.groups.models
+import h.pubid
 import sqlalchemy as sa
 from h.db import Base
 from sqlalchemy.orm import exc

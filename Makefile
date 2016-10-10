@@ -33,4 +33,4 @@ test: backend-test
 #	@python setup.py test
 
 backend-test:
-	py.test -q
+	py.test
