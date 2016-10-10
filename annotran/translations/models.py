@@ -65,7 +65,6 @@ class Translation(Base):
         except exc.NoResultFound:
             return None
 
-
     @classmethod
     def get_public_translations(cls, page):
         """

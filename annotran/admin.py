@@ -2,6 +2,7 @@ import urllib
 
 import annotran
 import annotran.groups.views
+import annotran.translations.models
 import annotran.languages.models
 import annotran.pages.models
 import annotran.reports.models
@@ -63,9 +64,11 @@ def reports_index(_):
     ret_list = []
 
     for report in reports:
-        ret_dict = {'url': annotran.pages.models.Page.get_by_id(report.page_id).uri,
-                    'group': h.groups.models.Group.get_by_id(report.group_id).pubid,
-                    'language': annotran.languages.models.Language.get_by_id(report.language_id).pubid,
+        translation = annotran.translations.models.Translation.get_by_id(report.translation_id)
+
+        ret_dict = {'url': annotran.pages.models.Page.get_by_id(translation.page_id).uri,
+                    'group': h.groups.models.Group.get_by_id(translation.group_id).pubid,
+                    'language': annotran.languages.models.Language.get_by_id(translation.language_id).pubid,
                     'author': h.util.userid_from_username(h.accounts.models.User.query.filter(
                         h.accounts.models.User.id == report.author_id).first().username, request=_),
                     'reporter': h.util.userid_from_username(h.accounts.models.User.query.filter(
@@ -106,7 +109,7 @@ def reports_delete_report(request, block=False):
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
     page = annotran.pages.models.Page.get_by_uri(url)
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
     report = annotran.reports.models.Report.get_by_id(request.matchdict["report"])
 
@@ -116,13 +119,15 @@ def reports_delete_report(request, block=False):
     public_group_id = request.matchdict["group"]
     group = h.groups.models.Group.get_by_pubid(public_group_id)
 
+    translation = annotran.translations.models.Translation.get_translation(page, language, group)
+
     if block:
         dummy_user = h.accounts.models.User.get_by_username("ADummyUserForGroupCreation")
         user_object.activation_id = dummy_user.activation_id
 
         request.db.flush()
 
-    delete_report(page, language, group, user_object, reporter=True)
+    delete_report(translation, user_object, reporter=True)
 
     return exc.HTTPSeeOther("/admin/reports")
 
@@ -152,19 +157,22 @@ def reports_delete(request, block=False):
     :return: a redirect to the reports home page
     """
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
-    page = annotran.pages.models.Page.get_by_uri(url)
     user = request.matchdict["user"]
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
+    public_group_id = request.matchdict["group"]
+
+    page = annotran.pages.models.Page.get_by_uri(url)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
+    group = h.groups.models.Group.get_by_pubid(public_group_id)
+
+    translation = annotran.translations.models.Translation.get_translation(page, language, group)
+
     user_object = h.accounts.models.User.query.filter(
         h.accounts.models.User.username == h.util.split_user(user)["username"]).first()
 
-    public_group_id = request.matchdict["group"]
-    group = h.groups.models.Group.get_by_pubid(public_group_id)
-
     delete_annotations(request, group=group, language=language, search_url=url, user=user)
 
-    delete_report(page, language, group, user_object)
+    delete_report(translation, user_object)
 
     annotran.votes.models.Vote.delete_votes(page, language, group, user_object)
 
@@ -177,26 +185,20 @@ def reports_delete(request, block=False):
     return exc.HTTPSeeOther("/admin/reports")
 
 
-def delete_report(page, language, group, user, reporter=False):
+def delete_report(translation, user, reporter=False):
     """
     Delete all reports pertaining to a translation.
-    :param page: the page object of the translation
-    :param language: the language object of the translation
-    :param group: the group object of the translation
+    :param translation: the translation object
     :param user: the user object of the translation
     :param reporter: if true, deletes a report where the reporter is equal to user
     :return: None
     """
     # NB this function deletes all reports pertaining to this translation
     if not reporter:
-        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
-                                                    annotran.reports.models.Report.language == language,
-                                                    annotran.reports.models.Report.group == group,
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.translation_id == translation.id,
                                                     annotran.reports.models.Report.author == user).delete()
     else:
-        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page == page,
-                                                    annotran.reports.models.Report.language == language,
-                                                    annotran.reports.models.Report.group == group,
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.translation_id == translation.id,
                                                     annotran.reports.models.Report.Reporter == user).delete()
 
 
@@ -211,10 +213,9 @@ def reports_view(request):
     :return: a context dictionary for the translation template
     """
     url = urllib.unquote(urllib.unquote(request.matchdict["page"]))
-    page = annotran.pages.models.Page.get_by_uri(url)
 
     public_language_id = request.matchdict["language"]
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
     public_group_id = request.matchdict["group"]
     group = h.groups.models.Group.get_by_pubid(public_group_id)

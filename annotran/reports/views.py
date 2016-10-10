@@ -1,9 +1,10 @@
 import urllib
 
 import annotran
-import annotran.languages.models
+import annotran.translations.models
 import annotran.mailer
 import annotran.pages.models
+import annotran.languages.models
 import annotran.reports.models
 import annotran.views
 import h
@@ -33,21 +34,23 @@ def add_report(request):
     user_id = request.matchdict['user_id']
 
     page = annotran.pages.models.Page.get_by_uri(page_url)
-    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id, page)
     author = h.models.User.get_by_username(user_id)
     reporter = h.models.User.get_by_username(request.authenticated_user.username)
     group = h.groups.models.Group.get_by_pubid(public_group_id)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
+
+    translation = annotran.translations.models.Translation.get_translation(page, language, group)
 
     if language is None or page is None:
         raise exc.HTTPNotFound()
 
-    report = annotran.reports.models.Report.get_report(page, language, group, author, reporter)
+    report = annotran.reports.models.Report.get_report(translation, author, reporter)
 
-    #if already in a database, it means it was reported previously
+    # if already in a database, it means it was reported previously
     if report:
         return exc.HTTPBadRequest()
 
-    report = annotran.reports.models.Report(page, language, group, author, reporter)
+    report = annotran.reports.models.Report(translation, author, reporter)
     request.db.add(report)
     request.db.flush()
 
@@ -61,6 +64,7 @@ def add_report(request):
                          body=body_text)
 
     return {}
+
 
 def includeme(config):
     """
