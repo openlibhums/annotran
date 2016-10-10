@@ -69,6 +69,17 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.savedOffset = 0
     return data
 
+  returnNext: (currentTarget) ->
+    nextSibling = $(currentTarget).next()
+
+    if nextSibling != undefined and nextSibling.length != 0 and nextSibling.prop("tagName").toLowerCase() != "figure" and nextSibling.prop("tagName").toLowerCase() != "img" and nextSibling.prop("tagName").toLowerCase() != "applet"  and nextSibling.prop("tagName").toLowerCase() != "audio"  and nextSibling.prop("tagName").toLowerCase() != "embed"  and nextSibling.prop("tagName").toLowerCase() != "object"  and nextSibling.prop("tagName").toLowerCase() != "video"
+      return nextSibling
+    else
+      if nextSibling != undefined and nextSibling.length != 0
+        return this.returnNext(nextSibling)
+      else
+        return this.findNextJumpNode(currentTarget)
+
   scanForNextSibling: (initialTarget, currentTarget, offset_to_use, endIndex) ->
     # here want to test:
     # 1. is there a sibling element?
@@ -76,7 +87,10 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentIndex = 0
     this.currentSentence = 0
 
-    nextSibling = $(currentTarget).next()
+    nextSibling = this.returnNext(currentTarget)
+
+    if offset_to_use == endIndex + 1
+      initialTarget = nextSibling
 
     if offset_to_use == endIndex + 1
       initialTarget = nextSibling
@@ -84,16 +98,8 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     if nextSibling != undefined and nextSibling.length != 0
       this.selectSentence initialTarget, nextSibling
     else
-      nextSibling = this.findNextJumpNode(currentTarget)
-
-      if offset_to_use == endIndex + 1
-        initialTarget = nextSibling
-
-      if nextSibling != undefined and nextSibling.length != 0
-        this.selectSentence initialTarget, nextSibling
-      else
-        # this needs to gracefully fall through
-        this.selectSentence initialTarget, nextSibling
+      # this needs to gracefully fall through
+      this.selectSentence initialTarget, nextSibling
 
   selectSentence: (initialTarget, currentTarget = undefined, force = false) ->
 
@@ -142,7 +148,16 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
       this.anchorToPage(data)
     else
-      this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
+      tagName = $(currentTarget).prop('tagName').toLowerCase()
+
+      if tagName == 'tr'
+        this.selectSentence initialTarget, currentTarget.find(">:first-child")
+      if tagName == 'td' or tagName == 'th'
+        length = $(currentTarget).text().length - 1
+        data = this.packageData(initialTarget, currentTarget, length, 0)
+        this.anchorToPage(data)
+      else
+        this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
 
   findASentence: (event = {}) =>
     if this.operational == false
@@ -185,10 +200,16 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       if tagName != undefined
         tagName = tagName.toLowerCase()
 
-        if tagName == 'body' or tagName == 'html'
-          return nextSibling
+        if tagName != "figure" and tagName != "img"
+          if tagName == 'body' or tagName == 'html'
+            return nextSibling
+          else
+            return this.findNextJumpNode parent
         else
-          return this.findNextJumpNode parent
+          if tagName == 'body' or tagName == 'html'
+            return nextSibling
+          else
+            return this.findNextJumpNode nextSibling
       else
         return this.findNextJumpNode parent
 
@@ -205,6 +226,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentSentence = this.currentSentence + 1
 
     elementToUse = currentSelection.extentNode.parentElement
+    tagName = $(elementToUse).prop('tagName').toLowerCase()
 
     if elementToUse.textContent.length <= (this.currentIndex)
       nextSibling = $(elementToUse).next()
