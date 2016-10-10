@@ -73,11 +73,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     nextSibling = $(currentTarget).next()
 
     if nextSibling != undefined and nextSibling.length != 0 and nextSibling.prop("tagName").toLowerCase() != "figure" and nextSibling.prop("tagName").toLowerCase() != "img" and nextSibling.prop("tagName").toLowerCase() != "applet"  and nextSibling.prop("tagName").toLowerCase() != "audio"  and nextSibling.prop("tagName").toLowerCase() != "embed"  and nextSibling.prop("tagName").toLowerCase() != "object"  and nextSibling.prop("tagName").toLowerCase() != "video"
-      console.log(nextSibling.prop("tagName").toLowerCase())
       return nextSibling
     else
       if nextSibling != undefined and nextSibling.length != 0
-        console.log(nextSibling.prop("tagName").toLowerCase())
         return this.returnNext(nextSibling)
       else
         return this.findNextJumpNode(currentTarget)
@@ -192,7 +190,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
       if tagName != undefined
         tagName = tagName.toLowerCase()
-        console.log(tagName)
 
         if tagName != "figure" and tagName != "img"
           if tagName == 'body' or tagName == 'html'
