@@ -148,7 +148,16 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
       this.anchorToPage(data)
     else
-      this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
+      tagName = $(currentTarget).prop('tagName').toLowerCase()
+
+      if tagName == 'tr'
+        this.selectSentence initialTarget, currentTarget.find(">:first-child")
+      if tagName == 'td' or tagName == 'th'
+        length = $(currentTarget).text().length - 1
+        data = this.packageData(initialTarget, currentTarget, length, 0)
+        this.anchorToPage(data)
+      else
+        this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
 
   findASentence: (event = {}) =>
     if this.operational == false
@@ -217,6 +226,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     this.currentSentence = this.currentSentence + 1
 
     elementToUse = currentSelection.extentNode.parentElement
+    tagName = $(elementToUse).prop('tagName').toLowerCase()
 
     if elementToUse.textContent.length <= (this.currentIndex)
       nextSibling = $(elementToUse).next()
