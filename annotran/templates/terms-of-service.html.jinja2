@@ -1,0 +1,102 @@
+<!--
+'''
+Copyright (c) 2013-2014 Hypothes.is Project and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+!-->
+
+{% extends "../../../h/h/templates/layouts/base.html.jinja2" %}
+
+{% block title %}Annotran | Terms of service.{% endblock %}
+
+{% block styles %}
+  {% assets "help_page_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
+
+
+
+{%  block content %}
+  <div class="help-page">
+    <div class="help-page-content masthead-small">
+      {% include "includes/logo-header.html.jinja2" %}
+    </div>
+    <article class="help-page-content">
+        <section class="help-page-section">
+            <h1>Terms of Service</h1>
+        </section>
+        <section class="help-page-section">
+            <h3 id="agreement">Agreement</h3>
+            <p>By using this service, you agree to certain rights and responsibilities (Terms).  This service is intended to be used by those who are 13 years of age or older. By using the service, you represent that you are 13 years of age or older. Outside the US you should follow local laws.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="indemnification">Indemnification</h3>
+            <p dir="ltr">You are responsible for your use of this service, for any content you publish and for any consequences thereof.  Neither Birkbeck College nor the Open Library of Humanities monitors or controls your contributions directly and cannot offer any protection or indemnification for you. As above, you should follow your local legal restrictions. In particular, users must comply with copyright legislation as it pertains to web material and their own translations.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="content-license">Content license</h3>
+            <p>You agree to freely dedicate your public contributions to the public domain or, where that is not possible because of law, to freely license your publications, under the <a href="http://creativecommons.org/publicdomain/zero/1.0/" target="_blank">Creative Commons CC0</a> Public Domain Dedication (contributions prior to October 27, 2014 were made without reference to specific licensing terms). The CC0 Public Domain Dedication allows free copying, modification, distribution and performance of your contributions, even for commercial purposes, all without asking permission. We note that Creative Commons has provided additional <a href="https://wiki.creativecommons.org/Public_Domain_Guidelines" target="_blank">public domain guidelines</a> that we strongly support. Most importantly, that if you use contributed content that you give credit and attribution, provide a link to the original source, protect the reputation of authors, contribute discoveries back, and generally share knowledge in an open way.  Translations made using our groups feature are ​not​ in the public domain or licensed under Creative Commons as with public contributions. The individual user reserves all rights provided by copyright law for their content created within groups.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="nym-policy">Nym policy</h3>
+            <p>We support pseudonyms.  You are free describe as much or as little about yourself as you want.  The only requirement for signing up is a working email address.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="tracking">Tracking</h3>
+            <p>Generally, we do not store identifying information about users other than the email address required for account creation and what they choose to record in their profile. Of course, any data you contribute publicly can potentially be used by others to identify or track you. Server logs are kept only where required to ensure quality of service and prevent abuse.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="data-retention">Data retention</h3>
+            <p>Our intention is to retain your user account information and user contributions in perpetuity, or until you should decide to delete your account.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="account-deletion-policy">Account deletion policy</h3>
+            <p>You are free to delete your account at any time. Deleting an account is irreversible. If you have contributed to public conversations that others have replied to we will not delete your individual translations. If you want to delete your translations, you must do so before deleting your account, and you must delete each translation individually, by hand. Deleting an translation does not delete replies to that translation, it creates a blank stub that replies are still attached to. If you want to delete your account, please contact us at <a href="mailto:{{ support_address }}?subject=[TOS]%20Please%20delete%20my%20account">{{ support_address }}</a>.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="termination-conditions">Termination conditions</h3>
+            <p>We may launch new or terminate existing services at our discretion. If we discontinue our public translation service, we will give you at least 30 days notice to download or otherwise preserve your data. It is our objective that even if we no longer exist as an active organization we will make provisions to keep translation and other data publicly available and preserved for as long as possible.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="data-export">Data export</h3>
+            <p>Your data belongs to you.  We hold it so that we can provide you a service. We will be building tools to enable easy export of your data.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="tos-change-policy">ToS change policy</h3>
+            <p>This document will update from time to time and we will announce all changes.  We’ll make sure we preserve changes, either here or via services that keep track of the history of the web.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="law-enforcement">Law enforcement</h3>
+            <p>If we are approached by law enforcement for information about you, we will not provide that information including whether that information exists without a subpoena or a court order. We will notify users of any legal requests for their account information, including a copy of the request, prior to disclosure unless we are legally prohibited from doing so (<a href="http://www.law.cornell.edu/uscode/text/18/2705" target="_blank">section 2705b</a>).</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="civility">Civility</h3>
+            <p>You have the right to use this service only so long as you promote civil discourse and do not harass or intimidate other users.</p>
+        </section>
+        <section class="help-page-section">
+            <h3 id="Versions">Changes to this document</h3>
+            <p>We may amend these terms of service at any time.</p>
+        </section>
+    </article>
+  </div>
+{%  endblock %}

@@ -98,6 +98,7 @@ def main(global_config, **settings):
     config.include('annotran.admin')
     config.include('annotran.reports')
     config.include('annotran.help')
+    config.include('annotran.views')
 
     config.add_subscriber_predicate('asset_request', h.assets.AssetRequest)
     config.add_subscriber(h.assets.asset_response_subscriber, pyramid.events.NewResponse, asset_request=True)
@@ -143,9 +144,6 @@ def main(global_config, **settings):
     h.groups.views.read_group = groups_views.read_group
 
     h.accounts.views.ProfileController.get = accounts_views.ProfileController.profile_get
-
-    h.views.error = annotran.views.error
-    h.views.json_error = annotran.views.json_error
 
     h.resources.Root.__acl__ = annotran.resources.__acl__
 
