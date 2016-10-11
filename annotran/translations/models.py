@@ -87,7 +87,7 @@ class Translation(Base):
     @classmethod
     def get_page_translations(cls, page):
         """
-        Get a list of public translations for a page
+        Get a list of all translations for a page
         :param page: the page to query
         :return: a list of languages or an empty list
         """
