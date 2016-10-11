@@ -204,8 +204,9 @@ class WidgetControllerExt extends widgetcontroller
       response = $http({
        method: 'POST',
        url: settings.serviceUrl + 'votes/' + groups.focused().id + '/' + languages.focused().id + '/' + pageUri + '/' + 'deleteVote',
-      })
-      session.reload("")
+      }).then(successCallback = (response) ->
+        session.reload("")
+      )
       return response
 
 
