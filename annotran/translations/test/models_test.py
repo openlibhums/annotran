@@ -129,7 +129,7 @@ def test_get_public_translations_when_do_not_exist():
 
     assert tran_models.Translation.get_public_translations(p) == []
 
-def test_get_page_translations():
+def test_get_page_translations_with_single_group():
     p = pages_models.Page(uri="http://www.annotran_test.com/")
     db.Session.add(p)
 
@@ -151,3 +151,43 @@ def test_get_page_translations():
 
     assert tran_models.Translation.get_page_translations(p) ==  \
            [(l1.id, l1.name, l1.pubid, g.id), (l2.id, l2.name, l2.pubid, g.id)]
+
+def test_get_page_translations_with_multiple_groups():
+    p = pages_models.Page(uri="http://www.annotran_test.com/")
+    db.Session.add(p)
+
+    l1 = lang_models.Language(name="abc_language_1")
+    db.Session.add(l1)
+
+    l2 = lang_models.Language(name="abc_language_2")
+    db.Session.add(l2)
+
+    l3 = lang_models.Language(name="abc_language_3")
+    db.Session.add(l3)
+
+    g1 = groups_models.Group(name="abc_group_1", creator=factories.User())
+    db.Session.add(g1)
+    db.Session.flush()
+
+    g2 = groups_models.Group(name="abc_group_2", creator=factories.User())
+    db.Session.add(g2)
+    db.Session.flush()
+
+    g3 = groups_models.Group(name="Public", creator=factories.User())
+    g3.id = -1
+    g3.pubid = "__world__"
+    db.Session.add(g3)
+    db.Session.flush()
+
+    t1 = tran_models.Translation(page=p, language=l1, group=g1)
+    t2 = tran_models.Translation(page=p, language=l2, group=g2)
+    t3 = tran_models.Translation(page=p, language=l3, group=g3)
+    db.Session.add(t1)
+    db.Session.add(t2)
+    db.Session.add(t3)
+    db.Session.flush()
+
+    assert tran_models.Translation.get_page_translations(p) ==  \
+           [(l1.id, l1.name, l1.pubid, g1.id),
+            (l2.id, l2.name, l2.pubid, g2.id),
+            (l3.id, l3.name, l3.pubid, g3.id)]
