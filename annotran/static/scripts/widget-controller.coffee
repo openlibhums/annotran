@@ -204,10 +204,9 @@ class WidgetControllerExt extends widgetcontroller
       response = $http({
        method: 'POST',
        url: settings.serviceUrl + 'votes/' + groups.focused().id + '/' + languages.focused().id + '/' + pageUri + '/' + 'deleteVote',
-      }).then(successCallback = (response) ->
-        session.reload("")
-      )
+      })
       return response
+
 
 
     $scope.$on eventsa.USER_DELETED_ANNOTATION, (event, deleted) ->
