@@ -7,8 +7,8 @@ var eventsa =  require('../events');
 function Controller($scope, $window, session, settings, languages, votes, reports, crossframe) {
 
   this.serviceUrl = settings.serviceUrl;
-  $scope.sentenceMode = "on";
-  $scope.mode = "view";
+  $scope.$root.sentenceMode = "on";
+  $scope.$root.mode = "view";
 
   if ($scope.model == null) {
     $scope.model = {};
@@ -27,14 +27,14 @@ function Controller($scope, $window, session, settings, languages, votes, report
   };
 
   $scope.$root.setMode = function(modeValue) {
-    $scope.mode = modeValue;
-    if ($scope.mode == 'view') {
-      if ($scope.sentenceMode == "on") {
+    $scope.$root.mode = modeValue;
+    if ($scope.$root.mode == 'view') {
+      if ($scope.$root.sentenceMode == "on") {
         crossframe.call("sentenceSelectionOff");
         crossframe.call("hideAdder");
       }
       $scope.setUserForReset();
-      $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS)
+      $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS);
     }
   };
 
@@ -65,16 +65,16 @@ function Controller($scope, $window, session, settings, languages, votes, report
   };
 
   $scope.enableSentence = function () {
-    $scope.sentenceMode = "on";
+    $scope.$root.sentenceMode = "on";
     $scope.setUserForReset();
-    this.$root.sentencebysentence = $scope.sentenceMode;
+    this.$root.sentencebysentence = $scope.$root.sentenceMode;
 
     crossframe.call("sentenceSelectionOn");
   };
 
   $scope.disableSentence = function () {
-    $scope.sentenceMode = "off";
-    this.$root.sentencebysentence = $scope.sentenceMode;
+    $scope.$root.sentenceMode = "off";
+    this.$root.sentencebysentence = $scope.$root.sentenceMode;
 
     crossframe.call("sentenceSelectionOff");
   };
@@ -90,7 +90,7 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
     var voteRet = votes.addVote(author.username, languages.focused().id, score);
 
-    // set scope.author to an empty dictionary in order to hide the box once the user has voted.
+    //set scope.author to an empty dictionary in order to hide the box once the user has voted.
     $scope.author={};
 
     return voteRet;

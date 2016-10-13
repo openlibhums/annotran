@@ -439,6 +439,10 @@ function AnnotationController(
     // session, which we should probably do anyway (and move to opaque bearer
     // tokens for the access token).
 
+    if ($scope.$root.sentenceMode == "on") {
+      return false;
+    }
+
     if(!$scope.$root.editOnly){
         // we always return false if the user has selected to view a translation
         // this is because the DOM substitution will have already taken place and the XPATHs
