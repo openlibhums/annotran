@@ -9,6 +9,7 @@ import h.groups.models
 import sqlalchemy as sa
 from h.db import Base
 from sqlalchemy.orm import exc
+from sqlalchemy import ForeignKeyConstraint
 
 
 class Report(Base):
@@ -19,8 +20,15 @@ class Report(Base):
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
 
-    translation_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.translations.models.Translation.id), nullable=True)
-    translation = sa.orm.relationship('Translation', backref='translation_report')
+
+    page_id = sa.Column(sa.Integer)
+    language_id = sa.Column(sa.Integer)
+    group_id = sa.Column(sa.Integer)
+
+    sa.ForeignKeyConstraint([page_id, language_id, group_id],
+                            [annotran.translations.models.Translation.page_id,
+                             annotran.translations.models.Translation.language_id,
+                             annotran.translations.models.Translation.group_id])
 
     author_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id))
     author = sa.orm.relationship('User', backref='author_report', foreign_keys=[author_id])
@@ -36,7 +44,9 @@ class Report(Base):
         :param reporter: the reporting user to which the report corresponds
         """
         if translation and author and reporter:
-            self.translation_id = translation.id
+            self.page_id = translation.page_id
+            self.language_id = translation.language_id
+            self.group_id = translation.group_id
             self.author_id = author.id
             self.reporter_id = reporter.id
 
@@ -51,7 +61,9 @@ class Report(Base):
         """
         try:
             return cls.query.filter(
-                cls.translation_id == translation.id,
+                cls.page_id == translation.page_id,
+                cls.language_id == translation.language_id,
+                cls.group_id == translation.group_id,
                 cls.author_id == author.id,
                 cls.reporter_id == reporter.id).one()
         except exc.NoResultFound:

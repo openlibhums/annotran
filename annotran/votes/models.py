@@ -19,24 +19,22 @@ class Vote(Base):
     """
     __tablename__ = 'vote'
 
-    id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
-
     score = sa.Column(sa.Integer,
                       nullable=False)
 
-    page_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.pages.models.Page.id))
+    page_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.pages.models.Page.id), primary_key=True)
     page = sa.orm.relationship('Page', backref='page_vote')
 
-    language_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.languages.models.Language.id))
+    language_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.languages.models.Language.id), primary_key=True)
     language = sa.orm.relationship('Language', backref='language_vote')
 
-    group_id = sa.Column(sa.Integer, sa.ForeignKey(h.groups.models.Group.id), nullable=True)
+    group_id = sa.Column(sa.Integer, sa.ForeignKey(h.groups.models.Group.id), primary_key=True)
     group = sa.orm.relationship('Group', backref='group_vote')
 
-    author_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id))
+    author_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id), primary_key=True)
     author = sa.orm.relationship('User', backref='author_vote', foreign_keys=[author_id])
 
-    voter_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id))
+    voter_id = sa.Column(sa.Integer, sa.ForeignKey(h.accounts.models.User.id), primary_key=True)
     voter = sa.orm.relationship('User', backref='voter_vote', foreign_keys=[voter_id])
 
     def __init__(self, score, page, language, group, author, voter):
@@ -155,7 +153,7 @@ class Vote(Base):
             return None
 
     @classmethod
-    def get_by_id(cls, id_):
+    def get_by_id(cls, vote):
         """
         Get a vote by ID
         :param id_: the ID to query
@@ -163,6 +161,10 @@ class Vote(Base):
         """
         try:
             return cls.query.filter(
-                cls.id == id_).one()
+                cls.page_id == vote.page_id,
+                cls.language_id == vote.language_id,
+                cls.group_id == vote.group_id,
+                cls.author_id == vote.author_id,
+                cls.voter_id == vote.voter_id).one()
         except exc.NoResultFound:
             return None

@@ -19,15 +19,13 @@ class Translation(Base):
     """
     __tablename__ = 'translation'
 
-    id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
-
-    page_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.pages.models.Page.id))
+    page_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.pages.models.Page.id), primary_key=True)
     page = sa.orm.relationship('Page', backref='page_translation')
 
-    language_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.languages.models.Language.id))
+    language_id = sa.Column(sa.Integer, sa.ForeignKey(annotran.languages.models.Language.id), primary_key=True)
     language = sa.orm.relationship('Language', backref='language_translation')
 
-    group_id = sa.Column(sa.Integer, sa.ForeignKey(h.groups.models.Group.id))
+    group_id = sa.Column(sa.Integer, sa.ForeignKey(h.groups.models.Group.id), primary_key=True)
     group = sa.orm.relationship('Group', backref='group_translation')
 
     def __init__(self, page, language, group):
@@ -119,8 +117,9 @@ class Translation(Base):
         """
         return None
 
+
     @classmethod
-    def get_by_id(cls, id_):
+    def get_by_id(cls, translation):
         """
         Get a vote by ID
         :param id_: the ID to query
@@ -128,6 +127,8 @@ class Translation(Base):
         """
         try:
             return cls.query.filter(
-                cls.id == id_).one()
+                cls.page_id == translation.page_id,
+                cls.language_id == translation.language_id,
+                cls.group_id == translation.group_id).one()
         except exc.NoResultFound:
             return None
