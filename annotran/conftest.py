@@ -62,7 +62,7 @@ def settings():
     Default app settings (conf/test.ini).
     :return: a list of loaded settings
     """
-    loaded_settings = get_appsettings('conf/test.ini')
+    loaded_settings = get_appsettings('/home/marija/project/annotran/conf/test.ini')
 
     if 'TEST_DATABASE_URL' in os.environ:
         loaded_settings['sqlalchemy.url'] = normalize_database_url(os.environ['TEST_DATABASE_URL'])

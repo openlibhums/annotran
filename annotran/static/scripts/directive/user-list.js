@@ -77,6 +77,7 @@ function Controller($scope, $window, session, settings, languages, votes, report
     this.$root.sentencebysentence = $scope.$root.sentenceMode;
 
     crossframe.call("sentenceSelectionOff");
+    $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS);
   };
 
   $scope.vote = function(author) {
