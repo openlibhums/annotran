@@ -132,8 +132,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     else
       desiredText = desiredText[this.currentSentence]
 
-    console.log(desiredText)
-
     if (desiredText != undefined and desiredText.endsWith(".")) or (desiredText != undefined and desiredText.endsWith("?")) or (desiredText != undefined and desiredText.endsWith("!"))
       # this means that we have reached a line break that ends with a sentence
       match = false
@@ -156,22 +154,29 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       this.anchorToPage(data)
     else
       tagName = $(currentTarget).prop('tagName').toLowerCase()
+      console.log(tagName)
 
       if tagName == 'tr'
-        this.selectSentence initialTarget, currentTarget.find(">:first-child")
+        # if we hit a table row, select the first td
+        currentTarget = currentTarget.find(">:first-child")
+        initialTarget = currentTarget
+        length = $(currentTarget).text().length - 1
+        console.log($(currentTarget).text())
+        data = this.packageData(initialTarget, currentTarget, length, 0)
+        this.anchorToPage(data)
+        return
       if tagName == 'td' or tagName == 'th'
+        # if we are in a table cell, just select the cell
         length = $(currentTarget).text().length - 1
         data = this.packageData(initialTarget, currentTarget, length, 0)
         this.anchorToPage(data)
       else
         if desiredText == undefined
-          console.log("HERE")
           nextSibling = this.returnNext(currentTarget)
           this.currentIndex = 0
           this.currentSentence = 0
           this.selectSentence nextSibling
         else if desiredText.endsWith(".") or desiredText.endsWith("!") or desiredText.endsWith("?")
-          console.log("Sentence condition")
           this.selectSentence initialTarget, currentTarget, true
         else
           this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
