@@ -195,10 +195,14 @@ def delete_report(translation, user, reporter=False):
     """
     # NB this function deletes all reports pertaining to this translation
     if not reporter:
-        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.translation_id == translation.id,
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page_id == translation.page_id,
+                                                    annotran.reports.models.Report.language_id == translation.language_id,
+                                                    annotran.reports.models.Report.group_id == translation.group_id,
                                                     annotran.reports.models.Report.author == user).delete()
     else:
-        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.translation_id == translation.id,
+        annotran.reports.models.Report.query.filter(annotran.reports.models.Report.page_id == translation.page_id,
+                                                    annotran.reports.models.Report.language_id == translation.language_id,
+                                                    annotran.reports.models.Report.group_id == translation.group_id,
                                                     annotran.reports.models.Report.Reporter == user).delete()
 
 
