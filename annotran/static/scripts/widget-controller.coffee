@@ -121,6 +121,9 @@ class WidgetControllerExt extends widgetcontroller
 
         crossframe.call "resetDOM"
 
+        if $scope.$root.mode == "view"
+          crossframe.call "hideAdder"
+
         if selectedUser != undefined
           if !$scope.$root.editOnly
             crossframe.call "stashAnnotations", []
