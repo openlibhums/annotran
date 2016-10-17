@@ -34,6 +34,7 @@ eventsa = require('./events')
 events = require('../../../../h/h/static/scripts/events.js')
 
 substitution = require('./annotator/plugin/substitution')
+sidebar = require('./annotator/sidebar.coffee')
 
 widgetcontroller =  require('../../../../h/h/static/scripts/widget-controller.coffee')
 
@@ -159,6 +160,8 @@ class WidgetControllerExt extends widgetcontroller
 
       $scope.$root.allPageAnnotations.push annot
 
+      crossframe.call("pushAnnotation", annot)
+
       # now update the interface
       $scope.$root.updateUserList($scope.$root.direction)
 
@@ -212,6 +215,8 @@ class WidgetControllerExt extends widgetcontroller
     $scope.$on eventsa.USER_DELETED_ANNOTATION, (event, deleted) ->
       array = (annot for annot in $scope.$root.userAnnotations when annot.id != deleted.id)
       $scope.$root.userAnnotations = array
+
+      crossframe.call("updateAnnotationList", array)
 
       array = (annot for annot in $scope.$root.allPageAnnotations when annot.id != deleted.id)
       $scope.$root.allPageAnnotations = array
