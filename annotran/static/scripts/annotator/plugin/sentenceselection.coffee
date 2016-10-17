@@ -107,8 +107,8 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         currentTarget = initialTarget
 
     desiredText = $(currentTarget).text()
-    match = /[.!?]/.test(desiredText)
-    desiredText = desiredText.split(/[.!?]/)
+    match = /[.!?][\b\s]/.test(desiredText)
+    desiredText = desiredText.split(/[.!?]\s/)
 
     finalCount = desiredText.length - 1
 
@@ -124,7 +124,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     for sentence in desiredText
       if counter == this.currentSentence
         break
-      offset_to_use = offset_to_use + sentence.length + 1
+      offset_to_use = offset_to_use + sentence.length + 2
       counter = counter + 1
 
     if desiredText.length == 1
@@ -132,12 +132,19 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     else
       desiredText = desiredText[this.currentSentence]
 
-    endIndex = offset_to_use + desiredText.length + 1
+    console.log(desiredText)
+
+    if (desiredText != undefined and desiredText.endsWith(".")) or (desiredText != undefined and desiredText.endsWith("?")) or (desiredText != undefined and desiredText.endsWith("!"))
+      # this means that we have reached a line break that ends with a sentence
+      match = false
+
+    if desiredText != undefined
+      endIndex = offset_to_use + desiredText.length + 1
 
     if endIndex > $(currentTarget).text().length - 1
       endIndex = $(currentTarget).text().length - 1
 
-    if (this.currentSentence == finalCount) and (matchEnd == false)
+    if (this.currentSentence == finalCount) and (matchEnd == false) and (desiredText.endsWith(".") == false)
       # if this is the case then we are starting mid-element and need to jump
       match = false
       if this.savedOffset == 0
@@ -157,7 +164,17 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         data = this.packageData(initialTarget, currentTarget, length, 0)
         this.anchorToPage(data)
       else
-        this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
+        if desiredText == undefined
+          console.log("HERE")
+          nextSibling = this.returnNext(currentTarget)
+          this.currentIndex = 0
+          this.currentSentence = 0
+          this.selectSentence nextSibling
+        else if desiredText.endsWith(".") or desiredText.endsWith("!") or desiredText.endsWith("?")
+          console.log("Sentence condition")
+          this.selectSentence initialTarget, currentTarget, true
+        else
+          this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
 
   findASentence: (event = {}) =>
     if this.operational == false
