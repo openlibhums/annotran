@@ -202,7 +202,12 @@ module.exports = class Sidebar extends Host
 
       # convert this to a range in the current document and extract the start and end points
       range = new xpathRange.SerializedRange(packager).normalize(document.body)
-      elementsClaimed.push(range.toRange().getBoundingClientRect())
+      for rect in range.toRange().getClientRects()
+        console.log(rect)
+        # In Chrome, for some reason, elements get selected here that occupy the entire viewport minus 12 pixels
+        # so this check pushes rectangles that are not covered. We have no idea why this is the case.
+        if rect.right < window.innerWidth - 12
+          elementsClaimed.push(rect)
 
 
     selection = Annotator.Util.getGlobal().getSelection()
@@ -224,48 +229,50 @@ module.exports = class Sidebar extends Host
 
     # convert this to a range in the current document and extract the start and end points
     #range = new xpathRange.sniff(packager).normalize(document.body)
-    selection_box = range.toRange().getBoundingClientRect()
+    selection_boxes = range.toRange().getClientRects()
 
-    scrollTop = window.pageYOffset || selection_box.scrollTop || body.scrollTop
-    scrollLeft = window.pageXOffset || selection_box.scrollLeft || body.scrollLeft
+    for selection_box in selection_boxes
 
-    clientTop = selection_box.clientTop || body.clientTop || 0
-    clientLeft = selection_box.clientLeft || body.clientLeft || 0
+      scrollTop = window.pageYOffset || selection_box.scrollTop || body.scrollTop
+      scrollLeft = window.pageXOffset || selection_box.scrollLeft || body.scrollLeft
 
-    selection_top  = selection_box.top + scrollTop - clientTop
-    selection_left = selection_box.left + scrollLeft - clientLeft
-    selection_right = selection_left + (selection_box.right - selection_box.left)
-    selection_bottom = selection_top + (selection_box.bottom - selection_box.top)
+      clientTop = selection_box.clientTop || body.clientTop || 0
+      clientLeft = selection_box.clientLeft || body.clientLeft || 0
 
-    for claimed in elementsClaimed
+      selection_top  = selection_box.top + scrollTop - clientTop
+      selection_left = selection_box.left + scrollLeft - clientLeft
+      selection_right = selection_left + (selection_box.right - selection_box.left)
+      selection_bottom = selection_top + (selection_box.bottom - selection_box.top)
 
-      scrollTop = window.pageYOffset || claimed.scrollTop || body.scrollTop
-      scrollLeft = window.pageXOffset || claimed.scrollLeft || body.scrollLeft
+      for claimed in elementsClaimed
 
-      clientTop = claimed.clientTop || body.clientTop || 0
-      clientLeft = claimed.clientLeft || body.clientLeft || 0
+        scrollTop = window.pageYOffset || claimed.scrollTop || body.scrollTop
+        scrollLeft = window.pageXOffset || claimed.scrollLeft || body.scrollLeft
 
-      top  = claimed.top + scrollTop - clientTop
-      left = claimed.left + scrollLeft - clientLeft
-      right = left + claimed.width
-      bottom = top + claimed.height
+        clientTop = claimed.clientTop || body.clientTop || 0
+        clientLeft = claimed.clientLeft || body.clientLeft || 0
 
-      rightLeftOverlap = (right >= selection_box.left && left <= selection_right)
-      topBottomOverlap = (bottom >= selection_top && top <= selection_bottom)
+        top  = claimed.top + scrollTop - clientTop
+        left = claimed.left + scrollLeft - clientLeft
+        right = left + claimed.width
+        bottom = top + claimed.height
 
-      isClaimed = rightLeftOverlap && topBottomOverlap
+        rightLeftOverlap = (right >= selection_box.left && left <= selection_right)
+        topBottomOverlap = (bottom >= selection_top && top <= selection_bottom)
 
-      if isClaimed
-        break
-    regex = "^\\s*$";
-    if ((selection_box.bottom == 0 &&
-        selection_box.height == 0 &&
-        selection_box.left == 0 &&
-        selection_box.right == 0 &&
-        selection_box.top == 0 &&
-        selection_box.width == 0) || (range.text() == '') || (range.text().match(regex)))
-      alert("You cannot create a new translation here. No text selected.")
-      return
+        isClaimed = rightLeftOverlap && topBottomOverlap
+
+        if isClaimed
+          break
+      regex = "^\\s*$";
+      if ((selection_box.bottom == 0 &&
+          selection_box.height == 0 &&
+          selection_box.left == 0 &&
+          selection_box.right == 0 &&
+          selection_box.top == 0 &&
+          selection_box.width == 0) || (range.text() == '') || (range.text().match(regex)))
+        alert("You cannot create a new translation here. No text selected.")
+        return
 
     if isClaimed
       alert("You cannot create a new translation here since the currently selected region is already translated by you. Please edit or delete your existing translation instead.")

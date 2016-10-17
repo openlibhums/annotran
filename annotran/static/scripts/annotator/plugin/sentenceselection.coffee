@@ -108,8 +108,8 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     # matches for a full stop, question mark, or exclamation mark
     desiredText = $(currentTarget).text()
-    match = /[.!?][\b\s]/.test(desiredText)
-    desiredText = desiredText.split(/[.!?]\s/)
+    match = /[.!?][\b\s"’”]/.test(desiredText)
+    desiredText = desiredText.split(/[.!?][\b\s"’”]/)
 
     finalCount = desiredText.length - 1
 
