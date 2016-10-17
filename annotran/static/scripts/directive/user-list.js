@@ -28,12 +28,12 @@ function Controller($scope, $window, session, settings, languages, votes, report
 
   $scope.$root.setMode = function(modeValue) {
     $scope.$root.mode = modeValue;
+    $scope.setUserForReset();
     if ($scope.$root.mode == 'view') {
       if ($scope.$root.sentenceMode == "on") {
         crossframe.call("sentenceSelectionOff");
       }
       crossframe.call("hideAdder");
-      $scope.setUserForReset();
       $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS);
     }
   };
