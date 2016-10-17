@@ -117,18 +117,17 @@ class Translation(Base):
         """
         return None
 
-
     @classmethod
-    def get_by_id(cls, translation):
+    def get_by_composite_id(cls, page_id, language_id, group_id):
         """
-        Get a vote by ID
-        :param id_: the ID to query
-        :return: a vote or None
+        Get a translation by a composite ID
+        :param page_id, language_id, group_id: IDs to query
+        :return: a translation or None
         """
         try:
             return cls.query.filter(
-                cls.page_id == translation.page_id,
-                cls.language_id == translation.language_id,
-                cls.group_id == translation.group_id).one()
+                cls.page_id == page_id,
+                cls.language_id == language_id,
+                cls.group_id == group_id).one()
         except exc.NoResultFound:
             return None
