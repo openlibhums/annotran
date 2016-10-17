@@ -64,7 +64,7 @@ def reports_index(_):
     ret_list = []
 
     for report in reports:
-        translation = annotran.translations.models.Translation.get_by_id(report.translation_id)
+        translation = annotran.translations.models.Translation.get_by_id(report.translation)
 
         ret_dict = {'url': annotran.pages.models.Page.get_by_id(translation.page_id).uri,
                     'group': h.groups.models.Group.get_by_id(translation.group_id).pubid,
