@@ -42,7 +42,6 @@ class GuestExt extends Guest
       crossframe.on 'resetDOM', () =>
         Annotator = require('annotator')
         Annotator._instances[0].plugins.Substitution.clearDOM()
-        Annotator._instances[0].plugins.CSSModify.hideAdder()
 
       crossframe.on 'updateAnnotationList', (annotations) =>
         Annotator._instances[0].loadedAnnotations = annotations
@@ -52,7 +51,6 @@ class GuestExt extends Guest
 
       crossframe.on 'stashAnnotations', (annotations) =>
         Annotator._instances[0].loadedAnnotations = annotations
-        Annotator._instances[0].plugins.CSSModify.showAdder()
 
       crossframe.on 'passAnnotations', (annotations) =>
         Annotator = require('annotator')

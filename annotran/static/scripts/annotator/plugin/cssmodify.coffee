@@ -10,7 +10,7 @@ module.exports = class CSSModify extends Annotator.Plugin
     null
 
   hideAdder: () ->
-    $(".annotator-adder").css({"visibility": "hidden"});
+    $(".annotator-adder").css({"visibility": "hidden"})
 
   showAdder: () ->
-    $(".annotator-adder").css({"visibility": "visible"});
+    $(".annotator-adder").css({"visibility": "visible"})

@@ -31,8 +31,8 @@ function Controller($scope, $window, session, settings, languages, votes, report
     if ($scope.$root.mode == 'view') {
       if ($scope.$root.sentenceMode == "on") {
         crossframe.call("sentenceSelectionOff");
-        crossframe.call("hideAdder");
       }
+      crossframe.call("hideAdder");
       $scope.setUserForReset();
       $scope.$root.$broadcast(eventsa.CLOSE_OPEN_ANNOTATIONS);
     }
