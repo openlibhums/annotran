@@ -121,7 +121,7 @@ class WidgetControllerExt extends widgetcontroller
 
         crossframe.call "resetDOM"
 
-        if $scope.$root.mode == "view"
+        if $scope.$root != null and $scope.$root.mode == "view"
           crossframe.call "hideAdder"
 
         if selectedUser != undefined
