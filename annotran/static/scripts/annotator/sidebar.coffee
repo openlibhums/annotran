@@ -203,7 +203,6 @@ module.exports = class Sidebar extends Host
       # convert this to a range in the current document and extract the start and end points
       range = new xpathRange.SerializedRange(packager).normalize(document.body)
       for rect in range.toRange().getClientRects()
-        console.log(rect)
         # In Chrome, for some reason, elements get selected here that occupy the entire viewport minus 12 pixels
         # so this check pushes rectangles that are not covered. We have no idea why this is the case.
         if rect.right < window.innerWidth - 12
