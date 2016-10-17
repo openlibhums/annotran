@@ -106,6 +106,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     if currentTarget == undefined
         currentTarget = initialTarget
 
+    # matches for a full stop, question mark, or exclamation mark
     desiredText = $(currentTarget).text()
     match = /[.!?][\b\s]/.test(desiredText)
     desiredText = desiredText.split(/[.!?]\s/)
@@ -124,6 +125,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     for sentence in desiredText
       if counter == this.currentSentence
         break
+      # this offset should be the length of the break split (i.e. a full-stop + a space = 2)
       offset_to_use = offset_to_use + sentence.length + 2
       counter = counter + 1
 
@@ -154,14 +156,12 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       this.anchorToPage(data)
     else
       tagName = $(currentTarget).prop('tagName').toLowerCase()
-      console.log(tagName)
 
       if tagName == 'tr'
         # if we hit a table row, select the first td
         currentTarget = currentTarget.find(">:first-child")
         initialTarget = currentTarget
         length = $(currentTarget).text().length - 1
-        console.log($(currentTarget).text())
         data = this.packageData(initialTarget, currentTarget, length, 0)
         this.anchorToPage(data)
         return
@@ -172,13 +172,16 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         this.anchorToPage(data)
       else
         if desiredText == undefined
+          # Just start in the next jump element without saving the current position in the document
           nextSibling = this.returnNext(currentTarget)
           this.currentIndex = 0
           this.currentSentence = 0
           this.selectSentence nextSibling
         else if desiredText.endsWith(".") or desiredText.endsWith("!") or desiredText.endsWith("?")
+          # just select the next sentence and force it through
           this.selectSentence initialTarget, currentTarget, true
         else
+          # jump to next sibling
           this.scanForNextSibling initialTarget, currentTarget, offset_to_use, endIndex
 
   findASentence: (event = {}) =>
