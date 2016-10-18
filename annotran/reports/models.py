@@ -59,15 +59,17 @@ class Report(Base):
         :param reporter: the reporting user to query
         :return:
         """
-        try:
-            return cls.query.filter(
-                cls.page_id == translation.page_id,
-                cls.language_id == translation.language_id,
-                cls.group_id == translation.group_id,
-                cls.author_id == author.id,
-                cls.reporter_id == reporter.id).one()
-        except exc.NoResultFound:
-            return None
+        if translation and author and reporter:
+            try:
+                return cls.query.filter(
+                    cls.page_id == translation.page_id,
+                    cls.language_id == translation.language_id,
+                    cls.group_id == translation.group_id,
+                    cls.author_id == author.id,
+                    cls.reporter_id == reporter.id).one()
+            except exc.NoResultFound:
+                return None
+        return None
 
     @classmethod
     def get_by_id(cls, id_):
