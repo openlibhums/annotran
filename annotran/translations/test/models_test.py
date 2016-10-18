@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import pytest
 
 from h import db
 from h.test import factories
@@ -7,7 +6,6 @@ from h.groups import models as groups_models
 from annotran.languages import models as lang_models
 from annotran.pages import models as pages_models
 from annotran.translations import models as tran_models
-
 
 def test_init():
     p = pages_models.Page(uri="http://www.annotran_test.com/")
@@ -24,12 +22,11 @@ def test_init():
     db.Session.add(t)
     db.Session.flush()
 
-    assert t.id
     assert t.page_id == p.id
     assert t.group_id == g.id
     assert t.language_id == l.id
 
-def test_get_by_id():
+def test_get_by_composite_id():
     p = pages_models.Page(uri="http://www.annotran_test.com/")
     db.Session.add(p)
 
@@ -44,7 +41,7 @@ def test_get_by_id():
     db.Session.add(t)
     db.Session.flush()
 
-    assert tran_models.Translation.get_by_id(t.id) == t
+    assert tran_models.Translation.get_by_composite_id(p.id, l.id, g.id) == t
 
 def test_get_translation_when_group_is_none():
     p = pages_models.Page(uri="http://www.annotran_test.com/")
