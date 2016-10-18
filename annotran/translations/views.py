@@ -60,11 +60,8 @@ def read(request):
     :param request: the request object
     :return: a list of languages in a group
     """
-    url = util.get_url_from_request(request)
-
-    page = annotran.pages.models.Page.get_by_uri(url)
     public_language_id = request.matchdict["public_language_id"]
-    language = lang_models.get_by_public_language_id(public_language_id)
+    language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
     public_group_id = request.matchdict["public_group_id"]
     group = h.groups.models.Group.get_by_pubid(public_group_id)
 

@@ -2,6 +2,7 @@
 import mock
 import pytest
 import types
+import annotran
 
 from pyramid import httpexceptions
 from mock import PropertyMock
@@ -27,7 +28,7 @@ def _mock_request(feature=None, settings=None, params=None,
         **kwargs)
 
 
-def test_create_adds_translation_to_db():
+def test_add_translation_to_db():
     """
         This should add a new translation to the database session, which is added only if it does not exit in a db.
         After successfully creating a new translation it should redirect.
@@ -54,8 +55,96 @@ def test_create_adds_translation_to_db():
                 request.db.add.assert_called_once()
                 assert isinstance(result, httpexceptions.HTTPRedirection)
 
+def test_read_unauthenticated_user():
+    """
+        This should call "read_group" when trying to read
+        translations for the selected combination of a group, page, and language.
+        read_group method is mocked, so when it is called a group object is returned.
+    """
+    with mock.patch('annotran.languages.models.Language') as language:
+        propLang = PropertyMock(return_value=2897)
+        type(language).id = propLang
+        language.get_by_public_language_id = MagicMock(return_value=language)
 
-def test_create_adds_translation_to_db_when_page_lang_group_none():
+        with mock.patch('h.groups.models.Group') as group:
+            propGroup = PropertyMock(return_value=2897)
+            type(group).id = propGroup
+            group.get_by_pubid = MagicMock(return_value=group)
+
+            request = mock.Mock(authenticated_userid = None,
+                                matchdict={'public_group_id': '12345',
+                                           'public_language_id': '12345'})
+            result = views.read(request)
+            assert result == None
+
+def test_read_private_group_unauthenticated():
+    """
+        This should call "read_group" when trying to read
+        translations for the selected combination of a group, page, and language.
+        read_group method is mocked, so when it is called a group object is returned.
+    """
+    with mock.patch('annotran.languages.models.Language') as language:
+        propLang = PropertyMock(return_value=2897)
+        type(language).id = propLang
+        language.get_by_public_language_id = MagicMock(return_value=language)
+
+        with mock.patch('h.groups.models.Group') as group:
+            propGroup = PropertyMock(return_value=2897)
+            type(group).id = propGroup
+            group.get_by_pubid = MagicMock(return_value=group)
+
+            request = _mock_request(authenticated_user=mock.Mock(groups=[]),
+                                    matchdict={'public_group_id': '12345',
+                                               'public_language_id': '12345'})
+            result = views.read(request)
+            assert result == None
+
+def test_read_private_group_authenticated():
+    """
+        This should return None when trying to read
+         translations for the selected combination of a group, page, and language, because group is
+         not in the list of user's authorized groups.
+    """
+    with mock.patch('annotran.languages.models.Language') as language:
+        propLang = PropertyMock(return_value=2897)
+        type(language).id = propLang
+        language.get_by_public_language_id = MagicMock(return_value=language)
+
+        with mock.patch('h.groups.models.Group') as group:
+            propGroup = PropertyMock(return_value=2897)
+            type(group).id = propGroup
+            group.get_by_pubid = MagicMock(return_value=group)
+
+            annotran.groups.views.read_group = MagicMock(return_value=group)
+
+            request = _mock_request(authenticated_user=mock.Mock(groups=[group]),
+                                    matchdict={'public_group_id': '12345',
+                                               'public_language_id': '12345'})
+            result = views.read(request)
+            assert result == group
+
+def test_read_public_group():
+    """
+        This should read translations for the selected combination of a group, page, and language (mainly call read_group).
+        read_group method is mocked, so when it is called a group object is returned.
+    """
+    with mock.patch('annotran.languages.models.Language') as language:
+        propLang = PropertyMock(return_value=2897)
+        type(language).id = propLang
+        language.get_by_public_language_id = MagicMock(return_value=language)
+
+        with mock.patch('h.groups.models.Group') as group:
+            propGroup = PropertyMock(return_value=-1)
+            type(group).id = propGroup
+            group.get_by_pubid = MagicMock(return_value=group)
+            annotran.groups.views.read_group = MagicMock(return_value=group)
+            request = _mock_request(authenticated_user=mock.Mock(groups=[]),
+                                    matchdict={'public_group_id': '12345',
+                                               'public_language_id': '12345'})
+            result = views.read(request)
+            assert result == group
+
+def test_add_translation_to_db_when_page_lang_group_none():
     """
         This should not add a new translation to the database session.
         If page, group or language is None, then it should return immediatelly.
