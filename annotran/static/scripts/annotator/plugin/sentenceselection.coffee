@@ -156,6 +156,18 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       this.anchorToPage(data)
     else
       tagName = $(currentTarget).prop('tagName').toLowerCase()
+      cssClass = $(currentTarget).attr('class')
+
+      if cssClass == 'annotator-notice'
+        # end of document
+        if window.getSelection
+          if window.getSelection().empty
+            window.getSelection().empty()
+          else if window.getSelection().removeAllRanges
+            window.getSelection().removeAllRanges()
+          else if document.selection
+            document.selection.empty()
+        return
 
       if tagName == 'tr'
         # if we hit a table row, select the first td
