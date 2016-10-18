@@ -25,6 +25,7 @@ def add_translation(request):
     This view adds a translation
     :param request: a request object
     :return: a redirect to the translation_read method
+
     """
     if request.authenticated_userid is None:
         raise exc.HTTPNotFound()
@@ -35,12 +36,16 @@ def add_translation(request):
     page = annotran.pages.models.Page.get_by_uri(page_url)
 
     group = h.groups.models.Group.get_by_pubid(public_group_id)
-    language = lang_models.get_by_name(name)
+    language = annotran.languages.models.Language.get_by_name(name)
 
-    translation = tran_models.get_by_composite_id(page.id, language.id, group.id)
+    translation = None
+    if page and language and group:
+        translation = annotran.translations.models.Translation.get_by_composite_id(page.id, language.id, group.id)
+    else:
+        return {}
 
     if translation is None:
-        translation = tran_models(page=page, language=language, group=group)
+        translation = annotran.translations.models.Translation(page=page, language=language, group=group)
         request.db.add(translation)
         request.db.flush()
 
