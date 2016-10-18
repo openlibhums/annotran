@@ -22,7 +22,7 @@ _ = i18n.TranslationString
              request_method='POST')
 def add_translation(request):
     """
-    This view adds a language
+    This view adds a translation
     :param request: a request object
     :return: a redirect to the translation_read method
     """
@@ -37,9 +37,13 @@ def add_translation(request):
     group = h.groups.models.Group.get_by_pubid(public_group_id)
     language = lang_models.get_by_name(name)
 
-    translation = tran_models(page=page, language=language, group=group)
-    request.db.add(translation)
-    request.db.flush()
+    translation = tran_models.get_by_composite_id(page.id, language.id, group.id)
+
+    if translation is None:
+        translation = tran_models(page=page, language=language, group=group)
+        request.db.add(translation)
+        request.db.flush()
+
     url = request.route_url('translation_read', public_language_id=language.pubid, public_group_id=public_group_id)
     return exc.HTTPSeeOther(url)
 
