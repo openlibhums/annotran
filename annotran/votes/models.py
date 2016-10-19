@@ -47,13 +47,11 @@ class Vote(Base):
         :param author: the author
         :param voter: the voter
         """
-        if score and page and language and author and voter:
+        if score and page and language and group and author and voter:
             self.score = score
             self.page_id = page.id
             self.language_id = language.id
-
-            if group is not None:
-                self.group_id = group.id
+            self.group_id = group.id
             self.author_id = author.id
             self.voter_id = voter.id
 
@@ -68,21 +66,16 @@ class Vote(Base):
         :param voter: the voter ID
         :return: a vote or None
         """
+        if page is None or language is None or group is None\
+                or author is None or voter is None:
+            return None
         try:
-            if group is None:
-                return cls.query.filter(
-                    cls.page_id == page.id,
-                    cls.language_id == language.id,
-                    cls.group_id == -1,
-                    cls.author_id == author.id,
-                    cls.voter_id == voter.id).one()
-            else:
-                return cls.query.filter(
-                    cls.page_id == page.id,
-                    cls.language_id == language.id,
-                    cls.group_id == group.id,
-                    cls.author_id == author.id,
-                    cls.voter_id == voter.id).one()
+            return cls.query.filter(
+                cls.page_id == page.id,
+                cls.language_id == language.id,
+                cls.group_id == group.id,
+                cls.author_id == author.id,
+                cls.voter_id == voter.id).one()
         except exc.NoResultFound:
             return None
 
@@ -153,7 +146,7 @@ class Vote(Base):
             return None
 
     @classmethod
-    def get_by_id(cls, vote):
+    def get_by_id(cls, page_id, language_id, group_id, author_id, voter_id):
         """
         Get a vote by ID
         :param id_: the ID to query
@@ -161,10 +154,10 @@ class Vote(Base):
         """
         try:
             return cls.query.filter(
-                cls.page_id == vote.page_id,
-                cls.language_id == vote.language_id,
-                cls.group_id == vote.group_id,
-                cls.author_id == vote.author_id,
-                cls.voter_id == vote.voter_id).one()
+                cls.page_id == page_id,
+                cls.language_id == language_id,
+                cls.group_id == group_id,
+                cls.author_id == author_id,
+                cls.voter_id == voter_id).one()
         except exc.NoResultFound:
             return None

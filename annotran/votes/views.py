@@ -44,7 +44,7 @@ def add_vote(request):
 
     language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
-    if language is None or page is None:
+    if language is None or page is None or group is None:
         raise exc.HTTPNotFound()
 
     vote = models.Vote.get_vote(page, language, group, author, voter)
