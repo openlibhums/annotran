@@ -355,7 +355,7 @@ function AnnotationController(
     // New annotations move to the new group, when a new group is focused.
     if (isNew(domainModel)) {
       domainModel.group = groups.focused().id;
-      domainModel.langauge = languages.focused().id;
+      domainModel.language = languages.focused().id;
     }
   }
 
@@ -366,7 +366,7 @@ function AnnotationController(
 
     // New annotations move to the new group, when a new group is focused.
     if (isNew(domainModel)) {
-      domainModel.langauge = languages.focused().id;
+      domainModel.language = languages.focused().id;
     }
   }
 
