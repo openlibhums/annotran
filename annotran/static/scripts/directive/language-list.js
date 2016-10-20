@@ -23,15 +23,13 @@ function LanguageListController($scope, $window, languages, groups, pages) {
       if ($window.confirm(message)) {
         languages.addLanguage(language.name);
       }
-
-      $("#zeroIndex").prop('selected', 'selected');
-
     } else {
       var message = 'Language "' +
         language.name + '" has already been added.';
       alert(message);
-      $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
+      languages.focusByName(language.name);
     }
+    $("#zeroIndex").prop('selected', true);
   };
  
   $scope.focusLanguage = function (languageId) {

@@ -74,9 +74,11 @@ function languages(localStorage, session, settings, $rootScope, $http) {
         return false;
     }
     var i=0, langs = $rootScope.map[groupubid];
-    for (i = 0; i < langs.length; i++) {
-      if (langs[i].name == languageName) {
-        return true;
+    if (langs != undefined) {
+      for (i = 0; i < langs.length; i++) {
+        if (langs[i].name == languageName) {
+          return true;
+        }
       }
     }
     return false;
@@ -291,6 +293,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     addLanguage: addLanguage,
     focused: focused,
     focus: focus,
+    focusByName: focusByName,
   };
 };
 
