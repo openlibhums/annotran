@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import mock
+import pytest
 
 from pyramid import httpexceptions as exc
 from mock import PropertyMock
@@ -66,20 +67,19 @@ def test_add_report_to_db():
 
 def test_add_report_to_db_pg_auth_rep_group_lang_none():
     """
-        This should return HTTPNotFound as all page, author, reporter, group, and language is None.
+        This should raise HTTPNotFound as all page, author, reporter, group, and language is None.
     """
     request = _mock_request(authenticated_user=mock.Mock(username="test"),
                             matchdict={'public_language_id': '12345',
                                        'public_group_id': '12345',
                                        'user_id': '12345',
                                        'page_uri': 'http://www.annotran_test.com/'})
-    result = views.add_report(request)
-    assert isinstance(result, exc.HTTPNotFound)
-
+    with pytest.raises(exc.HTTPNotFound):
+        views.add_report(request)
 
 def test_add_report_to_db_translation_none():
     """
-        This should return HTTPNotFound as translation is None.
+        This should raise HTTPNotFound as translation is None.
     """
     with mock.patch('annotran.languages.models.Language') as language:
         language.get_by_public_language_id = MagicMock(return_value=language)
@@ -101,10 +101,8 @@ def test_add_report_to_db_translation_none():
                                                            'public_group_id': '12345',
                                                            'user_id': '12345',
                                                            'page_uri': 'http://www.annotran_test.com/'})
-                        result = views.add_report(request)
-                        assert isinstance(result, exc.HTTPNotFound)
-
-
+                        with pytest.raises(exc.HTTPNotFound):
+                            views.add_report(request)
 
 def test_add_existing_report_to_db():
     """

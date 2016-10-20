@@ -40,12 +40,12 @@ def add_report(request):
     language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
     if page is None or author is None or reporter is None or group is None or language is None:
-        return exc.HTTPNotFound()
+        raise exc.HTTPNotFound()
 
     translation = annotran.translations.models.Translation.get_translation(page, language, group)
 
     if translation is None:
-        return exc.HTTPNotFound()
+        raise exc.HTTPNotFound()
 
     report = annotran.reports.models.Report.get_report(translation, author, reporter)
 

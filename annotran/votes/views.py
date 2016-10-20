@@ -21,9 +21,6 @@ def add_vote(request):
     :param request: the current request object
     :return: a redirect to language read
     """
-    if request.authenticated_userid is None:
-        raise exc.HTTPNotFound()
-
     voter = request.authenticated_user
     if voter is None:
         raise exc.HTTPNotFound()
@@ -44,7 +41,8 @@ def add_vote(request):
 
     language = annotran.languages.models.Language.get_by_public_language_id(public_language_id)
 
-    if language is None or page is None or group is None:
+    if language is None or page is None or \
+                    group is None or author is None:
         raise exc.HTTPNotFound()
 
     vote = models.Vote.get_vote(page, language, group, author, voter)
@@ -68,7 +66,7 @@ def delete_vote(request):
     :param request: the current request object
     :return: a redirect to language read
     """
-    if request.authenticated_userid is None:
+    if request.authenticated_user is None:
         raise exc.HTTPNotFound()
 
     public_language_id = request.matchdict["public_language_id"]
@@ -81,6 +79,10 @@ def delete_vote(request):
     # only authenticated used can delete translations and consequently their scores
     user = h.models.User.get_by_username(request.authenticated_user.username)
     group = h.groups.models.Group.get_by_pubid(public_group_id)
+
+    if language is None or page is None \
+            or group is None or user is None:
+        raise exc.HTTPNotFound()
 
     models.Vote.delete_votes(page, language, group, user)
     request.db.flush()
