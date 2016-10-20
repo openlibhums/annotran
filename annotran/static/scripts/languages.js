@@ -70,8 +70,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
   }
 
   function containsName(groupubid, languageName) {
-    if ($rootScope.map == null || Object.keys($rootScope.map).length == 0 ||
-          typeof $rootScope.map[0] == 'undefined') {
+    if ($rootScope.map == null || Object.keys($rootScope.map).length == 0) {
         return false;
     }
     var i=0, langs = $rootScope.map[groupubid];

@@ -17,8 +17,7 @@ function LanguageListController($scope, $window, languages, groups, pages) {
     // this will fire when the user selects the top entry in the list ("Add a new translation")
     if(language == null){ return; }
 
-    if (languages.hasLanguageAlready(language.name) == false)
-    {
+    if (languages.hasLanguageAlready(language.name) == false) {
       var message = 'Are you sure you want to add new translations for the language "' +
         language.name + '"?';
       if ($window.confirm(message)) {
@@ -28,6 +27,9 @@ function LanguageListController($scope, $window, languages, groups, pages) {
       $("#zeroIndex").prop('selected', 'selected');
 
     } else {
+      var message = 'Language "' +
+        language.name + '" has already been added.';
+      alert(message);
       $scope.$root.$broadcast(eventsa.LANGUAGE_ADDED, language.name);
     }
   };
