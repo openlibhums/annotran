@@ -71,7 +71,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <div class="language-icon-container"><i class="h-icon-add"></i></div>
         <div class="language-details" ng-controller="languageController">
             <select id="languageSelector" ng-model="selectedLanguage" ng-options="language as language.name for language in languages"
-                    ng-change="addLanguage(selectedLanguage)" ng-mouseup="handleSubmenuMU($event);" ng-click="handleSubmenuClick($event);">
+                    ng-click="addLanguage(selectedLanguage)" ng-mouseup="handleSubmenuMU($event);" ng-click="handleSubmenuClick($event);">
                  <option value="" id="zeroIndex">Select Language</option>
             </select>
         </div>
