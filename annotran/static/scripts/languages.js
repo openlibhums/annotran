@@ -127,7 +127,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   };
 
-  // Return the full object for the language with the given id.
+  /** Return the full object for the language with the given id.
+   * This method is used for a list of existing languages - those that are created for that page.*/
   function get(id) {
     var gs = getLanguageList();
     if (gs) {
@@ -139,6 +140,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   }
 
+   /** This method is used for a list of all languages as language id is the one from db, #
+    * and that one does not exist for a list of all languages.*/
   function getByName(languageName) {
     var gs = getLanguageList();
     if (gs) {
@@ -202,7 +205,8 @@ function languages(localStorage, session, settings, $rootScope, $http) {
 
   }
 
-  /** Set the language with the passed id as the currently focused language. */
+  /** Set the language with the passed id as the currently focused language.
+   * This method is used for a list of existing languages - those that are created for that page.*/
   function focus(id) {
     if (id) {
       var g = get(id);
@@ -214,6 +218,7 @@ function languages(localStorage, session, settings, $rootScope, $http) {
     }
   }
 
+  /** This method is used for a list of all languages.*/
   function focusByName(languageName) {
     if (languageName) {
       var g = getByName(languageName);
