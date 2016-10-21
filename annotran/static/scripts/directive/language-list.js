@@ -31,7 +31,8 @@ function LanguageListController($scope, $window, languages, groups, pages) {
     }
     $("#zeroIndex").prop('selected', true);
   };
- 
+
+  //This method is used for a list of existing languages - those that are already created for that page.
   $scope.focusLanguage = function (languageId) {
     $scope.$root.setMode('view');
     $scope.$root.selectedUser = undefined;
