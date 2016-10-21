@@ -3,6 +3,53 @@ $ = Annotator.$
 xpathRange = Annotator.Range
 Util = Annotator.Util
 
+
+`
+function HashTable() {
+    this.hashes = {};
+}
+
+HashTable.prototype = {
+    constructor: HashTable,
+
+    put: function( key, value ) {
+        this.hashes[ $(key).getPath() ] = value;
+    },
+
+    get: function( key ) {
+        return this.hashes[ $(key).getPath() ];
+    }
+};
+
+jQuery.fn.extend({
+    getPath: function () {
+        var path, node = this;
+        while (node.length) {
+            var realNode = node[0], name = realNode.localName;
+            if (!name) break;
+            name = name.toLowerCase();
+
+            var parent = node.parent();
+
+            var sameTagSiblings = parent.children(name);
+            if (sameTagSiblings.length > 1) {
+                allSiblings = parent.children();
+                var index = allSiblings.index(realNode) + 1;
+                if (index > 1) {
+                    name += ':nth-child(' + index + ')';
+                }
+            }
+
+            path = name + (path ? '>' + path : '');
+            node = parent;
+        }
+
+        return path;
+    }
+});
+`
+
+
 # This plugin implements the UI code for selecting sentences by clicking
 module.exports = class SentenceSelection extends Annotator.Plugin
 
@@ -12,8 +59,8 @@ module.exports = class SentenceSelection extends Annotator.Plugin
       "click": @findASentence
     })
 
+    this.currentIndexes = new HashTable()
     this.operational = false
-    this.currentIndex = 0
     this.currentSentence = 0
     this.storedEvent = null
     this.extentElement = null
@@ -84,8 +131,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     # here want to test:
     # 1. is there a sibling element?
     # 2. is there a parent element with a next sibling?
-    this.currentIndex = 0
+    this.currentIndexes.put(currentTarget, 0)
     this.currentSentence = 0
+
 
     nextSibling = this.returnNext(currentTarget)
 
@@ -186,7 +234,7 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         if desiredText == undefined
           # Just start in the next jump element without saving the current position in the document
           nextSibling = this.returnNext(currentTarget)
-          this.currentIndex = 0
+          this.currentIndexes.put(currentTarget, 0)
           this.currentSentence = 0
           this.selectSentence nextSibling
         else if desiredText.endsWith(".") or desiredText.endsWith("!") or desiredText.endsWith("?")
@@ -203,10 +251,11 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     this.storedEvent = event
 
-    this.currentIndex = 0
-    this.currentSentence = 0
 
     event.target = this.normalizeStyleTags event.target
+
+    this.currentIndexes.put(event.target, 0)
+    this.currentSentence = 0
 
     this.selectSentence event.target
 
@@ -224,6 +273,9 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
   findNextJumpNode: (target) ->
     parent = $(target).parent()
+
+    if this.currentIndexes.get(parent) > 0
+      return parent
 
     nextSibling = $(parent).next()
 
@@ -259,16 +311,16 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     currentSelection = window.getSelection()
 
-    this.currentIndex = currentSelection.extentOffset
-    this.currentSentence = this.currentSentence + 1
-
     elementToUse = currentSelection.extentNode.parentElement
     tagName = $(elementToUse).prop('tagName').toLowerCase()
 
-    if elementToUse.textContent.length <= (this.currentIndex)
+    this.currentIndexes.put(elementToUse, currentSelection.extentOffset)
+    this.currentSentence = this.currentSentence + 1
+
+    if elementToUse.textContent.length <= (this.currentIndexes.get(elementToUse))
       nextSibling = $(elementToUse).next()
 
-      this.currentIndex = 0
+      this.currentIndexes.put(nextSibling, 0)
       this.currentSentence = 0
 
       # algorithm here is:
