@@ -182,7 +182,4 @@ def model(request):
 
     user = request.authenticated_user
 
-    if user and not user.sidebar_tutorial_dismissed:
-        session['preferences']['show_sidebar_tutorial'] = True
-
     return session

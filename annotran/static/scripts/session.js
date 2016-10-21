@@ -51,12 +51,7 @@ function sessionActions(options) {
       params: { __formid__: 'logout' },
     },
 
-    _load: { method: 'GET' },
-
-    dismiss_sidebar_tutorial: {
-      method: 'POST',
-      params: { path: 'dismiss_sidebar_tutorial' },
-    }
+    _load: { method: 'GET' }
   };
 
   Object.keys(actions).forEach(function (action) {

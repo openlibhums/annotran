@@ -17,6 +17,7 @@ app.controller('AppController', require('./app-controller'))
     .directive('thread', require('./directive/thread'))
     .directive('shareDialog', require('./directive/share-dialog'))
     .directive('signinControl', require('./directive/signin-control'))
+    .directive('sidebarTutorial', require('./directive/sidebar-tutorial').directive)
     .directive('publishAnnotationBtn', require('./directive/publish-annotation-btn').directive)
     .directive('stars', function() {
         return {
@@ -70,6 +71,13 @@ app.decorator(
 app.decorator(
             "topBarDirective",
             function topBarDirectiveDecorator( $delegate ) {
+                return( [ $delegate[1] ] );
+            }
+        );
+
+app.decorator(
+            "sidebarTutorialDirective",
+            function sidebarTutorialDirectiveDecorator( $delegate ) {
                 return( [ $delegate[1] ] );
             }
         );
