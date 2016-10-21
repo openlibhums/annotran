@@ -61,7 +61,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
 
     this.currentIndexes = new HashTable()
     this.operational = false
-    this.currentSentence = 0
     this.storedEvent = null
     this.extentElement = null
     this.savedOffset = 0
@@ -119,23 +118,34 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   returnNext: (currentTarget) ->
     nextSibling = $(currentTarget).next()
 
+    console.log("returnNext")
+
     if nextSibling != undefined and nextSibling.length != 0 and nextSibling.prop("tagName").toLowerCase() != "figure" and nextSibling.prop("tagName").toLowerCase() != "img" and nextSibling.prop("tagName").toLowerCase() != "applet"  and nextSibling.prop("tagName").toLowerCase() != "audio"  and nextSibling.prop("tagName").toLowerCase() != "embed"  and nextSibling.prop("tagName").toLowerCase() != "object"  and nextSibling.prop("tagName").toLowerCase() != "video"
       return nextSibling
     else
       if nextSibling != undefined and nextSibling.length != 0
-        return this.returnNext(nextSibling)
+        return nextSibling
       else
-        return this.findNextJumpNode(currentTarget)
+        nextSibling = $(currentTarget).parent()
+
+        if nextSibling != undefined and this.currentIndexes.get(nextSibling) > 0
+          console.log("parent")
+          console.log(this.currentIndexes.get(nextSibling) )
+          return nextSibling
+        else
+          return this.findNextJumpNode(currentTarget)
 
   scanForNextSibling: (initialTarget, currentTarget, offset_to_use, endIndex) ->
     # here want to test:
     # 1. is there a sibling element?
     # 2. is there a parent element with a next sibling?
-    this.currentIndexes.put(currentTarget, 0)
-    this.currentSentence = 0
-
-
     nextSibling = this.returnNext(currentTarget)
+
+    offset_to_use = this.currentIndexes.get(nextSibling)
+
+    if offset_to_use == undefined
+      offset_to_use = 0
+      this.currentIndexes.put(nextSibling, offset_to_use)
 
     if offset_to_use == endIndex + 1
       initialTarget = nextSibling
@@ -155,52 +165,29 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         currentTarget = initialTarget
 
     # matches for a full stop, question mark, or exclamation mark
+
     desiredText = $(currentTarget).text()
+    desiredText = desiredText[this.currentIndexes.get(currentTarget)..]
     match = /[.!?][\b\s"’”]/.test(desiredText)
     desiredText = desiredText.split(/[.!?][\b\s"’”]/)
 
-    finalCount = desiredText.length - 1
-
-    matchEnd = desiredText[this.currentSentence] == ""
+    sentence = desiredText[0]
 
     offset_to_use = 0
-    counter = 0
 
-    if desiredText.length == 1
-      desiredText = []
-      desiredText.push $(currentTarget).text()
-
-    for sentence in desiredText
-      if counter == this.currentSentence
-        break
-      # this offset should be the length of the break split (i.e. a full-stop + a space = 2)
-      offset_to_use = offset_to_use + sentence.length + 2
-      counter = counter + 1
-
-    if desiredText.length == 1
-      desiredText = $(currentTarget).text()
-    else
-      desiredText = desiredText[this.currentSentence]
-
-    if (desiredText != undefined and desiredText.endsWith(".")) or (desiredText != undefined and desiredText.endsWith("?")) or (desiredText != undefined and desiredText.endsWith("!"))
+    if (sentence != undefined and sentence.endsWith(".")) or (sentence != undefined and sentence.endsWith("?")) or (sentence != undefined and sentence.endsWith("!"))
       # this means that we have reached a line break that ends with a sentence
       match = false
 
-    if desiredText != undefined
-      endIndex = offset_to_use + desiredText.length + 1
+    if sentence != undefined
+      endIndex = this.currentIndexes.get(currentTarget) + sentence.length + 1
 
     if endIndex > $(currentTarget).text().length - 1
       endIndex = $(currentTarget).text().length - 1
 
-    if (this.currentSentence == finalCount) and (matchEnd == false) and (desiredText.endsWith(".") == false)
-      # if this is the case then we are starting mid-element and need to jump
-      match = false
-      if this.savedOffset == 0
-        this.savedOffset = offset_to_use
-
     # test if we have found a sentence marker or if we are forcing this through anyway
-    if (match or force) and (offset_to_use < endIndex)
-      data = this.packageData(initialTarget, currentTarget, endIndex, offset_to_use)
+    if (match or force) and (sentence.length < endIndex)
+      data = this.packageData(initialTarget, currentTarget, endIndex, this.currentIndexes.get(initialTarget))
       this.anchorToPage(data)
     else
       tagName = $(currentTarget).prop('tagName').toLowerCase()
@@ -231,13 +218,12 @@ module.exports = class SentenceSelection extends Annotator.Plugin
         data = this.packageData(initialTarget, currentTarget, length, 0)
         this.anchorToPage(data)
       else
-        if desiredText == undefined
+        if sentence == undefined
           # Just start in the next jump element without saving the current position in the document
           nextSibling = this.returnNext(currentTarget)
           this.currentIndexes.put(currentTarget, 0)
-          this.currentSentence = 0
           this.selectSentence nextSibling
-        else if desiredText.endsWith(".") or desiredText.endsWith("!") or desiredText.endsWith("?")
+        else if sentence.endsWith(".") or sentence.endsWith("!") or sentence.endsWith("?")
           # just select the next sentence and force it through
           this.selectSentence initialTarget, currentTarget, true
         else
@@ -255,7 +241,6 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     event.target = this.normalizeStyleTags event.target
 
     this.currentIndexes.put(event.target, 0)
-    this.currentSentence = 0
 
     this.selectSentence event.target
 
@@ -314,14 +299,21 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     elementToUse = currentSelection.extentNode.parentElement
     tagName = $(elementToUse).prop('tagName').toLowerCase()
 
-    this.currentIndexes.put(elementToUse, currentSelection.extentOffset)
-    this.currentSentence = this.currentSentence + 1
+    if this.currentIndexes.get(elementToUse) == undefined
+      this.currentIndexes.put(elementToUse, 0)
+
+    this.currentIndexes.put(elementToUse, currentSelection.extentOffset + this.currentIndexes.get(elementToUse))
+
+    # increment the text position counter of all parent elements here
+    parent = $(elementToUse).parent()
+    while this.currentIndexes.get(parent) != undefined
+      this.currentIndexes.put(parent, currentSelection.extentOffset + this.currentIndexes.get(parent))
+      parent = $(parent).parent()
 
     if elementToUse.textContent.length <= (this.currentIndexes.get(elementToUse))
       nextSibling = $(elementToUse).next()
 
       this.currentIndexes.put(nextSibling, 0)
-      this.currentSentence = 0
 
       # algorithm here is:
       # 1. check if there is a sibling
