@@ -118,21 +118,20 @@ module.exports = class SentenceSelection extends Annotator.Plugin
   returnNext: (currentTarget) ->
     nextSibling = $(currentTarget).next()
 
-    console.log("returnNext")
-
     if nextSibling != undefined and nextSibling.length != 0 and nextSibling.prop("tagName").toLowerCase() != "figure" and nextSibling.prop("tagName").toLowerCase() != "img" and nextSibling.prop("tagName").toLowerCase() != "applet"  and nextSibling.prop("tagName").toLowerCase() != "audio"  and nextSibling.prop("tagName").toLowerCase() != "embed"  and nextSibling.prop("tagName").toLowerCase() != "object"  and nextSibling.prop("tagName").toLowerCase() != "video"
       return nextSibling
     else
       if nextSibling != undefined and nextSibling.length != 0
+        console.log("Return next")
         return nextSibling
       else
         nextSibling = $(currentTarget).parent()
 
-        if nextSibling != undefined and this.currentIndexes.get(nextSibling) > 0
-          console.log("parent")
-          console.log(this.currentIndexes.get(nextSibling) )
+        if nextSibling != undefined and (this.currentIndexes.get(nextSibling) != undefined or this.currentIndexes.get(nextSibling) > 0)
+          console.log("Return Parent")
           return nextSibling
         else
+          console.log("JUMP")
           return this.findNextJumpNode(currentTarget)
 
   scanForNextSibling: (initialTarget, currentTarget, offset_to_use, endIndex) ->
@@ -302,15 +301,27 @@ module.exports = class SentenceSelection extends Annotator.Plugin
     if this.currentIndexes.get(elementToUse) == undefined
       this.currentIndexes.put(elementToUse, 0)
 
+    # increment the counter by the overlap of selection if in multiple nodes (this is a zero increment if only one element is selected)
+    this.currentIndexes.put(elementToUse, (currentSelection.toString().length - currentSelection.extentOffset) + this.currentIndexes.get(elementToUse))
+
+    # now increment by the offset extent within the current element
     this.currentIndexes.put(elementToUse, currentSelection.extentOffset + this.currentIndexes.get(elementToUse))
 
     # increment the text position counter of all parent elements here
     parent = $(elementToUse).parent()
     while this.currentIndexes.get(parent) != undefined
+      this.currentIndexes.put(parent, (currentSelection.toString().length - currentSelection.extentOffset) + this.currentIndexes.get(parent))
       this.currentIndexes.put(parent, currentSelection.extentOffset + this.currentIndexes.get(parent))
       parent = $(parent).parent()
 
-    if elementToUse.textContent.length <= (this.currentIndexes.get(elementToUse))
+    console.log("Textcontent length - 1:")
+    console.log(elementToUse.textContent.length - 1)
+
+    console.log("(this.currentIndexes.get(elementToUse)")
+    console.log((this.currentIndexes.get(elementToUse)))
+
+    if elementToUse.textContent.length - 1 <= this.currentIndexes.get(elementToUse)
+      console.log("INSIDE NEXT BRACKET")
       nextSibling = $(elementToUse).next()
 
       this.currentIndexes.put(nextSibling, 0)
