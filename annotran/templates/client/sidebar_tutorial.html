@@ -1,4 +1,4 @@
-<div class="sheet" ng-if="vm.showSidebarTutorial()">
+<div class="sheet" ng-if="vm.showSidebarTutorial() && vm.auth.status === 'signed-in'">
   <i class="close h-icon-close" role="button" title="Close"
      ng-click="vm.dismiss()"></i>
   <h1 class="sidebar-tutorial__header">How to get started</h1>
