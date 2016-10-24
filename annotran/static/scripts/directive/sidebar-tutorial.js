@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 'use strict';
 
 // @ngInject
-function SidebarTutorialController($scope, session) {
+function SidebarTutorialController() {
   var vm = this;
 
   var showSidebarTutorial = true;
@@ -60,7 +60,6 @@ module.exports = {
       restrict: 'E',
       scope: {
         auth: '=',
-        session: '=',
       },
       templateUrl: 'sidebar_tutorial.html'
     };
